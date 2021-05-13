@@ -3,7 +3,7 @@
    Authors: Mohamend Yousri Mahmoud
    Date: June 2018
    Current Version: Coq V8.9
-                                                                 
+
    Miscellaneous lemmas needed for subject reduction
    ***************************************************************)
 
@@ -35,14 +35,14 @@ Proof.
 Qed.
 
 Theorem unique_in_split: forall l l1 l2: list atm,
-LSL.split l l1 l2 -> forall a, 
+LSL.split l l1 l2 -> forall a,
 count_occ ProgLemmas1.eq_dec l a = 1 ->
 (~ (In a l1) /\ (In a l2)) \/ ( (In a l1) /\ ~(In a l2)) .
 Proof.
   apply LSL.unique_in_split.
 Qed.
 
-Ltac apply2 thL h1 h2 := 
+Ltac apply2 thL h1 h2 :=
   try apply thL in h1; try apply thL in h2.
 
 Ltac destruct_conj :=
@@ -51,7 +51,7 @@ Ltac destruct_conj :=
     | _ => idtac
   end.
 
-Ltac rexists := 
+Ltac rexists :=
   match goal with
     | [H:exists _, _ |-_] => inversion H; clear H;rexists
     |_ => idtac end.
@@ -70,7 +70,7 @@ Hint Resolve starq trueq falseq boxq unboxq revq lambdaq apq prodq letq
 (******************************************)
 
 Theorem count_occ_toqlist_lemma: forall a q,
-count_occ ProgLemmas1.eq_dec (toqlist a) (typeof (CON (Qvar q)) qubit) = 
+count_occ ProgLemmas1.eq_dec (toqlist a) (typeof (CON (Qvar q)) qubit) =
 count_occ ProtoQuipperSyntax.eq_dec a (CON (Qvar q)).
 Proof.
 intros. functional induction toqlist a;simpl;auto.
@@ -89,7 +89,7 @@ destruct(eq_dec (CON FALSE) (CON (Qvar q))). inversion e. auto.
 destruct(eq_dec (CON STAR) (CON (Qvar q))). inversion e. auto.
 destruct(eq_dec (CON (Qvar x)) (CON (Qvar q))). inversion e.
 subst. destruct(ProgLemmas1.eq_dec (typeof (CON (Qvar q)) qubit)
-    (typeof (CON (Qvar q)) qubit)). omega. 
+    (typeof (CON (Qvar q)) qubit)). lia.
 contradict n. auto. destruct(ProgLemmas1.eq_dec (typeof (CON (Qvar x)) qubit)
     (typeof (CON (Qvar q)) qubit)). inversion e. subst. contradict n. auto.
 auto.
@@ -103,10 +103,10 @@ Qed.
 Theorem count_occ_toqlist: forall a b,
 (forall q, count_occ ProtoQuipperSyntax.eq_dec a q= count_occ ProtoQuipperSyntax.eq_dec b q)
 ->
-(forall q, count_occ ProgLemmas1.eq_dec (toqlist a) q = 
+(forall q, count_occ ProgLemmas1.eq_dec (toqlist a) q =
 count_occ ProgLemmas1.eq_dec (toqlist b) q).
 Proof.
-intros. 
+intros.
 destruct (in_dec ProgLemmas1.eq_dec q (toqlist a)).
 apply intoqlist_infq in i. inversion i.
 inversion H0. subst. repeat rewrite count_occ_toqlist_lemma.
@@ -116,11 +116,11 @@ apply intoqlist_infq in i. inversion i.
  inversion H0. subst. repeat rewrite count_occ_toqlist_lemma.
 auto.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in n,n0.
-omega. 
+lia.
 Qed.
 
 Theorem count_occ_toiqlist_lemma: forall a q,
-count_occ ProgLemmas1.eq_dec (toiqlist a) (is_qexp (CON (Qvar q))) = 
+count_occ ProgLemmas1.eq_dec (toiqlist a) (is_qexp (CON (Qvar q))) =
 count_occ ProtoQuipperSyntax.eq_dec a (CON (Qvar q)).
 Proof.
 intros. functional induction toiqlist a;simpl;auto.
@@ -139,7 +139,7 @@ destruct(eq_dec (CON FALSE) (CON (Qvar q))). inversion e. auto.
 destruct(eq_dec (CON STAR) (CON (Qvar q))). inversion e. auto.
 destruct(eq_dec (CON (Qvar x)) (CON (Qvar q))). inversion e.
 subst. destruct(ProgLemmas1.eq_dec (is_qexp (CON (Qvar q)) )
-    (is_qexp (CON (Qvar q)) )). omega. 
+    (is_qexp (CON (Qvar q)) )). lia.
 contradict n. auto. destruct(ProgLemmas1.eq_dec (is_qexp (CON (Qvar x)) )
     (is_qexp (CON (Qvar q)) )). inversion e. subst. contradict n. auto.
 auto.
@@ -153,10 +153,10 @@ Qed.
 Theorem count_occ_toiqlist: forall a b,
 (forall q, count_occ ProtoQuipperSyntax.eq_dec a q= count_occ ProtoQuipperSyntax.eq_dec b q)
 ->
-(forall q, count_occ ProgLemmas1.eq_dec (toiqlist a) q = 
+(forall q, count_occ ProgLemmas1.eq_dec (toiqlist a) q =
 count_occ ProgLemmas1.eq_dec (toiqlist b) q).
 Proof.
-intros. 
+intros.
 destruct (in_dec ProgLemmas1.eq_dec q (toiqlist a)).
 apply in_toiqlistg in i. inversion i.
 inversion H0. subst. repeat rewrite count_occ_toiqlist_lemma.
@@ -166,22 +166,22 @@ apply in_toiqlistg in i. inversion i.
  inversion H0. subst. repeat rewrite count_occ_toiqlist_lemma.
 auto.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in n,n0.
-omega. 
+lia.
 Qed.
 
 (*******************************************************)
 (* More Inversion Lemmas about Subtypecontext and seq_ *)
 (*******************************************************)
 
-Theorem STAR_LL: forall i A IL LL, 
-True -> 
+Theorem STAR_LL: forall i A IL LL,
+True ->
 ~(In (is_qexp (CON STAR)) IL)->
-Subtypecontext IL LL IL LL -> 
-seq_ i IL LL (atom_(typeof (CON STAR) A)) 
+Subtypecontext IL LL IL LL ->
+seq_ i IL LL (atom_(typeof (CON STAR) A))
  -> LL = [] /\ (A = one \/ A=bang one).
 Proof.
 intros i A IL LL h. intros. induction i.
-inversion H1. omega.
+inversion H1. lia.
 apply notqext_nottyped with (lt:=LL) (T:=A) in H;auto.
 inversion H. subst. contradict H7. apply in_eq.
 auto.
@@ -198,35 +198,35 @@ inversion H9;auto. subst.
 inversion H23. inversion H28.
 subst. apply split_ident in H17. subst.
 apply subtypecontext_subtyping with (LL':=lL2) (IL':=IL) (B:=A)in H27;auto.
-assert(i0+1+1= i);try omega. rewrite H3 in H27.
+assert(i0+1+1= i);try lia. rewrite H3 in H27.
 apply IHi in H27. auto.
 apply sub_trans with (B:=A2);auto.
 apply sub_trans with (B:=A1);auto. auto.
 subst. inversion H23. inversion H10. apply split_nil in H25.
 inversion H25. subst. inversion H30.
-apply seq_mono_cor with (k:=i0)  in H26;try omega. 
+apply seq_mono_cor with (k:=i0)  in H26;try lia.
 apply subtypecontext_subtyping with (LL':=[]) (IL':=IL) (B:=A)in H26;auto.
-assert(i0+1+1= i);try omega. rewrite H29 in H26.
+assert(i0+1+1= i);try lia. rewrite H29 in H26.
 apply IHi in H26. auto.
 apply sub_trans with (B:=A2);auto.
 apply sub_trans with (B:=A1);auto. subst.
 inversion H23. apply Subtyping_Prop1_one in H22. subst.
 apply Subtyping_Prop1_one in H14. subst. auto.
  subst.
-inversion H19. 
+inversion H19.
 apply notqext_nottyped with (lt:=lL0) (T:=A2) in H;auto.
 inversion H. subst. contradict H18. apply in_eq.
 apply notqext_nottyped with (lt:=lL0) (T:=A2) in H;auto.
-inversion H. subst. contradict H18. auto. auto. 
+inversion H. subst. contradict H18. auto. auto.
 subst. inversion H16. subst. inversion H7.
 apply split_nil in H10. inversion H10. subst.
-inversion H19.  assert(i0+1+1= i);try omega.
+inversion H19.  assert(i0+1+1= i);try lia.
 apply subtypecontext_subtyping with (LL':=[]) (IL':=IL) (B:=A)in H22;auto.
 rewrite H24 in H22.
 apply IHi in H22. auto.
-apply sub_trans with (B:=A1);auto. 
+apply sub_trans with (B:=A1);auto.
 subst. inversion H16. apply Subtyping_Prop1_one in H14. subst.
-auto. subst. inversion H11. 
+auto. subst. inversion H11.
 subst.
 apply memb_il  with (M:= CON STAR) (T:=A1) in H0;auto.
 inversion H0. contradict H. auto. apply in_eq.
@@ -239,34 +239,34 @@ subst.  inversion H18.
 subst. inversion H17. subst. inversion H9.
 subst. inversion H9.  subst. inversion H19. apply split_nil in H9. inversion H9. subst.
 inversion  H21.
-apply seq_mono_cor with (k:=i2)  in H24;try omega.
+apply seq_mono_cor with (k:=i2)  in H24;try lia.
 apply subtypecontext_subtyping with (LL':=[]) (IL':=IL) (B:=A)in H24;auto.
-assert(i2+1+1=i);try omega. rewrite H26 in H24. 
+assert(i2+1+1=i);try lia. rewrite H26 in H24.
 apply IHi in H24;auto.
 apply sub_trans with (B:=bang A1);auto.
 subst. inversion H13. apply  Subtyping_Prop1_one in H6. subst.
-auto. 
+auto.
 apply  Subtyping_Prop1_one in H6. subst.
 split;auto.
 apply memb_il_il  with (M:= CON STAR) (T:=bang A1) in H0;auto.
 inversion H0. contradict H. auto. subst.
 inversion H8. auto. subst. inversion H8. auto.
-subst. 
+subst.
 apply memb_il  with (M:= CON STAR) (T:=A) in H0;auto.
 inversion H0. contradict H. auto. apply in_eq.
 apply memb_il_il  with (M:= CON STAR) (T:=A) in H0;auto.
-inversion H0. contradict H. auto. 
-Qed. 
+inversion H0. contradict H. auto.
+Qed.
 
-Theorem True_LL3: forall i A IL LL, 
-True -> 
+Theorem True_LL3: forall i A IL LL,
+True ->
 ~(In (is_qexp (CON TRUE)) IL)->
-Subtypecontext IL LL IL LL -> 
-seq_ i IL LL (atom_(typeof (CON TRUE) A)) 
+Subtypecontext IL LL IL LL ->
+seq_ i IL LL (atom_(typeof (CON TRUE) A))
  -> LL = [] /\ (A = bool \/ A=bang bool).
 Proof.
 intros i A IL LL h. intros. induction i.
-inversion H1. omega.
+inversion H1. lia.
 apply notqext_nottyped with (lt:=LL) (T:=A) in H;auto.
 inversion H. subst. contradict H7. apply in_eq.
 auto.
@@ -283,35 +283,35 @@ inversion H9;auto. subst.
 inversion H23. inversion H28.
 subst. apply split_ident in H17. subst.
 apply subtypecontext_subtyping with (LL':=lL2) (IL':=IL) (B:=A)in H27;auto.
-assert(i0+1+1= i);try omega. rewrite H3 in H27.
+assert(i0+1+1= i);try lia. rewrite H3 in H27.
 apply IHi in H27. auto.
 apply sub_trans with (B:=A2);auto.
 apply sub_trans with (B:=A1);auto. auto.
 subst. inversion H23. inversion H10. apply split_nil in H25.
 inversion H25. subst. inversion H30.
-apply seq_mono_cor with (k:=i0)  in H26;try omega. 
+apply seq_mono_cor with (k:=i0)  in H26;try lia.
 apply subtypecontext_subtyping with (LL':=[]) (IL':=IL) (B:=A)in H26;auto.
-assert(i0+1+1= i);try omega. rewrite H29 in H26.
+assert(i0+1+1= i);try lia. rewrite H29 in H26.
 apply IHi in H26. auto.
 apply sub_trans with (B:=A2);auto.
 apply sub_trans with (B:=A1);auto. subst.
 inversion H23. apply Subtyping_Prop1_bool in H22. subst.
 apply Subtyping_Prop1_bool in H14. subst. auto.
  subst.
-inversion H19. 
+inversion H19.
 apply notqext_nottyped with (lt:=lL0) (T:=A2) in H;auto.
 inversion H. subst. contradict H18. apply in_eq.
 apply notqext_nottyped with (lt:=lL0) (T:=A2) in H;auto.
-inversion H. subst. contradict H18. auto. auto. 
+inversion H. subst. contradict H18. auto. auto.
 subst. inversion H16. subst. inversion H7.
 apply split_nil in H10. inversion H10. subst.
-inversion H19.  assert(i0+1+1= i);try omega.
+inversion H19.  assert(i0+1+1= i);try lia.
 apply subtypecontext_subtyping with (LL':=[]) (IL':=IL) (B:=A)in H22;auto.
 rewrite H24 in H22.
 apply IHi in H22. auto.
-apply sub_trans with (B:=A1);auto. 
+apply sub_trans with (B:=A1);auto.
 subst. inversion H16. apply Subtyping_Prop1_bool in H14. subst.
-auto. subst. inversion H11. 
+auto. subst. inversion H11.
 subst.
 apply memb_il  with (M:= CON TRUE) (T:=A1) in H0;auto.
 inversion H0. contradict H. auto. apply in_eq.
@@ -324,34 +324,34 @@ subst.  inversion H18.
 subst. inversion H17. subst. inversion H9.
 subst. inversion H9.  subst. inversion H19. apply split_nil in H9. inversion H9. subst.
 inversion  H21.
-apply seq_mono_cor with (k:=i2)  in H24;try omega.
+apply seq_mono_cor with (k:=i2)  in H24;try lia.
 apply subtypecontext_subtyping with (LL':=[]) (IL':=IL) (B:=A)in H24;auto.
-assert(i2+1+1=i);try omega. rewrite H26 in H24. 
+assert(i2+1+1=i);try lia. rewrite H26 in H24.
 apply IHi in H24;auto.
 apply sub_trans with (B:=bang A1);auto.
 subst. inversion H13. apply  Subtyping_Prop1_bool in H6. subst.
-auto. 
+auto.
 apply  Subtyping_Prop1_bool in H6. subst.
 split;auto.
 apply memb_il_il  with (M:= CON TRUE) (T:=bang A1) in H0;auto.
 inversion H0. contradict H. auto. subst.
 inversion H8. auto. subst. inversion H8. auto.
-subst. 
+subst.
 apply memb_il  with (M:= CON TRUE) (T:=A) in H0;auto.
 inversion H0. contradict H. auto. apply in_eq.
 apply memb_il_il  with (M:= CON TRUE) (T:=A) in H0;auto.
-inversion H0. contradict H. auto. 
-Qed. 
+inversion H0. contradict H. auto.
+Qed.
 
-Theorem False_LL3: forall i A IL LL, 
-True -> 
+Theorem False_LL3: forall i A IL LL,
+True ->
 ~(In (is_qexp (CON FALSE)) IL)->
-Subtypecontext IL LL IL LL -> 
-seq_ i IL LL (atom_(typeof (CON FALSE) A)) 
+Subtypecontext IL LL IL LL ->
+seq_ i IL LL (atom_(typeof (CON FALSE) A))
  -> LL = [] /\ (A = bool \/ A=bang bool).
 Proof.
 intros i A IL LL h. intros. induction i.
-inversion H1. omega.
+inversion H1. lia.
 apply notqext_nottyped with (lt:=LL) (T:=A) in H;auto.
 inversion H. subst. contradict H7. apply in_eq.
 auto.
@@ -368,35 +368,35 @@ inversion H9;auto. subst.
 inversion H23. inversion H28.
 subst. apply split_ident in H17. subst.
 apply subtypecontext_subtyping with (LL':=lL2) (IL':=IL) (B:=A)in H27;auto.
-assert(i0+1+1= i);try omega. rewrite H3 in H27.
+assert(i0+1+1= i);try lia. rewrite H3 in H27.
 apply IHi in H27. auto.
 apply sub_trans with (B:=A2);auto.
 apply sub_trans with (B:=A1);auto. auto.
 subst. inversion H23. inversion H10. apply split_nil in H25.
 inversion H25. subst. inversion H30.
-apply seq_mono_cor with (k:=i0)  in H26;try omega. 
+apply seq_mono_cor with (k:=i0)  in H26;try lia.
 apply subtypecontext_subtyping with (LL':=[]) (IL':=IL) (B:=A)in H26;auto.
-assert(i0+1+1= i);try omega. rewrite H29 in H26.
+assert(i0+1+1= i);try lia. rewrite H29 in H26.
 apply IHi in H26. auto.
 apply sub_trans with (B:=A2);auto.
 apply sub_trans with (B:=A1);auto. subst.
 inversion H23. apply Subtyping_Prop1_bool in H22. subst.
 apply Subtyping_Prop1_bool in H14. subst. auto.
  subst.
-inversion H19. 
+inversion H19.
 apply notqext_nottyped with (lt:=lL0) (T:=A2) in H;auto.
 inversion H. subst. contradict H18. apply in_eq.
 apply notqext_nottyped with (lt:=lL0) (T:=A2) in H;auto.
-inversion H. subst. contradict H18. auto. auto. 
+inversion H. subst. contradict H18. auto. auto.
 subst. inversion H16. subst. inversion H7.
 apply split_nil in H10. inversion H10. subst.
-inversion H19.  assert(i0+1+1= i);try omega.
+inversion H19.  assert(i0+1+1= i);try lia.
 apply subtypecontext_subtyping with (LL':=[]) (IL':=IL) (B:=A)in H22;auto.
 rewrite H24 in H22.
 apply IHi in H22. auto.
-apply sub_trans with (B:=A1);auto. 
+apply sub_trans with (B:=A1);auto.
 subst. inversion H16. apply Subtyping_Prop1_bool in H14. subst.
-auto. subst. inversion H11. 
+auto. subst. inversion H11.
 subst.
 apply memb_il  with (M:= CON FALSE) (T:=A1) in H0;auto.
 inversion H0. contradict H. auto. apply in_eq.
@@ -409,33 +409,33 @@ subst.  inversion H18.
 subst. inversion H17. subst. inversion H9.
 subst. inversion H9.  subst. inversion H19. apply split_nil in H9. inversion H9. subst.
 inversion  H21.
-apply seq_mono_cor with (k:=i2)  in H24;try omega.
+apply seq_mono_cor with (k:=i2)  in H24;try lia.
 apply subtypecontext_subtyping with (LL':=[]) (IL':=IL) (B:=A)in H24;auto.
-assert(i2+1+1=i);try omega. rewrite H26 in H24. 
+assert(i2+1+1=i);try lia. rewrite H26 in H24.
 apply IHi in H24;auto.
 apply sub_trans with (B:=bang A1);auto.
 subst. inversion H13. apply  Subtyping_Prop1_bool in H6. subst.
-auto. 
+auto.
 apply  Subtyping_Prop1_bool in H6. subst.
 split;auto.
 apply memb_il_il  with (M:= CON FALSE) (T:=bang A1) in H0;auto.
 inversion H0. contradict H. auto. subst.
 inversion H8. auto. subst. inversion H8. auto.
-subst. 
+subst.
 apply memb_il  with (M:= CON FALSE) (T:=A) in H0;auto.
 inversion H0. contradict H. auto. apply in_eq.
 apply memb_il_il  with (M:= CON FALSE) (T:=A) in H0;auto.
-inversion H0. contradict H. auto. 
-Qed. 
+inversion H0. contradict H. auto.
+Qed.
 
 
-Theorem True_LL2: forall i IL LL A, 
+Theorem True_LL2: forall i IL LL A,
     ~(In (is_qexp (CON TRUE)) IL) ->
-    Subtypecontext IL LL IL LL -> 
+    Subtypecontext IL LL IL LL ->
     seq_ i IL LL (atom_(typeof (CON TRUE) A)) -> LL = [].
 Proof.
 intros. induction i.
-inversion H1. omega.
+inversion H1. lia.
 apply notqext_nottyped with (lt:=LL) (T:=A) in H;auto.
 inversion H. subst. contradict H7. apply in_eq.
 auto.
@@ -451,7 +451,7 @@ inversion H9;auto. subst.
 inversion H23. inversion H28.
 subst. apply split_ident in H17. subst.
 apply subtypecontext_subtyping with (LL':=lL2) (IL':=IL) (B:=A)in H27;auto.
-assert(i0+1+1= i);try omega. rewrite H3 in H27.
+assert(i0+1+1= i);try lia. rewrite H3 in H27.
 apply IHi in H27. auto.
 apply sub_trans with (B:=A1);auto.
 apply sub_trans with (B:=A2);auto. auto.
@@ -470,15 +470,15 @@ auto. subst. inversion H8. auto.
 subst. inversion H8. auto. subst. inversion H8. auto.
 apply notqext_nottyped with (lt:=LL) (T:=A) in H;auto.
 inversion H. subst. contradict H7. apply in_eq.
-Qed. 
+Qed.
 
-Theorem False_LL2: forall i IL LL A, 
+Theorem False_LL2: forall i IL LL A,
     ~(In (is_qexp (CON FALSE)) IL) ->
-    Subtypecontext IL LL IL LL -> 
+    Subtypecontext IL LL IL LL ->
     seq_ i IL LL (atom_(typeof (CON FALSE) A)) -> LL = [].
 Proof.
 intros. induction i.
-inversion H1. omega.
+inversion H1. lia.
 apply notqext_nottyped with (lt:=LL) (T:=A) in H;auto.
 inversion H. subst. contradict H7. apply in_eq.
 auto.
@@ -494,7 +494,7 @@ inversion H9;auto. subst.
 inversion H23. inversion H28.
 subst. apply split_ident in H17. subst.
 apply subtypecontext_subtyping with (LL':=lL2) (IL':=IL) (B:=A)in H27;auto.
-assert(i0+1+1= i);try omega. rewrite H3 in H27.
+assert(i0+1+1= i);try lia. rewrite H3 in H27.
 apply IHi in H27. auto.
 apply sub_trans with (B:=A1);auto.
 apply sub_trans with (B:=A2);auto. auto.
@@ -513,11 +513,11 @@ auto. subst. inversion H8. auto.
 subst. inversion H8. auto. subst. inversion H8. auto.
 apply notqext_nottyped with (lt:=LL) (T:=A) in H;auto.
 inversion H. subst. contradict H7. apply in_eq.
-Qed. 
+Qed.
 
 Theorem subcnxt_add2: forall IL IL' LL LL' fq,
-  Subtypecontext IL' LL' IL LL -> 
-  Subtypecontext (toiqlist fq++IL') LL' 
+  Subtypecontext IL' LL' IL LL ->
+  Subtypecontext (toiqlist fq++IL') LL'
                  (toiqlist fq++IL) LL.
 Proof.
 intros IL IL' LL LL' fq H. functional induction toqlist fq;simpl; auto.
@@ -528,16 +528,16 @@ Qed.
   Lemmas about Subtypecontext and typing of quantum data
   ****************************************************************)
 
-Theorem qubit_typed: forall i j A IL LL, 
+Theorem qubit_typed: forall i j A IL LL,
  (forall q T, In (typeof (CON (Qvar q)) T) LL -> T = qubit) ->
 (forall t, In t IL -> (exists i, t = is_qexp (Var i) \/ t = is_qexp (CON (Qvar i)) \/
      exists T, t = typeof (Var i) T)) ->
-Subtypecontext IL LL IL LL ->   
-seq_ i IL LL (atom_(typeof (CON (Qvar j)) A)) -> 
+Subtypecontext IL LL IL LL ->
+seq_ i IL LL (atom_(typeof (CON (Qvar j)) A)) ->
 A = qubit /\ LL = [typeof (CON (Qvar j)) qubit].
 Proof.
-intros. induction i. inversion H2. omega.
-subst. 
+intros. induction i. inversion H2. lia.
+subst.
 assert(In (typeof (CON (Qvar j)) A) [typeof (CON (Qvar j)) A]);
 try apply in_eq.
 apply H in H3. subst. auto.
@@ -546,7 +546,7 @@ apply H0 in H7. inversion H7. destruct H8.
 inversion H8. destruct H8. inversion H8.
 inversion H8. inversion H9. inversion H2.
 Focus 2.
-subst. 
+subst.
 assert(In (typeof (CON (Qvar j)) A) [typeof (CON (Qvar j)) A]);
 try apply in_eq.
 apply H in H3. subst. auto.
@@ -555,7 +555,7 @@ apply H0 in H7. inversion H7. destruct H8.
 inversion H8. destruct H8. inversion H8.
 inversion H8. inversion H9.
 inversion H5. subst.
-inversion H9. inversion H16.  
+inversion H9. inversion H16.
 subst. apply split_ident in H8. subst.
 inversion H14. inversion H7.
 subst. inversion H17. inversion H22. subst.
@@ -563,18 +563,18 @@ apply split_ident in H11. subst. inversion H21.
 inversion H10. subst. inversion H24. inversion H29. subst.
 apply split_ident in H18. subst.
 apply subtypecontext_subtyping with (IL':=IL) (LL':=lL2) (B:=A) in H28;auto.
-assert(i=i0+1+1);try omega. rewrite <- H4 in H28. apply IHi in H28.
+assert(i=i0+1+1);try lia. rewrite <- H4 in H28. apply IHi in H28.
 auto. apply sub_trans with (B:=A2);auto.
 apply sub_trans with (B:=A1);auto. auto.
 subst. inversion H24. subst.
 inversion H11. apply split_nil in H18. inversion H18. subst.
-inversion H27. 
-apply seq_mono_cor with (k:=i0) in H30; try omega.
+inversion H27.
+apply seq_mono_cor with (k:=i0) in H30; try lia.
 apply subtypecontext_subtyping with (IL':=IL) (LL':=[]) (B:=A) in H30;auto.
-assert(i0+1+1=i);try omega. rewrite  H32 in H30. 
+assert(i0+1+1=i);try lia. rewrite  H32 in H30.
 apply IHi in H30. auto.
 apply sub_trans with (B:=A2);auto.
-apply sub_trans with (B:=A1);auto. 
+apply sub_trans with (B:=A1);auto.
 subst.
 assert(In (typeof (CON (Qvar j)) A2) [typeof (CON (Qvar j)) A2])
 ;try apply in_eq. apply H in H4. subst.
@@ -586,9 +586,9 @@ inversion H19. inversion H24. auto.
 subst. inversion H17. subst. inversion H8.
 apply split_nil in H11. inversion H11. subst.
 inversion H20.
-assert(i0+1+1=i);try omega.
+assert(i0+1+1=i);try lia.
 apply subtypecontext_subtyping with (IL':=IL) (LL':=[]) (B:=A) in H23;auto.
-rewrite  H25 in H23. 
+rewrite  H25 in H23.
 apply IHi in H23. auto.
 apply sub_trans with (B:=A1);auto.
 subst.
@@ -604,25 +604,25 @@ inversion H13. inversion H16. inversion H19. subst.
 apply sub_not_bang in H30;auto. inversion H30. subst.
 inversion H20. apply split_nil in H10. inversion H10. subst.
 inversion H21.
-apply seq_mono_cor with (k:=i2) in H23; try omega.
+apply seq_mono_cor with (k:=i2) in H23; try lia.
 apply subtypecontext_subtyping with (IL':=IL) (LL':=[]) (B:=A) in H23;auto.
-assert(i2+1+1=i);try omega. rewrite  H26 in H23. 
+assert(i2+1+1=i);try lia. rewrite  H26 in H23.
 apply IHi in H23. auto.
 apply sub_trans with (B:=bang A1);auto.
 apply H0 in H21. inversion H21. destruct H22.
 inversion H22. destruct H22. inversion H22.
-inversion H22. inversion H23. 
+inversion H22. inversion H23.
 Qed.
 
-Theorem quantum_data_typed: forall v, quantum_data v -> 
-forall  i A IL LL, 
+Theorem quantum_data_typed: forall v, quantum_data v ->
+forall  i A IL LL,
 (*(forall q, In q (FQ v) ->count_occ ProgLemmas1.eq_dec  LL (typeof q qubit)= 1)*)
 (forall q T, In (typeof (CON (Qvar q)) T) LL -> T = qubit)->
-(forall q T, In (typeof (CON (Qvar q)) T) LL -> 
+(forall q T, In (typeof (CON (Qvar q)) T) LL ->
 count_occ  ProgLemmas1.eq_dec LL (typeof (CON (Qvar q)) T) =1) ->
 (forall t, In t IL -> (exists i, t = is_qexp (Var i) \/ t = is_qexp (CON (Qvar i)) \/
      exists T, t = typeof (Var i) T)) ->
-Subtypecontext IL LL IL LL ->   
+Subtypecontext IL LL IL LL ->
 seq_ i IL LL (atom_(typeof v A)) ->
 (forall q, count_occ ProgLemmas1.eq_dec  (toqlist(FQ v)) q =
                   count_occ ProgLemmas1.eq_dec LL q) /\
@@ -634,18 +634,18 @@ inversion H3. subst. simpl. split;auto. apply QubitSub.
 specialize H  with (CON (Qvar i)). unfold FQ in H.
 assert(In (CON (Qvar i)) [CON (Qvar i)]); try apply in_eq.
 apply H in H4.
-assert(count_occ ProgLemmas1.eq_dec LL (typeof (CON (Qvar i)) qubit)>0);try omega.
+assert(count_occ ProgLemmas1.eq_dec LL (typeof (CON (Qvar i)) qubit)>0);try lia.
 apply <- count_occ_In in  H5. auto.*)
 
 apply STAR_LL in H3;auto. inversion H3.
-subst. simpl. split; auto. 
+subst. simpl. split; auto.
 destruct H5;subst; try apply BangSub1;
 try apply OneSub;try apply bOne. contradict H2.
 apply H1 in H2. inversion H2. destruct H4.
 inversion H4. destruct H4. inversion H4.
 inversion H4.  inversion H5.
 
-apply prod_typed in H5. 
+apply prod_typed in H5.
 destruct H5; rexists.
 destruct_conj. destruct H8.
 destruct_conj. inversion H10.
@@ -655,8 +655,8 @@ apply IHquantum_data1 in H15;auto.
 apply IHquantum_data2 in H18;auto.
 destruct_conj.
 simpl. split. intros. rewrite nodup_union.
-rewrite toqlist_app, 
-count_app with (l1:=toqlist (FQ a)) 
+rewrite toqlist_app,
+count_app with (l1:=toqlist (FQ a))
 (l2:=toqlist (rev(FQ b))), <- rev_toqlist, <- rev_count;auto.
 rewrite count_split with (l:=lL2) (l1:=LL1) (l2:=LL2);auto.
 apply fq_nodup. apply fq_nodup. intros.
@@ -674,9 +674,9 @@ apply H2 in H11.
 apply unique_in_split with (a:=(typeof (CON (Qvar x2)) qubit)) in h11.
 destruct h11. inversion H9.
 rewrite  count_occ_not_In  with (eq_dec:=ProgLemmas1.eq_dec) in H12.
-rewrite <- H18 in H12. 
+rewrite <- H18 in H12.
 rewrite  <- count_occ_not_In  with (eq_dec:=ProgLemmas1.eq_dec) in H12.
-contradict H12. 
+contradict H12.
 apply in_toqlist. auto. inversion H9.
 contradict H13. auto.
 apply in_split_r with (a:=(typeof (CON (Qvar x2)) qubit)) in h11;auto.
@@ -697,10 +697,10 @@ apply H2 in H11. auto.
 assert(h11':=h11).
 apply unique_in_split with (a:=(typeof (CON (Qvar q)) T)) in h11;auto.
 destruct h11. inversion H20.
-apply count_split with (eq_dec:=  ProgLemmas1.eq_dec) 
+apply count_split with (eq_dec:=  ProgLemmas1.eq_dec)
 (a:=(typeof (CON (Qvar q)) T)) in h11';auto.
 rewrite  count_occ_not_In with (eq_dec:=  ProgLemmas1.eq_dec) in H21.
-omega.
+lia.
 inversion H20. contradict H22. auto.
 apply subcntxt_splits with (il:=IL) in H11;auto.
 inversion H11. auto.
@@ -715,10 +715,10 @@ assert(h11':=h11).
 apply unique_in_split with (a:=(typeof (CON (Qvar q)) T)) in h11;auto.
 destruct h11. inversion H20. contradict H21. auto.
 inversion H20.
-apply count_split with (eq_dec:=  ProgLemmas1.eq_dec) 
+apply count_split with (eq_dec:=  ProgLemmas1.eq_dec)
 (a:=(typeof (CON (Qvar q)) T)) in h11';auto.
 rewrite  count_occ_not_In with (eq_dec:=  ProgLemmas1.eq_dec) in H22.
-omega.
+lia.
 apply subcntxt_splits with (il:=IL) in H11;auto.
 inversion H11. auto. auto.
 
@@ -729,8 +729,8 @@ apply IHquantum_data1 in H16;auto.
 apply IHquantum_data2 in H19;auto.
 destruct_conj.
 simpl. split. intros. rewrite nodup_union.
-rewrite toqlist_app, 
-count_app with (l1:=toqlist (FQ a)) 
+rewrite toqlist_app,
+count_app with (l1:=toqlist (FQ a))
 (l2:=toqlist (rev(FQ b))), <- rev_toqlist, <- rev_count;auto.
 rewrite count_split with (l:=lL2) (l1:=LL1) (l2:=LL2);auto.
 apply fq_nodup. apply fq_nodup. intros.
@@ -748,9 +748,9 @@ apply H2 in H12.
 apply unique_in_split with (a:=(typeof (CON (Qvar x2)) qubit)) in h12.
 destruct h12. inversion H10.
 rewrite  count_occ_not_In  with (eq_dec:=ProgLemmas1.eq_dec) in H13.
-rewrite <- H19 in H13. 
+rewrite <- H19 in H13.
 rewrite  <- count_occ_not_In  with (eq_dec:=ProgLemmas1.eq_dec) in H13.
-contradict H13. 
+contradict H13.
 apply in_toqlist. auto. inversion H10.
 contradict H14. auto.
 apply in_split_r with (a:=(typeof (CON (Qvar x2)) qubit)) in h12;auto.
@@ -764,7 +764,7 @@ assert (vb:=valid_qtyper b).
 apply subtyp_valid with (a:=x1);auto.
 inversion H21. auto. rewrite <- H32 in vb. inversion vb.
 inversion H23.
-apply BangSub1. apply TensorSub. 
+apply BangSub1. apply TensorSub.
 assert (va:=valid_qtyper a).
 apply subtyp_valid with (a:=x0);auto.
 inversion H22. auto. rewrite <- H32 in va. inversion va.
@@ -782,10 +782,10 @@ apply H2 in H12. auto.
 assert(h12':=h12).
 apply unique_in_split with (a:=(typeof (CON (Qvar q)) T)) in h12;auto.
 destruct h12. inversion H21.
-apply count_split with (eq_dec:=  ProgLemmas1.eq_dec) 
+apply count_split with (eq_dec:=  ProgLemmas1.eq_dec)
 (a:=(typeof (CON (Qvar q)) T)) in h12';auto.
 rewrite  count_occ_not_In with (eq_dec:=  ProgLemmas1.eq_dec) in H22.
-omega.
+lia.
 inversion H21. contradict H23. auto.
 apply subcntxt_splits with (il:=IL) in H12;auto.
 inversion H12. auto.
@@ -800,10 +800,10 @@ assert(h12':=h12).
 apply unique_in_split with (a:=(typeof (CON (Qvar q)) T)) in h12;auto.
 destruct h12. inversion H21. contradict H22. auto.
 inversion H21.
-apply count_split with (eq_dec:=  ProgLemmas1.eq_dec) 
+apply count_split with (eq_dec:=  ProgLemmas1.eq_dec)
 (a:=(typeof (CON (Qvar q)) T)) in h12';auto.
 rewrite  count_occ_not_In with (eq_dec:=  ProgLemmas1.eq_dec) in H23.
-omega.
+lia.
 apply subcntxt_splits with (il:=IL) in H12;auto.
 inversion H12. auto. auto.
 
@@ -815,8 +815,8 @@ apply IHquantum_data1 in H15;auto.
 apply IHquantum_data2 in H18;auto.
 destruct_conj.
 simpl. split. intros. rewrite nodup_union.
-rewrite toqlist_app, 
-count_app with (l1:=toqlist (FQ a)) 
+rewrite toqlist_app,
+count_app with (l1:=toqlist (FQ a))
 (l2:=toqlist (rev(FQ b))), <- rev_toqlist, <- rev_count;auto.
 rewrite count_split with (l:=lL2) (l1:=LL1) (l2:=LL2);auto.
 apply fq_nodup. apply fq_nodup. intros.
@@ -834,9 +834,9 @@ apply H2 in H11.
 apply unique_in_split with (a:=(typeof (CON (Qvar x2)) qubit)) in h11.
 destruct h11. inversion H8.
 rewrite  count_occ_not_In  with (eq_dec:=ProgLemmas1.eq_dec) in H12.
-rewrite <- H18 in H12. 
+rewrite <- H18 in H12.
 rewrite  <- count_occ_not_In  with (eq_dec:=ProgLemmas1.eq_dec) in H12.
-contradict H12. 
+contradict H12.
 apply in_toqlist. auto. inversion H8.
 contradict H13. auto.
 apply in_split_r with (a:=(typeof (CON (Qvar x2)) qubit)) in h11;auto.
@@ -852,10 +852,10 @@ apply H2 in H11. auto.
 assert(h11':=h11).
 apply unique_in_split with (a:=(typeof (CON (Qvar q)) T)) in h11;auto.
 destruct h11. inversion H20.
-apply count_split with (eq_dec:=  ProgLemmas1.eq_dec) 
+apply count_split with (eq_dec:=  ProgLemmas1.eq_dec)
 (a:=(typeof (CON (Qvar q)) T)) in h11';auto.
 rewrite  count_occ_not_In with (eq_dec:=  ProgLemmas1.eq_dec) in H21.
-omega.
+lia.
 inversion H20. contradict H22. auto.
 apply subcntxt_splits with (il:=IL) in H11;auto.
 inversion H11. auto.
@@ -870,10 +870,10 @@ assert(h11':=h11).
 apply unique_in_split with (a:=(typeof (CON (Qvar q)) T)) in h11;auto.
 destruct h11. inversion H20. contradict H21. auto.
 inversion H20.
-apply count_split with (eq_dec:=  ProgLemmas1.eq_dec) 
+apply count_split with (eq_dec:=  ProgLemmas1.eq_dec)
 (a:=(typeof (CON (Qvar q)) T)) in h11';auto.
 rewrite  count_occ_not_In with (eq_dec:=  ProgLemmas1.eq_dec) in H22.
-omega.
+lia.
 apply subcntxt_splits with (il:=IL) in H11;auto.
 inversion H11. auto. auto.
 
@@ -884,8 +884,8 @@ apply IHquantum_data1 in H16;auto.
 apply IHquantum_data2 in H19;auto.
 destruct_conj.
 simpl. split. intros. rewrite nodup_union.
-rewrite toqlist_app, 
-count_app with (l1:=toqlist (FQ a)) 
+rewrite toqlist_app,
+count_app with (l1:=toqlist (FQ a))
 (l2:=toqlist (rev(FQ b))), <- rev_toqlist, <- rev_count;auto.
 rewrite count_split with (l:=lL2) (l1:=LL1) (l2:=LL2);auto.
 apply fq_nodup. apply fq_nodup. intros.
@@ -903,14 +903,14 @@ apply H2 in H12.
 apply unique_in_split with (a:=(typeof (CON (Qvar x2)) qubit)) in h12.
 destruct h12. inversion H8.
 rewrite  count_occ_not_In  with (eq_dec:=ProgLemmas1.eq_dec) in H13.
-rewrite <- H19 in H13. 
+rewrite <- H19 in H13.
 rewrite  <- count_occ_not_In  with (eq_dec:=ProgLemmas1.eq_dec) in H13.
-contradict H13. 
+contradict H13.
 apply in_toqlist. auto. inversion H8.
 contradict H14. auto.
 apply in_split_r with (a:=(typeof (CON (Qvar x2)) qubit)) in h12;auto.
 auto.
-apply BangSub1. apply TensorSub;auto. 
+apply BangSub1. apply TensorSub;auto.
 assert (va:=valid_qtyper a).
 inversion H22. auto. rewrite <- H23 in va. inversion va.
 assert (vb:=valid_qtyper b).
@@ -926,10 +926,10 @@ apply H2 in H12. auto.
 assert(h12':=h12).
 apply unique_in_split with (a:=(typeof (CON (Qvar q)) T)) in h12;auto.
 destruct h12. inversion H21.
-apply count_split with (eq_dec:=  ProgLemmas1.eq_dec) 
+apply count_split with (eq_dec:=  ProgLemmas1.eq_dec)
 (a:=(typeof (CON (Qvar q)) T)) in h12';auto.
 rewrite  count_occ_not_In with (eq_dec:=  ProgLemmas1.eq_dec) in H22.
-omega.
+lia.
 inversion H21. contradict H23. auto.
 apply subcntxt_splits with (il:=IL) in H12;auto.
 inversion H12. auto.
@@ -944,10 +944,10 @@ assert(h12':=h12).
 apply unique_in_split with (a:=(typeof (CON (Qvar q)) T)) in h12;auto.
 destruct h12. inversion H21. contradict H22. auto.
 inversion H21.
-apply count_split with (eq_dec:=  ProgLemmas1.eq_dec) 
+apply count_split with (eq_dec:=  ProgLemmas1.eq_dec)
 (a:=(typeof (CON (Qvar q)) T)) in h12';auto.
 rewrite  count_occ_not_In with (eq_dec:=  ProgLemmas1.eq_dec) in H23.
-omega.
+lia.
 apply subcntxt_splits with (il:=IL) in H12;auto.
 inversion H12. auto. auto. auto.
 
@@ -958,10 +958,10 @@ Qed.
 Theorem IL_FQ_REPLACE: forall   u A IL fq LL,  forall i,
 (forall q, In q fq -> exists j,  q= is_qexp(CON (Qvar j))) ->
 seq_ i (fq++IL) LL (atom_(typeof u A)) ->
-seq_ (i+length fq) IL LL (atom_(typeof u A)). 
+seq_ (i+length fq) IL LL (atom_(typeof u A)).
 Proof.
 intros u A IL fq LL. induction fq. intros. simpl in H0.
-apply seq_mono_cor with (j:=i); auto. omega. intros.
+apply seq_mono_cor with (j:=i); auto. lia. intros.
 assert(h:=H). specialize H with a. assert( In a (a::fq));
 try apply in_eq. apply H in H1. inversion H1.
 subst. assert(seq_ (0+1) IL [] (atom_ (is_qexp (CON (Qvar x))))).
@@ -972,10 +972,10 @@ unfold P_seq_cut_one in H0. specialize H0 with (0+1) ((is_qexp (CON (Qvar x)))).
 assert(In (is_qexp (CON (Qvar x))) ((is_qexp (CON (Qvar x)) :: fq) ++ IL));try apply in_eq.
 apply H0 in  H3. simpl in H3.
 destruct (ProgLemmas1.eq_dec (is_qexp (CON (Qvar x))) (is_qexp (CON (Qvar x)))).
-apply IHfq in H3;auto. simpl. assert(i+S (length fq) = i+1 + length fq);try omega.
+apply IHfq in H3;auto. simpl. assert(i+S (length fq) = i+1 + length fq);try lia.
 rewrite H4. auto. intros.  apply h. apply in_cons. auto. contradict n. auto.
 simpl. destruct (ProgLemmas1.eq_dec (is_qexp (CON (Qvar x))) (is_qexp (CON (Qvar x)))).
-assert(1=0+1);try omega. rewrite H4.
+assert(1=0+1);try lia. rewrite H4.
 apply s_bc with [] [];auto. apply (atom_ (is_qexp (Var 0))).
 apply qvar. apply ss_init. apply ss_init. contradict n. auto.
 apply  (is_qexp (Var 0)).
@@ -995,24 +995,24 @@ Qed.
 Inductive common_ll : qexp -> qexp -> list atm-> list atm  -> Prop :=
 |com_empty: forall a a', common_ll a a' [] []
 |com_l: forall q  a a' ll1 ll2, In q (FQ a) -> ~ (In q (FQ a')) ->
- common_ll  a a' ll1 ll2 -> 
+ common_ll  a a' ll1 ll2 ->
 ~ (In (typeof q qubit) ll1) ->
  common_ll  a a' ((typeof q qubit)::ll1) ll2
 |com_r: forall q  a a' ll1 ll2, In q (FQ a') -> ~ (In q (FQ a)) ->
- common_ll  a a' ll1 ll2 -> 
+ common_ll  a a' ll1 ll2 ->
 ~ (In (typeof q qubit) ll2) ->
  common_ll  a a' ll1 ((typeof q qubit)::ll2)
 |com_lr: forall q  a a' ll1 ll2, In q (FQ a) ->  (In q (FQ a')) ->
- common_ll  a a' ll1 ll2 -> 
+ common_ll  a a' ll1 ll2 ->
 ~ (In (typeof q qubit) ll1) ->
 ~ (In (typeof q qubit) ll2) ->
  common_ll  a a'((typeof q qubit)::ll1) ((typeof q qubit)::ll2)
-|common_g: forall  a a' e A ll1 ll2, common_ll a a' ll1 ll2 -> 
-~(exists q, e = CON (Qvar q)) -> 
+|common_g: forall  a a' e A ll1 ll2, common_ll a a' ll1 ll2 ->
+~(exists q, e = CON (Qvar q)) ->
  common_ll a a' ((typeof e A)::ll1) ((typeof e A)::ll2).
 
 Hint Resolve com_empty com_r com_l com_lr common_g LSL.init LSL.splitr1
-LSL.splitr2. 
+LSL.splitr2.
 
 (* Old version
 
@@ -1025,7 +1025,7 @@ intros ll ll' H. induction H;intros.
 apply split_nil in H.  inversion H. subst. exists [], [].
 split;auto. inversion H0; apply IHcommon_ll in H5;
 inversion H5; inversion H6; inversion H7; inversion H9;
-exists x,x0;repeat split;auto. 
+exists x,x0;repeat split;auto.
 apply IHcommon_ll in H0.
 inversion H0. inversion H1. inversion H2.
 inversion H4. exists ((typeof (CON (Qvar q)) qubit)::x),(x0).
@@ -1047,43 +1047,43 @@ intros. inversion H4.  subst.
 assert(h:=H).
 apply fq_all_qvar in H.
 inversion H. subst.
-apply infq_intoqlist;auto. 
+apply infq_intoqlist;auto.
 apply IHcommon_ll with (q:=q0) in H3;auto.
 intros.
 inversion H5.  subst.
 assert(h:=H).
 apply fq_all_qvar in H.
 inversion H. subst.
-apply infq_intoqlist;auto. 
+apply infq_intoqlist;auto.
 apply IHcommon_ll;auto. intros.
 apply H4. apply in_cons. auto.
 intros. assert (In (typeof e A) (typeof e A :: ll1)).
 apply in_eq. apply H1 in H3. apply intoqlist_infq in H3.
 inversion H3. inversion H4. inversion H5. contradict H0.
 exists x. auto.
-Qed. 
+Qed.
 
 Theorem in_common_r: forall a a' l l',
-common_ll a a' l l' -> forall q, 
+common_ll a a' l l' -> forall q,
 In (typeof (CON (Qvar q)) qubit) l'
--> In (CON (Qvar q))  (FQ a') /\ 
+-> In (CON (Qvar q))  (FQ a') /\
 count_occ ProgLemmas1.eq_dec l' (typeof (CON (Qvar q)) qubit) = 1.
 Proof.
 intros a a' l l' H. induction H;intros;auto.
-inversion H. inversion H3. inversion H4. subst. 
-rewrite count_occ_cons_eq;auto. 
-rewrite count_occ_not_In with(eq_dec:=ProgLemmas1.eq_dec) in H2. 
+inversion H. inversion H3. inversion H4. subst.
+rewrite count_occ_cons_eq;auto.
+rewrite count_occ_not_In with(eq_dec:=ProgLemmas1.eq_dec) in H2.
 subst.  auto. assert(H4':=H4).
 apply IHcommon_ll in H4;auto. inversion H4.
 split;auto. rewrite count_occ_cons_neq ;auto.
-contradict H2. inversion H2. subst. auto. 
-inversion H4. inversion H5. subst. 
-rewrite count_occ_cons_eq;auto. 
-rewrite count_occ_not_In with(eq_dec:=ProgLemmas1.eq_dec) in H3. 
+contradict H2. inversion H2. subst. auto.
+inversion H4. inversion H5. subst.
+rewrite count_occ_cons_eq;auto.
+rewrite count_occ_not_In with(eq_dec:=ProgLemmas1.eq_dec) in H3.
 subst.  auto. assert(H5':=H5).
 apply IHcommon_ll in H5;auto. inversion H5.
 split;auto. rewrite count_occ_cons_neq ;auto.
-contradict H3. inversion H3. subst. auto. 
+contradict H3. inversion H3. subst. auto.
 inversion H1. inversion H2. subst. contradict H0.
 exists q. auto.  apply IHcommon_ll in H2;auto.
 inversion H2. split;auto. rewrite count_occ_cons_neq ;auto.
@@ -1091,41 +1091,41 @@ contradict H0. inversion H0. subst. exists q. auto.
 Qed.
 
 Theorem in_common_r_T: forall a a'  T l l',
-common_ll a a' l l' -> forall q, 
+common_ll a a' l l' -> forall q,
 In (typeof (CON (Qvar q)) T) l'
--> T = qubit. 
+-> T = qubit.
 Proof.
 intros a a' T l l' H. induction H;intros;auto.
 inversion H. apply IHcommon_ll with (q:=q0);auto.
-inversion H3. inversion H4. subst. auto. 
+inversion H3. inversion H4. subst. auto.
 apply IHcommon_ll in H4;auto. inversion H4.
 inversion H5. subst. auto.
-apply IHcommon_ll in H5;auto. 
+apply IHcommon_ll in H5;auto.
 inversion H1. inversion H2. subst. contradict H0.
 exists q. auto.  apply IHcommon_ll in H2;auto.
 Qed.
 
 
 Theorem in_common_r2: forall a a' l l',
-common_ll a a' l l' -> forall q T, 
+common_ll a a' l l' -> forall q T,
 In (typeof (CON (Qvar q)) T) l' -> T = qubit/\
 count_occ ProgLemmas1.eq_dec l' (typeof (CON (Qvar q)) T) = 1.
 Proof.
 intros a a' l l' H. induction H;intros;auto.
-inversion H. inversion H3. inversion H4. subst. 
-rewrite count_occ_cons_eq;auto. 
-rewrite count_occ_not_In with(eq_dec:=ProgLemmas1.eq_dec) in H2. 
+inversion H. inversion H3. inversion H4. subst.
+rewrite count_occ_cons_eq;auto.
+rewrite count_occ_not_In with(eq_dec:=ProgLemmas1.eq_dec) in H2.
 subst.  auto. assert(H4':=H4).
 apply IHcommon_ll in H4;auto. inversion H4.
 split;auto. rewrite count_occ_cons_neq ;auto.
-contradict H2. inversion H2. subst. auto. 
-inversion H4. inversion H5. subst. 
-rewrite count_occ_cons_eq;auto. 
-rewrite count_occ_not_In with(eq_dec:=ProgLemmas1.eq_dec) in H3. 
+contradict H2. inversion H2. subst. auto.
+inversion H4. inversion H5. subst.
+rewrite count_occ_cons_eq;auto.
+rewrite count_occ_not_In with(eq_dec:=ProgLemmas1.eq_dec) in H3.
 subst.  auto. assert(H5':=H5).
 apply IHcommon_ll in H5;auto. inversion H5.
 split;auto. rewrite count_occ_cons_neq ;auto.
-contradict H3. inversion H3. subst. auto. 
+contradict H3. inversion H3. subst. auto.
 inversion H1. inversion H2. subst. contradict H0.
 exists q. auto.  apply IHcommon_ll in H2;auto.
 inversion H2. split;auto. rewrite count_occ_cons_neq ;auto.
@@ -1133,26 +1133,26 @@ contradict H0. inversion H0. subst. exists q. auto.
 Qed.
 
 Theorem in_common_l: forall a a' l l',
-common_ll a a' l l' -> forall q, 
+common_ll a a' l l' -> forall q,
 In (typeof (CON (Qvar q)) qubit) l
--> In (CON (Qvar q))  (FQ a) /\ 
+-> In (CON (Qvar q))  (FQ a) /\
 count_occ ProgLemmas1.eq_dec l (typeof (CON (Qvar q)) qubit) = 1.
 Proof.
 intros a a' l l' H. induction H;intros;auto.
-inversion H. inversion H3. inversion H4. subst. 
-rewrite count_occ_cons_eq;auto. 
-rewrite count_occ_not_In with(eq_dec:=ProgLemmas1.eq_dec) in H2. 
+inversion H. inversion H3. inversion H4. subst.
+rewrite count_occ_cons_eq;auto.
+rewrite count_occ_not_In with(eq_dec:=ProgLemmas1.eq_dec) in H2.
 subst.  auto. assert(H4':=H4).
 apply IHcommon_ll in H4;auto. inversion H4.
 split;auto. rewrite count_occ_cons_neq ;auto.
-contradict H2. inversion H2. subst. auto. 
-inversion H4. inversion H5. subst. 
-rewrite count_occ_cons_eq;auto. 
-rewrite count_occ_not_In with(eq_dec:=ProgLemmas1.eq_dec) in H2. 
+contradict H2. inversion H2. subst. auto.
+inversion H4. inversion H5. subst.
+rewrite count_occ_cons_eq;auto.
+rewrite count_occ_not_In with(eq_dec:=ProgLemmas1.eq_dec) in H2.
 subst.  auto. assert(H5':=H5).
 apply IHcommon_ll in H5;auto. inversion H5.
 split;auto. rewrite count_occ_cons_neq ;auto.
-contradict H2. inversion H2. subst. auto. 
+contradict H2. inversion H2. subst. auto.
 inversion H1. inversion H2. subst. contradict H0.
 exists q. auto.  apply IHcommon_ll in H2;auto.
 inversion H2. split;auto. rewrite count_occ_cons_neq ;auto.
@@ -1161,43 +1161,43 @@ Qed.
 
 
 Theorem in_common_l_T: forall a a'  T l l',
-common_ll a a' l l' -> forall q, 
+common_ll a a' l l' -> forall q,
 In (typeof (CON (Qvar q)) T) l
--> T = qubit. 
+-> T = qubit.
 Proof.
 intros a a' T l l' H. induction H;intros;auto.
-inversion H. 
-inversion H3. inversion H4. subst. auto. 
-apply IHcommon_ll in H4;auto. 
+inversion H.
+inversion H3. inversion H4. subst. auto.
+apply IHcommon_ll in H4;auto.
 apply IHcommon_ll with (q:=q0);auto.
 inversion H4.
 inversion H5. subst. auto.
-apply IHcommon_ll in H5;auto. 
+apply IHcommon_ll in H5;auto.
 inversion H1. inversion H2. subst. contradict H0.
 exists q. auto.  apply IHcommon_ll in H2;auto.
 Qed.
 
 Theorem in_common_l2: forall a a' l l',
-common_ll a a' l l' -> forall q T, 
+common_ll a a' l l' -> forall q T,
 In (typeof (CON (Qvar q)) T) l
--> T=qubit /\ 
+-> T=qubit /\
 count_occ ProgLemmas1.eq_dec l (typeof (CON (Qvar q)) T) = 1.
 Proof.
 intros a a' l l' H. induction H;intros;auto.
-inversion H. inversion H3. inversion H4. subst. 
-rewrite count_occ_cons_eq;auto. 
-rewrite count_occ_not_In with(eq_dec:=ProgLemmas1.eq_dec) in H2. 
+inversion H. inversion H3. inversion H4. subst.
+rewrite count_occ_cons_eq;auto.
+rewrite count_occ_not_In with(eq_dec:=ProgLemmas1.eq_dec) in H2.
 subst.  auto. assert(H4':=H4).
 apply IHcommon_ll in H4;auto. inversion H4.
 split;auto. rewrite count_occ_cons_neq ;auto.
-contradict H2. inversion H2. subst. auto. 
-inversion H4. inversion H5. subst. 
-rewrite count_occ_cons_eq;auto. 
-rewrite count_occ_not_In with(eq_dec:=ProgLemmas1.eq_dec) in H2. 
+contradict H2. inversion H2. subst. auto.
+inversion H4. inversion H5. subst.
+rewrite count_occ_cons_eq;auto.
+rewrite count_occ_not_In with(eq_dec:=ProgLemmas1.eq_dec) in H2.
 subst.  auto. assert(H5':=H5).
 apply IHcommon_ll in H5;auto. inversion H5.
 split;auto. rewrite count_occ_cons_neq ;auto.
-contradict H2. inversion H2. subst. auto. 
+contradict H2. inversion H2. subst. auto.
 inversion H1. inversion H2. subst. contradict H0.
 exists q. auto.  apply IHcommon_ll in H2;auto.
 inversion H2. split;auto. rewrite count_occ_cons_neq ;auto.
@@ -1221,18 +1221,18 @@ common_ll a a' l l' -> (forall q, In q (FQ a) <-> In q (FQ a'))
 Proof.
 intros a a' ll ll' H. induction H;intros;auto.
 rewrite H3 in H. contradict H0. auto.
-rewrite <- H3 in H. contradict H0. auto. 
+rewrite <- H3 in H. contradict H0. auto.
 apply IHcommon_ll in H4. subst. auto.
 apply IHcommon_ll in H1. subst. auto.
 Qed.
 
 Theorem split_common_l: forall a a' ll1 ll2,
 common_ll a a' ll1 ll2 ->
-forall l1 l2, 
-LSL.split ll1 l1 l2 -> 
+forall l1 l2,
+LSL.split ll1 l1 l2 ->
 (forall q, In (typeof (CON (Qvar q)) qubit) l1 -> In (CON (Qvar q)) (FQ a)
 /\ In (CON (Qvar q)) (FQ a')) -> exists l2', LSL.split ll2 l1 l2'
-/\ common_ll a a' l2 l2'. 
+/\ common_ll a a' l2 l2'.
 Proof.
 intros a a' ll ll' H. induction H;intros.
 apply split_nil in H.  inversion H. subst. exists [].
@@ -1242,7 +1242,7 @@ assert(In (typeof (CON (Qvar x)) qubit) (typeof (CON (Qvar x)) qubit :: l3));
 try apply in_eq. apply H4 in H5. inversion H5. contradict H0. auto.
 assert(H9':=H9).  apply IHcommon_ll in H9. inversion H9.
 inversion H10. exists x. split;auto.
-apply com_l;auto. 
+apply com_l;auto.
 apply not_in_split with (a:= typeof q qubit) in H9';auto.
 inversion H9'. auto. auto.
 
@@ -1251,40 +1251,40 @@ inversion H5. exists (typeof q qubit :: x). split;auto.
 apply com_r;auto. apply not_in_split with (a:=(typeof q qubit) )in H6;auto.
 inversion H6. auto.
 inversion H4. apply  IHcommon_ll in H10.
-inversion H10. inversion H11. 
+inversion H10. inversion H11.
 exists x; split;auto. intros. apply H5. subst. apply in_cons. auto.
-assert(H10':=H10). apply  IHcommon_ll in H10. 
-inversion H10. inversion H11. 
+assert(H10':=H10). apply  IHcommon_ll in H10.
+inversion H10. inversion H11.
 exists (typeof q qubit::x); split;auto.
 apply com_lr;auto.
 apply not_in_split with (a:= typeof q qubit) in H10';auto.
-inversion H10'. auto. 
+inversion H10'. auto.
 apply not_in_split with (a:= typeof q qubit) in H12;auto.
-inversion H12. auto.  auto. 
+inversion H12. auto.  auto.
 
-inversion H1. apply  IHcommon_ll in H7;auto. 
-inversion H7. inversion H8. 
+inversion H1. apply  IHcommon_ll in H7;auto.
+inversion H7. inversion H8.
 exists x; split;auto.
 intros. apply H2. subst. apply in_cons;auto.
-apply  IHcommon_ll in H7;auto. 
-inversion H7. inversion H8. 
+apply  IHcommon_ll in H7;auto.
+inversion H7. inversion H8.
 exists (typeof e A ::x); split;auto.
 Qed.
 
 Theorem split_common_r: forall a a' ll1 ll2,
 common_ll a a' ll1 ll2 ->
-forall l1 l2, 
-LSL.split ll1 l1 l2 -> 
+forall l1 l2,
+LSL.split ll1 l1 l2 ->
 (forall q, In (typeof (CON (Qvar q)) qubit) l2 -> In (CON (Qvar q)) (FQ a)
 /\ In (CON (Qvar q)) (FQ a')) -> exists l1', LSL.split ll2 l1' l2
-/\ common_ll a a' l1 l1'. 
+/\ common_ll a a' l1 l1'.
 Proof.
 intros a a' ll ll' H. induction H;intros.
 apply split_nil in H.  inversion H. subst. exists [].
 split;auto. inversion H3. subst.
 assert(H9':=H9).  apply IHcommon_ll in H9. inversion H9.
 inversion H5. exists x. split;auto.
-apply com_l;auto. 
+apply com_l;auto.
 apply not_in_split with (a:= typeof q qubit) in H9';auto.
 inversion H9'. auto. auto.
 assert (H':=H). apply fq_all_qvar in H'. inversion H'. subst.
@@ -1295,34 +1295,34 @@ apply IHcommon_ll in H3;auto. inversion H3.
 inversion H5. exists (typeof q qubit :: x). split;auto.
 apply com_r;auto. apply not_in_split with (a:=(typeof q qubit) )in H6;auto.
 inversion H6. auto.
-inversion H4.  assert(H10':=H10). 
-apply  IHcommon_ll in H10. 
-inversion H10. inversion H11. 
+inversion H4.  assert(H10':=H10).
+apply  IHcommon_ll in H10.
+inversion H10. inversion H11.
 exists (typeof q qubit::x); split;auto.
 apply com_lr;auto.
 apply not_in_split with (a:= typeof q qubit) in H10';auto.
-inversion H10'. auto. 
+inversion H10'. auto.
 apply not_in_split with (a:= typeof q qubit) in H12;auto.
-inversion H12. auto.  auto. 
+inversion H12. auto.  auto.
 apply  IHcommon_ll in H10.
-inversion H10. inversion H11. 
+inversion H10. inversion H11.
 exists x; split;auto. intros. apply H5. subst. apply in_cons. auto.
 
-inversion H1. 
-apply  IHcommon_ll in H7;auto. 
-inversion H7. inversion H8. 
+inversion H1.
+apply  IHcommon_ll in H7;auto.
+inversion H7. inversion H8.
 exists (typeof e A ::x); split;auto.
-apply  IHcommon_ll in H7;auto. 
-inversion H7. inversion H8. 
+apply  IHcommon_ll in H7;auto.
+inversion H7. inversion H8.
 exists x; split;auto.
 intros. apply H2. subst. apply in_cons;auto.
 Qed.
 
 Theorem sub_a_comm: forall a a' ll ll',
 common_ll a a' ll ll' ->
-forall a1 , (forall q, In  (typeof (CON (Qvar q)) qubit) ll -> 
-In (CON (Qvar q))  (FQ a1)) -> 
-(forall q, ~ (In q (FQ a)) -> ~ (In q (FQ a1))) -> 
+forall a1 , (forall q, In  (typeof (CON (Qvar q)) qubit) ll ->
+In (CON (Qvar q))  (FQ a1)) ->
+(forall q, ~ (In q (FQ a)) -> ~ (In q (FQ a1))) ->
 common_ll a1 a' ll ll'.
 Proof.
 intros a a' ll ll' H. induction H;intros;auto.
@@ -1333,16 +1333,16 @@ auto.
 
 assert (H':=H). apply fq_all_qvar in H'. inversion H'. subst.
 apply com_lr;auto. apply H4;auto. apply in_eq.
-apply IHcommon_ll;auto. intros. apply H4. apply in_cons;auto. 
+apply IHcommon_ll;auto. intros. apply H4. apply in_cons;auto.
 
 apply common_g;auto. apply IHcommon_ll;auto. intros. apply H1,in_cons;auto.
 Qed.
 
 Theorem sub_a'_comml: forall a a' ll ll',
 common_ll a a' ll ll' ->
-forall a'1 , (forall q, In  (typeof (CON (Qvar q)) qubit) ll' -> 
-In (CON (Qvar q))  (FQ a'1)) -> 
-(forall q, ~ (In q (FQ a')) -> ~ (In q (FQ a'1))) -> 
+forall a'1 , (forall q, In  (typeof (CON (Qvar q)) qubit) ll' ->
+In (CON (Qvar q))  (FQ a'1)) ->
+(forall q, ~ (In q (FQ a')) -> ~ (In q (FQ a'1))) ->
 common_ll a a'1 ll ll'.
 Proof.
 intros a a' ll ll' H. induction H;intros;auto.
@@ -1353,24 +1353,24 @@ auto.
 
 assert (H':=H). apply fq_all_qvar in H'. inversion H'. subst.
 apply com_lr;auto. apply H4;auto. apply in_eq.
-apply IHcommon_ll;auto. intros. apply H4. apply in_cons;auto. 
+apply IHcommon_ll;auto. intros. apply H4. apply in_cons;auto.
 
 apply common_g;auto. apply IHcommon_ll;auto. intros. apply H1,in_cons;auto.
 Qed.
 
 Theorem app_common_ll_l: forall l l' a a' q,
-common_ll a a'  l  l' ->  ~(In (typeof (CON (Qvar q)) qubit) l) -> 
-(In (CON (Qvar q)) (FQ a))  -> ~(In (CON (Qvar q)) (FQ a'))  -> 
+common_ll a a'  l  l' ->  ~(In (typeof (CON (Qvar q)) qubit) l) ->
+(In (CON (Qvar q)) (FQ a))  -> ~(In (CON (Qvar q)) (FQ a'))  ->
 common_ll a a'  (l++[typeof (CON (Qvar q)) qubit])  l'.
 Proof.
-intros.  induction H. simpl.  apply com_l;auto. 
+intros.  induction H. simpl.  apply com_l;auto.
 rewrite <- app_comm_cons.
 eapply com_l;auto. apply IHcommon_ll;auto.
 contradict H0. apply in_cons. auto.
 contradict H0. rewrite in_app_iff  in H0.
 destruct H0. apply in_cons. contradict H5. auto.
 inversion H0. inversion H6. subst. apply in_eq.
-inversion H6. 
+inversion H6.
 
 apply com_r;auto. rewrite <- app_comm_cons.
 apply com_lr;auto. apply IHcommon_ll;auto.
@@ -1378,7 +1378,7 @@ contradict H0. apply in_cons. auto.
 contradict H0. rewrite in_app_iff  in H0.
 destruct H0. apply in_cons. contradict H5. auto.
 inversion H0. inversion H7. subst. apply in_eq.
-inversion H7. 
+inversion H7.
 
 rewrite <- app_comm_cons.
 apply common_g;auto. apply IHcommon_ll;auto.
@@ -1386,11 +1386,11 @@ contradict H0. apply in_cons. auto.
 Qed.
 
 Theorem app_common_ll_r: forall l l' a a' q,
-common_ll a a'  l  l' ->  ~(In (typeof (CON (Qvar q)) qubit) l') -> 
-(In (CON (Qvar q)) (FQ a'))  -> ~(In (CON (Qvar q)) (FQ a))  -> 
+common_ll a a'  l  l' ->  ~(In (typeof (CON (Qvar q)) qubit) l') ->
+(In (CON (Qvar q)) (FQ a'))  -> ~(In (CON (Qvar q)) (FQ a))  ->
 common_ll a a'  (l)  (l'++[typeof (CON (Qvar q)) qubit]).
 Proof.
-intros.  induction H. simpl.  apply com_r;auto. 
+intros.  induction H. simpl.  apply com_r;auto.
 apply com_l;auto.
 rewrite <- app_comm_cons.
 eapply com_r;auto. apply IHcommon_ll;auto.
@@ -1398,7 +1398,7 @@ contradict H0. apply in_cons. auto.
 contradict H0. rewrite in_app_iff  in H0.
 destruct H0. apply in_cons. contradict H5. auto.
 inversion H0. inversion H6. subst. apply in_eq.
-inversion H6. 
+inversion H6.
 
 rewrite <- app_comm_cons.
 apply com_lr;auto. apply IHcommon_ll;auto.
@@ -1406,7 +1406,7 @@ contradict H0. apply in_cons. auto.
 contradict H0. rewrite in_app_iff  in H0.
 destruct H0.  contradict H6. auto.
 inversion H0. inversion H7. subst. apply in_eq.
-inversion H7. 
+inversion H7.
 
 rewrite <- app_comm_cons.
 apply common_g;auto. apply IHcommon_ll;auto.
@@ -1415,19 +1415,19 @@ Qed.
 
 
 Theorem app_common_ll_lr: forall l l' a a' q,
-common_ll a a'  l  l' ->  ~(In (typeof (CON (Qvar q)) qubit) l') -> 
+common_ll a a'  l  l' ->  ~(In (typeof (CON (Qvar q)) qubit) l') ->
 ~(In (typeof (CON (Qvar q)) qubit) l) ->
-(In (CON (Qvar q)) (FQ a'))  -> (In (CON (Qvar q)) (FQ a))  -> 
+(In (CON (Qvar q)) (FQ a'))  -> (In (CON (Qvar q)) (FQ a))  ->
 common_ll a a'  (l++[typeof (CON (Qvar q)) qubit])  (l'++[typeof (CON (Qvar q)) qubit]).
 Proof.
-intros.  induction H. simpl.  apply com_lr;auto. 
+intros.  induction H. simpl.  apply com_lr;auto.
 rewrite <- app_comm_cons.
 eapply com_l;auto. apply IHcommon_ll;auto.
 contradict H1. apply in_cons. auto.
 contradict H1. rewrite in_app_iff  in H1.
 destruct H1.  contradict H6. auto.
 inversion H1. inversion H7. subst. apply in_eq.
-inversion H7. 
+inversion H7.
 
 rewrite <- app_comm_cons.
 apply com_r;auto. apply IHcommon_ll;auto.
@@ -1435,20 +1435,20 @@ contradict H0. apply in_cons. auto.
 contradict H0. rewrite in_app_iff  in H0.
 destruct H0.  contradict H6. auto.
 inversion H0. inversion H7. subst. apply in_eq.
-inversion H7. 
+inversion H7.
 
 repeat rewrite <- app_comm_cons. apply com_lr;auto.
 apply IHcommon_ll;auto.
 contradict H0. apply in_cons. auto.
-contradict H1.  apply in_cons. auto. 
+contradict H1.  apply in_cons. auto.
 contradict H1.  rewrite in_app_iff  in H1.
 destruct H1.  contradict H6. auto.
 inversion H1. inversion H8. subst. apply in_eq.
-inversion H8. 
+inversion H8.
 contradict H0. rewrite in_app_iff  in H0.
 destruct H0.  contradict H7. auto.
 inversion H0. inversion H8. subst. apply in_eq.
-inversion H8. 
+inversion H8.
 
 rewrite <- app_comm_cons.
 apply common_g;auto. apply IHcommon_ll;auto.
@@ -1460,25 +1460,25 @@ Qed.
 
 
 Theorem app_common_ll_g: forall l l' a a' e A,
-common_ll a a'  l  l' ->  ~(exists i, e =  CON (Qvar i)) -> 
+common_ll a a'  l  l' ->  ~(exists i, e =  CON (Qvar i)) ->
 common_ll a a'  (l++[typeof e A])  (l'++[typeof e A]).
 Proof.
-intros.  induction H. simpl.  apply common_g;auto. 
+intros.  induction H. simpl.  apply common_g;auto.
 rewrite <- app_comm_cons.
 apply com_l;auto. contradict H3.
 rewrite in_app_iff  in H3.
 destruct H3.  auto.
 inversion H3. inversion H4. subst.
-apply fq_all_qvar in H. inversion H. subst. 
+apply fq_all_qvar in H. inversion H. subst.
 contradict H0. exists x. auto.
-inversion H4. 
+inversion H4.
 
 rewrite <- app_comm_cons.
 apply com_r;auto. contradict H3.
 rewrite in_app_iff  in H3.
 destruct H3.  auto.
 inversion H3. inversion H4. subst.
-apply fq_all_qvar in H. inversion H. subst. 
+apply fq_all_qvar in H. inversion H. subst.
 contradict H0. exists x. auto.
 inversion H4.
 
@@ -1487,14 +1487,14 @@ apply com_lr;auto. contradict H3.
 repeat rewrite in_app_iff  in H3.
 destruct H3.  auto.
 inversion H3. inversion H5. subst.
-apply fq_all_qvar in H. inversion H. subst. 
+apply fq_all_qvar in H. inversion H. subst.
 contradict H0. exists x. auto.
 inversion H5.
 contradict H4.
 repeat rewrite in_app_iff  in H4.
 destruct H4.  auto.
 inversion H4. inversion H5. subst.
-apply fq_all_qvar in H. inversion H. subst. 
+apply fq_all_qvar in H. inversion H. subst.
 contradict H0. exists x. auto.
 inversion H5.
 
@@ -1507,35 +1507,35 @@ common_ll a a'  l  l' -> common_ll a a'  (rev l)  (rev l').
 Proof.
 intros. induction H. simpl. auto.
 simpl. assert(h:=H). apply fq_all_qvar in h.
-inversion h. subst.  apply app_common_ll_l;auto. 
+inversion h. subst.  apply app_common_ll_l;auto.
 rewrite <- in_rev. auto.
 
 assert(h:=H). apply fq_all_qvar in h.
-inversion h. subst.  apply app_common_ll_r;auto. 
+inversion h. subst.  apply app_common_ll_r;auto.
 rewrite <- in_rev. auto.
 
 assert(h:=H). apply fq_all_qvar in h.
-inversion h. subst.  apply app_common_ll_lr;auto. 
+inversion h. subst.  apply app_common_ll_lr;auto.
 repeat rewrite <- in_rev. auto.
 rewrite <- in_rev. auto.
 
 apply app_common_ll_g;auto.
-Qed. 
+Qed.
 
 Theorem common_same: forall a a' l,
 (forall q, In   q l  -> In  q (FQ a) )
--> 
+->
 (forall q, In   q l -> In q(FQ a') )
--> NoDup l -> 
+-> NoDup l ->
 common_ll a a'  (toqlist l) (toqlist l).
 Proof.
 intros. functional induction toqlist l;auto;[
 assert((forall q : qexp, In  q t-> In q (FQ a) ));[
 intros;
-apply H,in_cons; auto|..];[ 
+apply H,in_cons; auto|..];[
 assert((forall q : qexp, In  q t-> In q (FQ a') ));
 intros;
-try apply H0,in_cons; auto|..]; inversion H1; auto..]. 
+try apply H0,in_cons; auto|..]; inversion H1; auto..].
 apply com_lr;auto;[| | contradict H6; apply intoqlist_infq in H6;
 inversion H6; inversion H8; inversion H9;auto..].
 apply H,in_eq.
@@ -1544,20 +1544,20 @@ Qed.
 
 
 Theorem common_app: forall a a'  l1 l2,
-common_ll a a' l1 l2 ->  
-(forall q, In   (typeof (CON (Qvar q)) qubit) l1  -> 
+common_ll a a' l1 l2 ->
+(forall q, In   (typeof (CON (Qvar q)) qubit) l1  ->
 In  (CON (Qvar q)) (FQ a) /\ ~ (In  (CON (Qvar q)) (FQ a')))
--> 
+->
 (forall q, In   (typeof (CON (Qvar q)) qubit) l2 ->
- In  (CON (Qvar q)) (FQ a') /\ ~ (In  (CON (Qvar q)) (FQ a) )) -> 
-forall l, common_ll a a' l l -> 
+ In  (CON (Qvar q)) (FQ a') /\ ~ (In  (CON (Qvar q)) (FQ a) )) ->
+forall l, common_ll a a' l l ->
 common_ll a a' (l1++l) (l2++l).
 Proof.
 intros a a' l1 l2 H h1 h2. induction H.
 intros. rewrite app_nil_l. auto.
 intros. rewrite <- app_comm_cons.
 apply com_l;auto. apply IHcommon_ll;auto.
-intros. apply h1,in_cons. auto. contradict H1. 
+intros. apply h1,in_cons. auto. contradict H1.
 apply in_app_or in H1. destruct H1.
 contradict H2. auto.
 assert(h3:=H3).
@@ -1567,7 +1567,7 @@ apply in_common_l with (q:=x) in h3 ;auto.
 inversion H3. inversion h3. contradict H0. auto.
 intros. rewrite <- app_comm_cons.
 apply com_r;auto. apply IHcommon_ll;auto.
-intros. apply h2,in_cons. auto. contradict H2. 
+intros. apply h2,in_cons. auto. contradict H2.
 apply in_app_or in H2. destruct H2.
 auto.
 assert(h3:=H3).
@@ -1579,25 +1579,25 @@ intros. repeat rewrite <- app_comm_cons.
 apply com_lr;auto. apply IHcommon_ll;auto.
 intros. apply h1,in_cons. auto.
 intros. apply h2,in_cons. auto.
-contradict H2. 
+contradict H2.
 apply in_app_or in H2. destruct H2.
 auto.
 assert(h4:=H4).
 apply fq_all_qvar in H. inversion H. subst.
 apply in_common_r with (q:=x) in H4;auto.
-inversion H4. 
+inversion H4.
 assert(In (typeof (CON (Qvar x)) qubit) (typeof (CON (Qvar x)) qubit :: ll1))
-;try apply in_eq. apply h1 in H7. inversion H7.  contradict H9. auto. 
-contradict H3. 
+;try apply in_eq. apply h1 in H7. inversion H7.  contradict H9. auto.
+contradict H3.
 apply in_app_or in H3. destruct H3.
 auto.
 apply fq_all_qvar in H. inversion H. subst.
 apply in_common_r with (q:=x) in H4;auto.
-inversion H4. 
+inversion H4.
 assert(In (typeof (CON (Qvar x)) qubit) (typeof (CON (Qvar x)) qubit :: ll1))
 ;try apply in_eq. apply h1 in H7. inversion H7.  contradict H9. auto.
 
-intros.  
+intros.
 repeat rewrite <- app_comm_cons.
 apply common_g;auto. apply IHcommon_ll;auto.
 intros. apply h1,in_cons. auto.
@@ -1608,12 +1608,12 @@ Qed.
 Theorem common_com: forall a a'  l,
 (forall b, In  b  l -> exists q, b = (typeof (CON (Qvar q)) qubit) /\
 In  (CON (Qvar q)) (FQ a) /\ (In  (CON (Qvar q)) (FQ a')))
--> NoDup l 
+-> NoDup l
 ->  common_ll a a' l l.
 Proof.
 intros. induction l. auto. assert(In a0 (a0::l));try apply in_eq.
 apply H in H1. inversion H1. destruct_conj.
-subst. apply  com_lr;auto. apply IHl; auto. intros. 
+subst. apply  com_lr;auto. apply IHl; auto. intros.
 assert(In b (typeof (CON (Qvar x)) qubit::l)); try apply in_cons;auto.
 inversion H0. auto. inversion H0.
 auto. inversion H0.
@@ -1621,7 +1621,7 @@ auto.
 Qed.
 
 Theorem common_fq_inter: forall a a' ,
-common_ll a a' (toqlist (set_inter eq_dec (FQ a) (FQ a'))) 
+common_ll a a' (toqlist (set_inter eq_dec (FQ a) (FQ a')))
 (toqlist (set_inter eq_dec (FQ a) (FQ a'))).
 Proof.
 intros. apply common_com.
@@ -1635,7 +1635,7 @@ Qed.
 Theorem common_diff: forall a a'  l1 l2,
 (forall b, In  b  l1 -> exists q, b = (typeof (CON (Qvar q)) qubit) /\
 In  (CON (Qvar q)) (FQ a) /\ ~(In  (CON (Qvar q)) (FQ a')))
--> NoDup l1 
+-> NoDup l1
 -> (forall b, In  b  l2 -> exists q, b = (typeof (CON (Qvar q)) qubit) /\
 ~(In  (CON (Qvar q)) (FQ a)) /\ (In  (CON (Qvar q)) (FQ a')))
 -> NoDup l2 ->
@@ -1646,7 +1646,7 @@ assert(In a0 (a0::l2));try apply in_eq.
 apply H1 in H3. inversion H3. destruct_conj.
 subst. apply com_r;auto. apply IHl2;auto. intros.
 assert(In b (typeof (CON (Qvar x)) qubit::l2)); try apply in_cons;auto.
-inversion H2. auto. inversion H2. auto. 
+inversion H2. auto. inversion H2. auto.
 assert(In a0 (a0::l1));try apply in_eq.
 apply H in H3. inversion H3. destruct_conj.
 subst. apply com_l;auto. apply IHl1;auto. intros.
@@ -1655,7 +1655,7 @@ inversion H0. auto. inversion H0. auto.
 Qed.
 
 Theorem common_fq_diff: forall a a' ,
-common_ll a a' (toqlist (set_diff eq_dec (FQ a) (FQ a'))) 
+common_ll a a' (toqlist (set_diff eq_dec (FQ a) (FQ a')))
 (toqlist (set_diff eq_dec (FQ a') (FQ a))).
 Proof.
 intros. apply common_diff.
@@ -1671,39 +1671,39 @@ Qed.
 
 
 Theorem fq_common_ll: forall a a',
-exists l l',  
-(forall q, count_occ ProtoQuipperSyntax.eq_dec l q = 
+exists l l',
+(forall q, count_occ ProtoQuipperSyntax.eq_dec l q =
 count_occ  ProtoQuipperSyntax.eq_dec (FQ a) q)
-/\ 
-(forall q, count_occ ProtoQuipperSyntax.eq_dec l' q = 
+/\
+(forall q, count_occ ProtoQuipperSyntax.eq_dec l' q =
 count_occ  ProtoQuipperSyntax.eq_dec (FQ a') q)
-/\ 
+/\
 common_ll a a' (toqlist l) (toqlist l').
 Proof.
 intros.
 exists ((set_diff eq_dec (FQ a) (FQ a'))++(set_inter eq_dec (FQ a) (FQ a'))).
 exists ((set_diff eq_dec (FQ a') (FQ a))++(set_inter eq_dec (FQ a) (FQ a'))).
 intros. repeat rewrite toqlist_app.
-split. 
-intros. 
+split.
+intros.
 rewrite count_app with (l1:=set_diff eq_dec (FQ a) (FQ a'))
 (l2:=set_inter eq_dec (FQ a) (FQ a'));auto.
 destruct (in_dec eq_dec q (FQ a) ).
-assert (H:=fq_nodup a). rewrite NoDup_count_occ' 
+assert (H:=fq_nodup a). rewrite NoDup_count_occ'
 with (decA:=eq_dec)in H.
 assert (h1:=i). apply H in i. rewrite i.
 destruct (in_dec eq_dec q (set_diff eq_dec (FQ a) (FQ a')) ).
 assert (NoDup (set_diff eq_dec (FQ a) (FQ a'))).
 apply set_diff_nodup;apply fq_nodup.
-  rewrite NoDup_count_occ' 
+  rewrite NoDup_count_occ'
 with (decA:=eq_dec)in H0.
 assert (h2:=i0). apply H0 in i0.
  rewrite i0.
 assert (~ (In q (set_inter eq_dec (FQ a) (FQ a')))).
 rewrite set_diff_iff in h2. destruct h2.
-rewrite set_inter_iff. 
+rewrite set_inter_iff.
 apply  or_not_and. right. auto.
-rewrite count_occ_not_In with (eq_dec:=eq_dec) in H1. omega.
+rewrite count_occ_not_In with (eq_dec:=eq_dec) in H1. lia.
 assert(h2:=n). rewrite set_diff_iff in n.
 apply not_and_or in n. destruct n.
 contradict H0. auto. apply  not_not in H0.
@@ -1712,38 +1712,38 @@ rewrite set_inter_iff. split;auto.
 rewrite count_occ_not_In with (eq_dec:=eq_dec) in h2.
 assert (NoDup (set_inter eq_dec (FQ a) (FQ a'))).
 apply set_inter_nodup;apply fq_nodup.
-  rewrite NoDup_count_occ' 
+  rewrite NoDup_count_occ'
 with (decA:=eq_dec)in H2. apply H2 in H1.
- omega. unfold decidable.   destruct(in_dec  eq_dec q (FQ a')).
-left. auto. right. auto. assert(h:=n). 
+ lia. unfold decidable.   destruct(in_dec  eq_dec q (FQ a')).
+left. auto. right. auto. assert(h:=n).
 assert (~ (In q (set_inter eq_dec (FQ a) (FQ a')))).
-rewrite set_inter_iff. 
+rewrite set_inter_iff.
 apply  or_not_and. left. auto.
 assert (~ (In q (set_diff eq_dec (FQ a) (FQ a')))).
-rewrite set_diff_iff. 
+rewrite set_diff_iff.
 apply  or_not_and. left. auto.
 rewrite count_occ_not_In with (eq_dec:=eq_dec) in n,H,H0.
-omega.
+lia.
 split.
-intros. 
+intros.
 rewrite count_app with (l1:=set_diff eq_dec (FQ a') (FQ a))
 (l2:=set_inter eq_dec (FQ a) (FQ a'));auto.
 destruct (in_dec eq_dec q (FQ a') ).
-assert (H:=fq_nodup a'). rewrite NoDup_count_occ' 
+assert (H:=fq_nodup a'). rewrite NoDup_count_occ'
 with (decA:=eq_dec)in H.
 assert (h1:=i). apply H in i. rewrite i.
 destruct (in_dec eq_dec q (set_diff eq_dec (FQ a') (FQ a)) ).
 assert (NoDup (set_diff eq_dec (FQ a') (FQ a))).
 apply set_diff_nodup;apply fq_nodup.
-  rewrite NoDup_count_occ' 
+  rewrite NoDup_count_occ'
 with (decA:=eq_dec)in H0.
 assert (h2:=i0). apply H0 in i0.
  rewrite i0.
 assert (~ (In q (set_inter eq_dec (FQ a) (FQ a')))).
 rewrite set_diff_iff in h2. destruct h2.
-rewrite set_inter_iff. 
+rewrite set_inter_iff.
 apply  or_not_and. left. auto.
-rewrite count_occ_not_In with (eq_dec:=eq_dec) in H1. omega.
+rewrite count_occ_not_In with (eq_dec:=eq_dec) in H1. lia.
 assert(h2:=n). rewrite set_diff_iff in n.
 apply not_and_or in n. destruct n.
 contradict H0. auto. apply  not_not in H0.
@@ -1752,20 +1752,20 @@ rewrite set_inter_iff. split;auto.
 rewrite count_occ_not_In with (eq_dec:=eq_dec) in h2.
 assert (NoDup (set_inter eq_dec (FQ a) (FQ a'))).
 apply set_inter_nodup;apply fq_nodup.
-  rewrite NoDup_count_occ' 
+  rewrite NoDup_count_occ'
 with (decA:=eq_dec)in H2. apply H2 in H1.
- omega. unfold decidable.   destruct(in_dec  eq_dec q (FQ a)).
-left. auto. right. auto. assert(h:=n). 
+ lia. unfold decidable.   destruct(in_dec  eq_dec q (FQ a)).
+left. auto. right. auto. assert(h:=n).
 assert (~ (In q (set_inter eq_dec (FQ a) (FQ a')))).
-rewrite set_inter_iff. 
+rewrite set_inter_iff.
 apply  or_not_and. right. auto.
 assert (~ (In q (set_diff eq_dec (FQ a') (FQ a)))).
-rewrite set_diff_iff. 
+rewrite set_diff_iff.
 apply  or_not_and. left. auto.
 rewrite count_occ_not_In with (eq_dec:=eq_dec) in n,H,H0.
-omega.
+lia.
 
-apply common_app. apply common_fq_diff. 
+apply common_app. apply common_fq_diff.
 intros. apply intoqlist_infq in H. inversion H.
 inversion H0.   rewrite set_diff_iff in H2. inversion H2.
 inversion H1. subst.
@@ -1774,7 +1774,7 @@ intros. apply intoqlist_infq in H. inversion H.
 inversion H0.   rewrite set_diff_iff in H2. inversion H2.
 inversion H1. subst.
 split;auto.
-apply common_fq_inter. 
+apply common_fq_inter.
 
 Qed.
 
@@ -1794,9 +1794,9 @@ match e with
 |APP (CON qABS) (ABS e)    => (get_boxed e)
 |(APP (APP (APP (CON qIF) e1) e2) e3) => (get_boxed e1)++(get_boxed e2)++(get_boxed e3)
 |(APP (APP (CON sLET)  e1) e2) => (get_boxed e1)++(get_boxed e2)
-| (APP (CON qLET)  (APP (ABS e1) e2)) => 
+| (APP (CON qLET)  (APP (ABS e1) e2)) =>
   (get_boxed e1)++(get_boxed e2)
-|(APP (APP (APP (CON qCIRC) e1) (CON (Crcons i))) e2) => 
+|(APP (APP (APP (CON qCIRC) e1) (CON (Crcons i))) e2) =>
   (get_boxed e1)++(get_boxed e2)
 |_ => []
 (*match e with
@@ -1809,32 +1809,32 @@ end.
 
 (*Functional Scheme get_box_ind := Induction for get_boxed Sort Prop. *)
 
-Theorem value_bang_emptyll: forall j v, is_value v-> 
+Theorem value_bang_emptyll: forall j v, is_value v->
     forall IL LL A,
       Subtypecontext IL LL IL LL ->
-  
-     (forall V, In V (get_boxed v)  -> 
-            ~ (exists i, V = (Var i) \/ V = (CON (Qvar i))))(* ~In (is_qexp V) IL )*)-> 
+
+     (forall V, In V (get_boxed v)  ->
+            ~ (exists i, V = (Var i) \/ V = (CON (Qvar i))))(* ~In (is_qexp V) IL )*)->
       (forall t, In t IL -> (exists i, t = is_qexp (Var i) \/ t = is_qexp (CON (Qvar i)) \/
      exists T, t = typeof (Var i) T)) -> validT (bang A) ->
       seq_ j IL LL  (atom_ (typeof v (bang A))) -> LL=[].
 Proof.
 intros j. induction j.
-intros. inversion H4. omega. subst.
+intros. inversion H4. lia. subst.
 apply In_cntxt_ll' with (a:= v) (t:=bang A) in H0;try apply in_eq;auto.
 inversion H0.
 auto. intros. destruct H.
 
-inversion H4;auto. inversion H6. inversion H16; subst; 
+inversion H4;auto. inversion H6. inversion H16; subst;
 inversion H13. subst.
-inversion H10. auto. subst. 
+inversion H10. auto. subst.
 apply In_cntxt_ll'  with (a:=Var x) (t:=bang A) in H0;try apply in_eq.
 inversion H0.
 
 
-inversion H4;auto. inversion H6. inversion H16; subst; 
+inversion H4;auto. inversion H6. inversion H16; subst;
 inversion H13. subst.
-inversion H10. auto. subst. 
+inversion H10. auto. subst.
 apply In_cntxt_ll'  with (a:=CON (Qvar x)) (t:=bang A) in H0;try apply in_eq.
 inversion H0.
 
@@ -1905,35 +1905,35 @@ repeat (match goal with
 [H:_ \/ _ |- _] => destruct H;rexists;destruct_conj
 |_=>idtac end). subst. inversion H4.
 inversion H11. inversion H18. subst. apply split_ident in H13.
-subst. 
+subst.
 inversion H17;auto.
 apply subcntxt_splits with (ll1:=LL1) (ll2:=LL2) in H0;auto.
 inversion H0;auto.
-apply seq_mono_cor with (k:=j) in H16;try omega. 
-apply seq_mono_cor with (k:=j) in H19;try omega.
+apply seq_mono_cor with (k:=j) in H16;try lia.
+apply seq_mono_cor with (k:=j) in H19;try lia.
 apply IHj in H16;auto. apply IHj in H19;auto. subst.
 inversion H12. auto.
-intros. specialize H1 with V.  
+intros. specialize H1 with V.
 simpl in H1. rewrite in_app_iff in H1.
-intuition. 
-intros. specialize H1 with V.  
+intuition.
+intros. specialize H1 with V.
 simpl in H1. rewrite in_app_iff in H1.
-intuition. 
+intuition.
 auto.
 inversion H7.
 inversion H10. inversion H17. subst. apply split_ident in H12.
-subst. 
+subst.
 inversion H16;auto.
 apply subcntxt_splits with (ll1:=LL1) (ll2:=LL2) in H0;auto.
 inversion H0;auto.
-apply seq_mono_cor with (k:=j) in H18;try omega. 
-apply seq_mono_cor with (k:=j) in H19;try omega.
+apply seq_mono_cor with (k:=j) in H18;try lia.
+apply seq_mono_cor with (k:=j) in H19;try lia.
 apply IHj in H18;auto. apply IHj in H19;auto. subst.
 inversion H12. auto.
-intros. specialize H1 with V.  
+intros. specialize H1 with V.
 simpl in H1. rewrite in_app_iff in H1.
-intuition. 
-intros. specialize H1 with V.  
+intuition.
+intros. specialize H1 with V.
 simpl in H1. rewrite in_app_iff in H1.
 intuition.
 auto. auto.
@@ -1945,7 +1945,7 @@ inversion_clear H1 as [i0 e_dis]; destruct e_dis as [e_disl|e_disr]
 
 assert(h4:=H4).
 apply app_typed in H4.
-destruct H4. rexists. destruct_conj. 
+destruct H4. rexists. destruct_conj.
 inversion H8. clear H8. inversion H15. subst.
 apply split_ident in H10. subst.
 inversion H14;auto. apply UNBOX_LL in H13;auto.
@@ -2004,7 +2004,7 @@ apply subcntxt_splits with (ll1:=LL1) (ll2:=LL2) in H0;auto.
 inversion H0;auto. auto.
 
 
-rexists. destruct_conj. 
+rexists. destruct_conj.
 inversion H7. clear H7. inversion H14. subst.
 apply split_ident in H9. subst.
 inversion H13;auto. apply UNBOX_LL in H12;auto.
@@ -2016,7 +2016,7 @@ apply sub_bangarrow_inv in h4;auto.
 repeat (match goal with
 [H:_ \/ _ |- _] => destruct H;rexists
 |_=>idtac end); try  inversion H7; try inversion H6.
-subst. apply sub_Circ_inv in H15;auto. 
+subst. apply sub_Circ_inv in H15;auto.
 destruct H15; rexists; destruct_conj; subst;inversion H8;auto.
 apply subcntxt_splits with (ll1:=[]) (ll2:=LL2) in H0;auto.
 inversion H0;auto.
@@ -2080,18 +2080,18 @@ CON (Qvar x) => [CON  (Qvar x)]
 |APP (CON qABS) (ABS e)    => FQUC e
 |(APP (APP (APP (CON qIF) e1) e2) e3) => (FQUC e1) ++(FQUC e2)++(FQUC e3)
 |(APP (APP (CON sLET)  e1) e2) => (FQUC e1) ++(FQUC e2)
-| (APP (CON qLET)  (APP (ABS e1) e2)) => 
+| (APP (CON qLET)  (APP (ABS e1) e2)) =>
   (FQUC e1) ++(FQUC e2)
 |(APP (APP (APP (CON qCIRC) e1) (CON (Crcons i))) e2) => (FQUC e1) ++(FQUC e2)
 |_ => []
 end.
-Functional Scheme FQUC_ind := Induction for FQUC Sort Prop. 
+Functional Scheme FQUC_ind := Induction for FQUC Sort Prop.
 
 
 Theorem FQU_FQ: forall v q, In q (FQU v) <-> In q (FQ v).
 Proof.
-intros. 
-apply FQ_ind;intros;simpl;split;intros; 
+intros.
+apply FQ_ind;intros;simpl;split;intros;
 match goal  with
 |[H:False|-_] => contradiction
 |_=>idtac end;auto;
@@ -2118,7 +2118,7 @@ right. left. rewrite H1. auto.
 Qed.
 
 Theorem FQU_FQ_qlist: forall v,
-NoDup (FQU v) -> 
+NoDup (FQU v) ->
 (forall q, count_occ ProgLemmas1.eq_dec  (toqlist(FQ v)) q =
                   count_occ ProgLemmas1.eq_dec (toqlist(FQU v)) q).
 Proof.
@@ -2126,7 +2126,7 @@ intros. assert (H0:=fq_nodup v ).
 apply nodup_toqlist in H.
 apply nodup_toqlist in H0. assert (h:=H).
 rewrite NoDup_count_occ' with (decA:=ProgLemmas1.eq_dec) in H0,h.
-assert(h':=FQU_FQ v).  
+assert(h':=FQU_FQ v).
 destruct (in_dec ProgLemmas1.eq_dec q (toqlist (FQ v))).
 assert(i':=i).
 apply intoqlist_infq in i. inversion i.
@@ -2137,13 +2137,13 @@ apply intoqlist_infq in i. inversion i.
 inversion H1. rewrite  h' in H3.
 apply in_toqlist in H3. subst. contradict n. auto.
 rewrite count_occ_not_In in n,n0. rewrite n,n0. auto.
-Qed. 
+Qed.
 
 Theorem typed_quantum_data: forall v, quantum_data v
- -> NoDup (FQU v)-> 
+ -> NoDup (FQU v)->
 forall  IL LL,
 (forall q, count_occ ProgLemmas1.eq_dec  (toqlist(FQ v)) q =
-                  count_occ ProgLemmas1.eq_dec LL q) 
+                  count_occ ProgLemmas1.eq_dec LL q)
 -> exists i, seq_ i IL LL (atom_(typeof v (qtyper v))).
 Proof.
 intros v  H h'. induction H. intros. unfold toqlist, FQ in H.
@@ -2152,7 +2152,7 @@ destruct LL. inversion h. destruct LL;[..| inversion h].
 specialize H with a. simpl in H. destruct (ProgLemmas1.eq_dec a a).
 destruct (ProgLemmas1.eq_dec (typeof (CON (Qvar i)) qubit) a).
 subst.
-exists 1. apply l_init. omega. contradict n. auto.
+exists 1. apply l_init. lia. contradict n. auto.
 
 (*STAR CASE*)
 intros. simpl in H.
@@ -2162,7 +2162,7 @@ apply (atom_ (is_qexp (CON STAR))).
 apply starl. apply ss_init. apply ss_init.
 
 (*PROD CASE*)
-intros. assert (h'':=h'). 
+intros. assert (h'':=h').
 simpl in h'. apply nodup_concat with (l1:=FQU a) (l2:=FQU b) in h';auto.
 inversion h' as [h1' h2'].
 simpl.
@@ -2177,7 +2177,7 @@ assert(exists i : nat,
                     seq_ i IL (toqlist (FQ b)) (atom_ (typeof b (qtyper b)))).
 auto.
 inversion H2. inversion H3.
-exists (x+x0+1+1). apply seq_exchange_cor 
+exists (x+x0+1+1). apply seq_exchange_cor
 with (ll:= toqlist (FQ a)++toqlist(FQ b)) (eq_dec:=ProgLemmas1.eq_dec).
 apply s_bc with
 (lL:=[Conj (atom_ (typeof a (qtyper a))) (atom_ (typeof b (qtyper b)))])
@@ -2188,24 +2188,24 @@ apply valid_is_T,Tensor; apply valid_qtyper.
 apply ss_init.
 apply ss_general with
 (lL2:=toqlist (FQ a) ++ toqlist (FQ b))
-(lL3:=[]). apply split_ref. 
+(lL3:=[]). apply split_ref.
 apply m_and with (LL1:=toqlist (FQ a)) (LL2:=toqlist (FQ b)).
 apply concat_split;auto.
-apply seq_mono_cor with (j:=x);auto. omega.
-apply seq_mono_cor with (j:=x0);auto. omega.
+apply seq_mono_cor with (j:=x);auto. lia.
+apply seq_mono_cor with (j:=x0);auto. lia.
 apply ss_init.
 intros. rewrite <- H1. simpl.
- rewrite nodup_union, count_app with 
+ rewrite nodup_union, count_app with
 (l1:=toqlist (FQ a)) (l2:=toqlist (FQ b)),
  toqlist_app,
-count_app with 
+count_app with
 (l:=toqlist (FQ a) ++ toqlist ( rev (FQ b)))
  (l1:=toqlist (FQ a)) (l2:=toqlist (rev (FQ b))),
  FQU_FQ_qlist, FQU_FQ_qlist,
   <- rev_toqlist,<- rev_count,FQU_FQ_qlist;auto;try apply fq_nodup.
 intros q. repeat rewrite <- FQU_FQ. intros.
 simpl in h''.
-  apply nodup_in_app with 
+  apply nodup_in_app with
 (l1:=FQU a) (l2:=FQU b) (a:=q) in h'';auto.
 destruct h''. inversion H7. contradict H9. auto.
 inversion H7. auto.
@@ -2310,34 +2310,34 @@ Qed.
 Hypothesis  FQ_FUN: forall i E, abstr E ->
   FQ (Fun E) = FQ (E (Var i) ).
 
-Hypothesis  FQ_LET: forall i E b, abstr (fun x => lambda (E x)) ->  
+Hypothesis  FQ_LET: forall i E b, abstr (fun x => lambda (E x)) ->
          (forall x, proper x ->  abstr (E x)) ->
   FQ (Let E b) = set_union eq_dec (FQ (E (Var i) (Var i))) (FQ b).
 
-Hypothesis  FQU_LET: forall i E b, abstr (fun x => lambda (E x)) ->  
+Hypothesis  FQU_LET: forall i E b, abstr (fun x => lambda (E x)) ->
          (forall x, proper x ->  abstr (E x)) ->
   FQU (Let E b) =  (FQU (E (Var i) (Var i))) ++  (FQU b).
 
-Theorem LL_FQ: forall  i u A IL LL, 
+Theorem LL_FQ: forall  i u A IL LL,
 (forall q T, In (typeof (CON (Qvar q)) T) LL -> T = qubit)->
-(forall q T, In (typeof (CON (Qvar q)) T) LL -> 
+(forall q T, In (typeof (CON (Qvar q)) T) LL ->
 count_occ  ProgLemmas1.eq_dec LL (typeof (CON (Qvar q)) T) =1) ->
 (forall t, In t IL -> (exists i, t = is_qexp (Var i) \/ t = is_qexp (CON (Qvar i)) \/
      exists T, t = typeof (Var i) T)) ->
-Subtypecontext IL LL IL LL ->   
+Subtypecontext IL LL IL LL ->
 seq_ i IL LL (atom_(typeof u A)) ->
 (forall q, In (CON (Qvar q))  (FQ u)   <-> In (typeof (CON (Qvar q)) qubit) LL ).
 Proof.
 intros i. induction i. intros.
-inversion H3. omega. subst.
+inversion H3. lia. subst.
 apply memb_il with (M:=u) (T:=A) in H2.
 inversion H2. apply H1 in H4.
 inversion H4. destruct H6. inversion H6.
 split. simpl. auto.
 intros. inversion H7.  inversion H9. inversion  H9.
-destruct H6. inversion H6. 
+destruct H6. inversion H6.
 split. intros. simpl in H7. destruct H7; intuition.
-inversion H7. subst. 
+inversion H7. subst.
 assert(In (typeof (CON (Qvar q)) A) [typeof (CON (Qvar q)) A]).
 apply in_eq. apply H in H2. subst. apply in_eq.
 intros. inversion H7. inversion H9. subst. simpl. auto.
@@ -2386,24 +2386,24 @@ inversion H3. simpl in H5. split;intros.
 simpl in H9. inversion H9. inversion H11. subst.
 specialize H5  with (typeof (CON (Qvar q)) qubit).
 destruct( ProgLemmas1.eq_dec (typeof (CON (Qvar q)) qubit)
-         (typeof (CON (Qvar q)) qubit)). 
+         (typeof (CON (Qvar q)) qubit)).
 assert(In (typeof (CON (Qvar q)) qubit) LL).
 rewrite  count_occ_In with (eq_dec:=ProgLemmas1.eq_dec).
-omega. auto. contradict n. auto. intuition. 
+lia. auto. contradict n. auto. intuition.
 auto. specialize H5  with (typeof (CON (Qvar q)) qubit).
 destruct( ProgLemmas1.eq_dec (typeof (CON (Qvar i1)) qubit)
          (typeof (CON (Qvar q)) qubit)).
-inversion e. subst. apply in_eq. 
+inversion e. subst. apply in_eq.
 symmetry  in H5. rewrite  <- count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H5.
 contradict H5. auto. apply vQVAR.
 
 subst. apply fun_typed2 in H3;auto. destruct H3.
 rexists. destruct_conj. destruct H11.  destruct_conj.
 inversion H13. inversion H20. subst. apply split_ident in H15.
-subst. clear H20 H13. inversion H19. 
+subst. clear H20 H13. inversion H19.
 assert(proper (Var 0)). apply proper_VAR;auto.
 apply H16 in H17. inversion H17. inversion H23.
-apply seq_mono_cor with (k:=i) in H29;try omega.
+apply seq_mono_cor with (k:=i) in H29;try lia.
 apply IHi with (q:=q) in H29;auto.
 rewrite <- FQ_FUN in H29;auto. rewrite H29.
 split. intros. inversion H31. inversion H32.
@@ -2411,29 +2411,29 @@ auto. intros. apply in_cons. auto.
 intros.  inversion H31. inversion H32.
 apply H with (q:=q0). auto.
 intros.  inversion H31. inversion H32.
-simpl. 
+simpl.
 destruct (ProgLemmas1.eq_dec (typeof (Var 0) x0) (typeof (CON (Qvar q0)) T)).
 inversion e. apply H0 with (q:=q0). auto.
 intros. inversion H31. subst. exists 0. left. auto.
-apply H1 in H32. auto. 
+apply H1 in H32. auto.
 apply subcnxt_llg;auto.
 apply SubAreVal in H11. inversion H11.
 inversion H31. apply sub_ref. auto. auto.
 
 destruct_conj.
 inversion H13. inversion H20. subst. apply split_ident in H15.
-subst. clear H20 H13. inversion H19. 
+subst. clear H20 H13. inversion H19.
 assert(proper (Var 0)). apply proper_VAR;auto.
 apply H16 in H17. inversion H17. inversion H23.
-apply seq_mono_cor with (k:=i) in H29;try omega.
+apply seq_mono_cor with (k:=i) in H29;try lia.
 apply seq_weakening_cor with (il':= is_qexp (Var 0) :: typeof (Var 0) (bang x0) ::  IL) in H29.
 apply IHi with (q:=q) in H29;auto.
-rewrite <- FQ_FUN in H29;auto. 
-intros. inversion H31. 
-subst. 
+rewrite <- FQ_FUN in H29;auto.
+intros. inversion H31.
+subst.
 exists 0. left. auto.
-inversion H32. exists 0. right. right. 
- exists (bang x0).  auto. 
+inversion H32. exists 0. right. right.
+ exists (bang x0).  auto.
  apply  H1 in H33. auto.
 apply subcnxt_iig;auto.
 apply SubAreVal in H11. inversion H11.
@@ -2445,10 +2445,10 @@ auto.
 destruct H3.
 rexists. destruct_conj. destruct H11.  destruct_conj.
 inversion H14. inversion H21. subst. apply split_ident in H16.
-subst. clear H21 H14. inversion H20. 
+subst. clear H21 H14. inversion H20.
 assert(proper (Var 0)). apply proper_VAR;auto.
 apply H16 in H17. inversion H17. inversion H23.
-apply seq_mono_cor with (k:=i) in H29;try omega.
+apply seq_mono_cor with (k:=i) in H29;try lia.
 apply IHi with (q:=q) in H29;auto.
 rewrite <- FQ_FUN in H29;auto. rewrite H29.
 split. intros. inversion H31. inversion H32.
@@ -2458,25 +2458,25 @@ apply H with (q:=q0). auto.
 intros.  inversion H31. inversion H32.
 inversion H32.
 intros. inversion H31. subst. exists 0. left. auto.
-apply H1 in H32. auto. 
+apply H1 in H32. auto.
 apply subcnxt_llg;auto.
 apply SubAreVal in H11. inversion H11.
 inversion H31. apply sub_ref. auto. auto.
 
 destruct_conj.
 inversion H14. inversion H21. subst. apply split_ident in H16.
-subst. clear H21 H14. inversion H20. 
+subst. clear H21 H14. inversion H20.
 assert(proper (Var 0)). apply proper_VAR;auto.
 apply H16 in H17. inversion H17. inversion H23.
-apply seq_mono_cor with (k:=i) in H29;try omega.
+apply seq_mono_cor with (k:=i) in H29;try lia.
 apply seq_weakening_cor with (il':= is_qexp (Var 0) :: typeof (Var 0) (bang x0) ::  IL) in H29.
 apply IHi with (q:=q) in H29;auto.
-rewrite <- FQ_FUN in H29;auto. 
-intros. inversion H31. 
-subst. 
+rewrite <- FQ_FUN in H29;auto.
+intros. inversion H31.
+subst.
 exists 0. left. auto.
-inversion H32. exists 0. right. right. 
- exists (bang x0).  auto. 
+inversion H32. exists 0. right. right.
+ exists (bang x0).  auto.
  apply  H1 in H33. auto.
 apply subcnxt_iig;auto.
 apply SubAreVal in H11. inversion H11.
@@ -2488,10 +2488,10 @@ auto.
 destruct H3.
 rexists. destruct_conj. destruct H11.  destruct_conj.
 inversion H13. inversion H20. subst. apply split_ident in H15.
-subst. clear H20 H13. inversion H19. 
+subst. clear H20 H13. inversion H19.
 assert(proper (Var 0)). apply proper_VAR;auto.
 apply H15 in H16. inversion H16. inversion H22.
-apply seq_mono_cor with (k:=i) in H28;try omega.
+apply seq_mono_cor with (k:=i) in H28;try lia.
 apply IHi with (q:=q) in H28;auto.
 rewrite <- FQ_FUN in H28;auto. rewrite H28.
 split. intros. inversion H30. inversion H31.
@@ -2499,28 +2499,28 @@ auto. intros. apply in_cons. auto.
 intros.  inversion H30. inversion H31.
 apply H with (q:=q0). auto.
 intros.  inversion H30. inversion H31.
-simpl. 
+simpl.
 destruct (ProgLemmas1.eq_dec (typeof (Var 0) x0) (typeof (CON (Qvar q0)) T)).
 inversion e. apply H0 with (q:=q0). auto.
 intros. inversion H30. subst. exists 0. left. auto.
-apply H1 in H31. auto. 
+apply H1 in H31. auto.
 apply subcnxt_llg;auto. apply bang_valid in H5.
 apply sub_ref. auto. auto.
 
 destruct_conj.
 inversion H13. inversion H20. subst. apply split_ident in H15.
-subst. clear H20 H13. inversion H19. 
+subst. clear H20 H13. inversion H19.
 assert(proper (Var 0)). apply proper_VAR;auto.
 apply H15 in H16. inversion H16. inversion H22.
-apply seq_mono_cor with (k:=i) in H28;try omega.
+apply seq_mono_cor with (k:=i) in H28;try lia.
 apply seq_weakening_cor with (il':= is_qexp (Var 0) :: typeof (Var 0) (bang x0) ::  IL) in H28.
 apply IHi with (q:=q) in H28;auto.
-rewrite <- FQ_FUN in H28;auto. 
-intros. inversion H30. 
-subst. 
+rewrite <- FQ_FUN in H28;auto.
+intros. inversion H30.
+subst.
 exists 0. left. auto.
-inversion H31. exists 0. right. right. 
- exists (bang x0).  auto. 
+inversion H31. exists 0. right. right.
+ exists (bang x0).  auto.
  apply  H1 in H32. auto.
 apply subcnxt_iig;auto.
 apply sub_ref. auto. exists x0. auto.
@@ -2530,10 +2530,10 @@ auto.
 
 rexists. destruct_conj. destruct H11.  destruct_conj.
 inversion H14. inversion H21. subst. apply split_ident in H16.
-subst. clear H21 H14. inversion H20. 
+subst. clear H21 H14. inversion H20.
 assert(proper (Var 0)). apply proper_VAR;auto.
 apply H15 in H16. inversion H16. inversion H22.
-apply seq_mono_cor with (k:=i) in H28;try omega.
+apply seq_mono_cor with (k:=i) in H28;try lia.
 apply IHi with (q:=q) in H28;auto.
 rewrite <- FQ_FUN in H28;auto. rewrite H28.
 split. intros. inversion H30. inversion H31.
@@ -2541,11 +2541,11 @@ auto. intros. apply in_cons. auto.
 intros.  inversion H30. inversion H31.
 apply H with (q:=q0). auto.
 intros.  inversion H30. inversion H31.
-simpl. 
+simpl.
 destruct (ProgLemmas1.eq_dec (typeof (Var 0) x0) (typeof (CON (Qvar q0)) T)).
-inversion e. inversion H31. 
+inversion e. inversion H31.
 intros. inversion H30. subst. exists 0. left. auto.
-apply H1 in H31. auto. 
+apply H1 in H31. auto.
 apply subcnxt_llg;auto. apply bang_valid in H5.
 apply sub_ref. auto. auto.
 
@@ -2553,18 +2553,18 @@ apply sub_ref. auto. auto.
 
 destruct_conj.
 inversion H14. inversion H21. subst. apply split_ident in H16.
-subst. clear H21 H14. inversion H20. 
+subst. clear H21 H14. inversion H20.
 assert(proper (Var 0)). apply proper_VAR;auto.
 apply H15 in H16. inversion H16. inversion H22.
-apply seq_mono_cor with (k:=i) in H28;try omega.
+apply seq_mono_cor with (k:=i) in H28;try lia.
 apply seq_weakening_cor with (il':= is_qexp (Var 0) :: typeof (Var 0) (bang x0) ::  IL) in H28.
 apply IHi with (q:=q) in H28;auto.
-rewrite <- FQ_FUN in H28;auto. 
-intros. inversion H30. 
-subst. 
+rewrite <- FQ_FUN in H28;auto.
+intros. inversion H30.
+subst.
 exists 0. left. auto.
-inversion H31. exists 0. right. right. 
- exists (bang x0).  auto. 
+inversion H31. exists 0. right. right.
+ exists (bang x0).  auto.
  apply  H1 in H32. auto.
 apply subcnxt_iig;auto.
 apply sub_ref. auto. exists x0. auto.
@@ -2581,15 +2581,15 @@ subst. apply app_typed in H3;auto. destruct H3.
 rexists. destruct_conj. inversion H11.
 inversion H18. subst. apply split_ident in  H13. inversion H13.
 subst. inversion H17.
-apply seq_mono_cor with (k:=i) in H20;try omega.
+apply seq_mono_cor with (k:=i) in H20;try lia.
 apply IHi with (q:=q) in H20;auto.
-apply seq_mono_cor with (k:=i) in H21;try omega.
+apply seq_mono_cor with (k:=i) in H21;try lia.
 apply IHi with (q:=q) in H21;auto.
 simpl. rewrite set_union_iff, H20,H21.
-split;intros. destruct H22. 
+split;intros. destruct H22.
 apply in_split_l with (a:=(typeof (CON (Qvar q)) qubit)) in H14;auto.
 apply in_split_r with (a:=(typeof (CON (Qvar q)) qubit)) in H14;auto.
-apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H14 ;auto. 
+apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H14 ;auto.
 intros.
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H14;auto.
 apply H with (q:=q0);auto.
@@ -2597,12 +2597,12 @@ intros. assert(h14:=H14).
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H14;auto.
 apply H0 with (q:=q0) in H14;auto.
 assert(h14':=h14).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h14.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h14';auto.
-destruct h14';inversion H23. 
+destruct h14';inversion H23.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H24.
-omega. contradict H25. auto.
+lia. contradict H25. auto.
 apply subcntxt_splits with (ll1:= LL1) (ll2:=LL2) in H2;auto.
 inversion H2;auto.
 intros.
@@ -2612,28 +2612,28 @@ intros. assert(h14:=H14).
 apply in_split_l with (a:=(typeof (CON (Qvar q0)) T)) in H14;auto.
 apply H0 with (q:=q0) in H14;auto.
 assert(h14':=h14).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h14.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h14';auto.
-destruct h14';inversion H23. 
+destruct h14';inversion H23.
 contradict H25. auto.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H25.
-omega. 
+lia.
 apply subcntxt_splits with (ll1:= LL1) (ll2:=LL2) in H2;auto.
 inversion H2;auto. auto.
 
 rexists. destruct_conj. inversion H9.
 inversion H17. subst. apply split_ident in  H12. inversion H12.
 subst. inversion H16.
-apply seq_mono_cor with (k:=i) in H19;try omega.
+apply seq_mono_cor with (k:=i) in H19;try lia.
 apply IHi with (q:=q) in H19;auto.
-apply seq_mono_cor with (k:=i) in H20;try omega.
+apply seq_mono_cor with (k:=i) in H20;try lia.
 apply IHi with (q:=q) in H20;auto.
 simpl. rewrite set_union_iff, H19,H20.
-split;intros. destruct H21. 
+split;intros. destruct H21.
 apply in_split_l with (a:=(typeof (CON (Qvar q)) qubit)) in H13;auto.
 apply in_split_r with (a:=(typeof (CON (Qvar q)) qubit)) in H13;auto.
-apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H13 ;auto. 
+apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H13 ;auto.
 intros.
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H13;auto.
 apply H with (q:=q0);auto.
@@ -2641,12 +2641,12 @@ intros. assert(h13:=H13).
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H13;auto.
 apply H0 with (q:=q0) in H13;auto.
 assert(h13':=h13).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h13.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h13';auto.
-destruct h13';inversion H22. 
+destruct h13';inversion H22.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H23.
-omega. contradict H24. auto.
+lia. contradict H24. auto.
 apply subcntxt_splits with (ll1:= LL1) (ll2:=LL2) in H2;auto.
 inversion H2;auto.
 intros.
@@ -2656,13 +2656,13 @@ intros. assert(h13:=H13).
 apply in_split_l with (a:=(typeof (CON (Qvar q0)) T)) in H13;auto.
 apply H0 with (q:=q0) in H13;auto.
 assert(h13':=h13).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h13.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h13';auto.
-destruct h13';inversion H22. 
+destruct h13';inversion H22.
 contradict H24. auto.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H24.
-omega. 
+lia.
 apply subcntxt_splits with (ll1:= LL1) (ll2:=LL2) in H2;auto.
 inversion H2;auto. auto.
 
@@ -2676,15 +2676,15 @@ rexists.  destruct_conj. destruct H9;destruct_conj.
 inversion H12.
 inversion H19. subst. apply split_ident in  H14. inversion H14.
 subst. inversion H18.
-apply seq_mono_cor with (k:=i) in H20;try omega.
+apply seq_mono_cor with (k:=i) in H20;try lia.
 apply IHi with (q:=q) in H20;auto.
-apply seq_mono_cor with (k:=i) in H21;try omega.
+apply seq_mono_cor with (k:=i) in H21;try lia.
 apply IHi with (q:=q) in H21;auto.
 simpl. rewrite set_union_iff, H20,H21.
-split;intros. destruct H22. 
+split;intros. destruct H22.
 apply in_split_l with (a:=(typeof (CON (Qvar q)) qubit)) in H14;auto.
 apply in_split_r with (a:=(typeof (CON (Qvar q)) qubit)) in H14;auto.
-apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H14 ;auto. 
+apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H14 ;auto.
 intros.
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H14;auto.
 apply H with (q:=q0);auto.
@@ -2692,12 +2692,12 @@ intros. assert(h14:=H14).
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H14;auto.
 apply H0 with (q:=q0) in H14;auto.
 assert(h14':=h14).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h14.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h14';auto.
-destruct h14';inversion H23. 
+destruct h14';inversion H23.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H24.
-omega. contradict H25. auto.
+lia. contradict H25. auto.
 apply subcntxt_splits with (ll1:= LL1) (ll2:=LL2) in H2;auto.
 inversion H2;auto.
 intros.
@@ -2707,28 +2707,28 @@ intros. assert(h14:=H14).
 apply in_split_l with (a:=(typeof (CON (Qvar q0)) T)) in H14;auto.
 apply H0 with (q:=q0) in H14;auto.
 assert(h14':=h14).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h14.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h14';auto.
-destruct h14';inversion H23. 
+destruct h14';inversion H23.
 contradict H25. auto.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H25.
-omega. 
+lia.
 apply subcntxt_splits with (ll1:= LL1) (ll2:=LL2) in H2;auto.
 inversion H2;auto. auto.
 
 inversion H13.
 inversion H20. subst. apply split_ident in  H15. inversion H15.
 subst. inversion H19.
-apply seq_mono_cor with (k:=i) in H21;try omega.
+apply seq_mono_cor with (k:=i) in H21;try lia.
 apply IHi with (q:=q) in H21;auto.
-apply seq_mono_cor with (k:=i) in H22;try omega.
+apply seq_mono_cor with (k:=i) in H22;try lia.
 apply IHi with (q:=q) in H22;auto.
 simpl. rewrite set_union_iff, H21,H22.
-split;intros. destruct H23. 
+split;intros. destruct H23.
 apply in_split_l with (a:=(typeof (CON (Qvar q)) qubit)) in H15;auto.
 apply in_split_r with (a:=(typeof (CON (Qvar q)) qubit)) in H15;auto.
-apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H15 ;auto. 
+apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H15 ;auto.
 intros.
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H15;auto.
 apply H with (q:=q0);auto.
@@ -2736,12 +2736,12 @@ intros. assert(h15:=H15).
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H15;auto.
 apply H0 with (q:=q0) in H15;auto.
 assert(h15':=h15).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h15.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h15';auto.
-destruct h15';inversion H24. 
+destruct h15';inversion H24.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H25.
-omega. contradict H26. auto.
+lia. contradict H26. auto.
 apply subcntxt_splits with (ll1:= LL1) (ll2:=LL2) in H2;auto.
 inversion H2;auto.
 intros.
@@ -2751,13 +2751,13 @@ intros. assert(h15:=H15).
 apply in_split_l with (a:=(typeof (CON (Qvar q0)) T)) in H15;auto.
 apply H0 with (q:=q0) in H15;auto.
 assert(h15':=h15).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h15.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h15';auto.
-destruct h15';inversion H24. 
+destruct h15';inversion H24.
 contradict H26. auto.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H26.
-omega. 
+lia.
 apply subcntxt_splits with (ll1:= LL1) (ll2:=LL2) in H2;auto.
 inversion H2;auto. auto.
 
@@ -2765,15 +2765,15 @@ rexists. destruct_conj. destruct H8. destruct_conj.
 inversion H11.
 inversion H18. subst. apply split_ident in  H13. inversion H13.
 subst. inversion H17.
-apply seq_mono_cor with (k:=i) in H19;try omega.
+apply seq_mono_cor with (k:=i) in H19;try lia.
 apply IHi with (q:=q) in H19;auto.
-apply seq_mono_cor with (k:=i) in H20;try omega.
+apply seq_mono_cor with (k:=i) in H20;try lia.
 apply IHi with (q:=q) in H20;auto.
 simpl. rewrite set_union_iff, H19,H20.
-split;intros. destruct H21. 
+split;intros. destruct H21.
 apply in_split_l with (a:=(typeof (CON (Qvar q)) qubit)) in H13;auto.
 apply in_split_r with (a:=(typeof (CON (Qvar q)) qubit)) in H13;auto.
-apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H13 ;auto. 
+apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H13 ;auto.
 intros.
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H13;auto.
 apply H with (q:=q0);auto.
@@ -2781,12 +2781,12 @@ intros. assert(h13:=H13).
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H13;auto.
 apply H0 with (q:=q0) in H13;auto.
 assert(h13':=h13).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h13.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h13';auto.
-destruct h13';inversion H22. 
+destruct h13';inversion H22.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H23.
-omega. contradict H24. auto.
+lia. contradict H24. auto.
 apply subcntxt_splits with (ll1:= LL1) (ll2:=LL2) in H2;auto.
 inversion H2;auto.
 intros.
@@ -2796,13 +2796,13 @@ intros. assert(h13:=H13).
 apply in_split_l with (a:=(typeof (CON (Qvar q0)) T)) in H13;auto.
 apply H0 with (q:=q0) in H13;auto.
 assert(h13':=h13).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h13.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h13';auto.
-destruct h13';inversion H22. 
+destruct h13';inversion H22.
 contradict H24. auto.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H24.
-omega. 
+lia.
 apply subcntxt_splits with (ll1:= LL1) (ll2:=LL2) in H2;auto.
 inversion H2;auto. auto.
 
@@ -2810,15 +2810,15 @@ destruct_conj.
 inversion H12.
 inversion H19. subst. apply split_ident in  H14. inversion H14.
 subst. inversion H18.
-apply seq_mono_cor with (k:=i) in H20;try omega.
+apply seq_mono_cor with (k:=i) in H20;try lia.
 apply IHi with (q:=q) in H20;auto.
-apply seq_mono_cor with (k:=i) in H21;try omega.
+apply seq_mono_cor with (k:=i) in H21;try lia.
 apply IHi with (q:=q) in H21;auto.
 simpl. rewrite set_union_iff, H20,H21.
-split;intros. destruct H22. 
+split;intros. destruct H22.
 apply in_split_l with (a:=(typeof (CON (Qvar q)) qubit)) in H14;auto.
 apply in_split_r with (a:=(typeof (CON (Qvar q)) qubit)) in H14;auto.
-apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H14 ;auto. 
+apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H14 ;auto.
 intros.
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H14;auto.
 apply H with (q:=q0);auto.
@@ -2826,12 +2826,12 @@ intros. assert(h14:=H14).
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H14;auto.
 apply H0 with (q:=q0) in H14;auto.
 assert(h14':=h14).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h14.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h14';auto.
-destruct h14';inversion H23. 
+destruct h14';inversion H23.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H24.
-omega. contradict H25. auto.
+lia. contradict H25. auto.
 apply subcntxt_splits with (ll1:= LL1) (ll2:=LL2) in H2;auto.
 inversion H2;auto.
 intros.
@@ -2841,13 +2841,13 @@ intros. assert(h14:=H14).
 apply in_split_l with (a:=(typeof (CON (Qvar q0)) T)) in H14;auto.
 apply H0 with (q:=q0) in H14;auto.
 assert(h14':=h14).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h14.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h14';auto.
-destruct h14';inversion H23. 
+destruct h14';inversion H23.
 contradict H25. auto.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H25.
-omega. 
+lia.
 apply subcntxt_splits with (ll1:= LL1) (ll2:=LL2) in H2;auto.
 inversion H2;auto. auto.
 auto.
@@ -2864,10 +2864,10 @@ assert(proper (Var 0)). apply proper_VAR;auto.
 apply H26 in H27. inversion H27.
 assert(proper (Var 0)). apply proper_VAR;auto.
 apply H32 in H33. inversion H33. inversion H38.
-inversion H44. inversion H50. 
-apply seq_mono_cor with (k:=i) in H56;try omega.
+inversion H44. inversion H50.
+apply seq_mono_cor with (k:=i) in H56;try lia.
 inversion H21. inversion H65. subst. apply split_ident in H60. subst.
-apply seq_mono_cor with (k:=i) in H64;try omega.
+apply seq_mono_cor with (k:=i) in H64;try lia.
 rewrite FQ_LET with (i:=0);auto.
 clear h3. assert(h3:=H3). assert(h5:=H5).
 clear - IHi H H0 H1 H2 H4  h3 h5 H16 H56 H64.
@@ -2875,22 +2875,22 @@ apply IHi with (q:=q) in H64;auto.
 apply IHi with (q:=q) in H56;auto.
 rewrite set_union_iff, H56,H64.
 split;intros. destruct H3. inversion H3.
-inversion H5. inversion H5. inversion H6. 
+inversion H5. inversion H5. inversion H6.
 apply in_split_l with (a:=(typeof (CON (Qvar q)) qubit)) in H16;auto.
 apply in_split_r with (a:=(typeof (CON (Qvar q)) qubit)) in H16;auto.
-apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H16 ;auto. 
+apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H16 ;auto.
 destruct H16. left. apply in_cons,in_cons;auto.
 right. auto.
 intros.
 apply in_split_l with (a:=(typeof (CON (Qvar q0)) T)) in H16;auto.
-apply H with (q:=q0);auto. 
+apply H with (q:=q0);auto.
 inversion H3. inversion H5. inversion H5. inversion H6. auto.
 intros. inversion H3. inversion H5. inversion H5. inversion H6.
 assert(h16:=H16).
 apply in_split_l with (a:=(typeof (CON (Qvar q0)) T)) in H16;auto.
 apply H0 with (q:=q0) in H16;auto.
 assert(h16':=h16).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h16.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h16';auto.
 destruct h16';inversion H7. contradict H9. auto.
@@ -2898,7 +2898,7 @@ rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H9.
 simpl. destruct (ProgLemmas1.eq_dec (typeof (Var 0) x1) (typeof (CON (Qvar q0)) T)).
 inversion e. destruct (ProgLemmas1.eq_dec (typeof (Var 0) x0) (typeof (CON (Qvar q0)) T)).
 inversion e.
-omega. 
+lia.
 intros. inversion H3. exists 0. left. auto.
 inversion H5. exists 0. left. auto.
 apply H1 in H6;auto.
@@ -2913,12 +2913,12 @@ intros. assert(h16:=H16).
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H16;auto.
 apply H0 with (q:=q0) in H16;auto.
 assert(h16':=h16).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h16.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h16';auto.
-destruct h16';inversion H5. 
+destruct h16';inversion H5.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H6.
-omega. 
+lia.
 contradict H7. auto.
 apply subcntxt_splits with (ll1:= lL2) (ll2:=lL4) in H2;auto.
 inversion H2;auto. auto.
@@ -2928,10 +2928,10 @@ assert(proper (Var 0)). apply proper_VAR;auto.
 apply H26 in H27. inversion H27.
 assert(proper (Var 0)). apply proper_VAR;auto.
 apply H32 in H33. inversion H33. inversion H38.
-inversion H44. inversion H50. 
-apply seq_mono_cor with (k:=i) in H56;try omega.
+inversion H44. inversion H50.
+apply seq_mono_cor with (k:=i) in H56;try lia.
 inversion H21. inversion H65. subst. apply split_ident in H60. subst.
-apply seq_mono_cor with (k:=i) in H64;try omega.
+apply seq_mono_cor with (k:=i) in H64;try lia.
 apply seq_weakening_cor with (il':= is_qexp (Var 0) :: typeof (Var 0) (bang x1)
          :: is_qexp (Var 0) :: typeof (Var 0) (bang x0) :: IL) in H56.
 rewrite FQ_LET with (i:=0);auto.
@@ -2940,28 +2940,28 @@ clear - IHi H H0 H1 H2 H4  h3 h5 H16 H56 H64.
 apply IHi with (q:=q) in H64;auto.
 apply IHi with (q:=q) in H56;auto.
 rewrite set_union_iff, H56,H64.
-split;intros. destruct H3.  
+split;intros. destruct H3.
 apply in_split_l with (a:=(typeof (CON (Qvar q)) qubit)) in H16;auto.
 apply in_split_r with (a:=(typeof (CON (Qvar q)) qubit)) in H16;auto.
-apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H16 ;auto. 
+apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H16 ;auto.
 intros.
 apply in_split_l with (a:=(typeof (CON (Qvar q0)) T)) in H16;auto.
-apply H with (q:=q0);auto. 
+apply H with (q:=q0);auto.
 intros. assert(h16:=H16).
 apply in_split_l with (a:=(typeof (CON (Qvar q0)) T)) in H16;auto.
 apply H0 with (q:=q0) in H16;auto.
 assert(h16':=h16).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h16.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h16';auto.
 destruct h16';inversion H5. contradict H7. auto.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H7.
 simpl.
-omega. 
-intros. inversion H3. exists 0. left. auto. 
+lia.
+intros. inversion H3. exists 0. left. auto.
 inversion H5. exists 0.
 right. right. exists (bang x1). auto.
-inversion H6. 
+inversion H6.
 exists 0. left. auto.
 inversion H7. exists 0. right. right. exists (bang x0). auto.
 apply H1 in H8;auto.
@@ -2978,12 +2978,12 @@ intros. assert(h16:=H16).
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H16;auto.
 apply H0 with (q:=q0) in H16;auto.
 assert(h16':=h16).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h16.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h16';auto.
-destruct h16';inversion H5. 
+destruct h16';inversion H5.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H6.
-omega. 
+lia.
 contradict H7. auto.
 apply subcntxt_splits with (ll1:= lL2) (ll2:=lL4) in H2;auto.
 inversion H2;auto. auto.
@@ -2991,7 +2991,7 @@ clear. intros. inversion H. subst. apply in_cons,in_eq.
 inversion H0. subst. apply in_cons,in_cons,in_cons,in_eq.
 inversion H1. subst. apply in_eq.
 inversion H2. subst. apply in_eq.
-repeat apply in_cons. auto. 
+repeat apply in_cons. auto.
 auto.
 
 destruct_conj. destruct H11.
@@ -3000,10 +3000,10 @@ assert(proper (Var 0)). apply proper_VAR;auto.
 apply H25 in H26. inversion H26.
 assert(proper (Var 0)). apply proper_VAR;auto.
 apply H31 in H32. inversion H32. inversion H37.
-inversion H43. inversion H49. 
-apply seq_mono_cor with (k:=i) in H55;try omega.
+inversion H43. inversion H49.
+apply seq_mono_cor with (k:=i) in H55;try lia.
 inversion H20. inversion H64. subst. apply split_ident in H59. subst.
-apply seq_mono_cor with (k:=i) in H63;try omega.
+apply seq_mono_cor with (k:=i) in H63;try lia.
 rewrite FQ_LET with (i:=0);auto.
 clear h3. assert(h3:=H3). assert(h5:=H5).
 clear - IHi H H0 H1 H2 H4  h3 h5 H15 H55 H63.
@@ -3011,22 +3011,22 @@ apply IHi with (q:=q) in H63;auto.
 apply IHi with (q:=q) in H55;auto.
 rewrite set_union_iff, H55,H63.
 split;intros. destruct H3. inversion H3.
-inversion H5. inversion H5. inversion H6. 
+inversion H5. inversion H5. inversion H6.
 apply in_split_l with (a:=(typeof (CON (Qvar q)) qubit)) in H15;auto.
 apply in_split_r with (a:=(typeof (CON (Qvar q)) qubit)) in H15;auto.
-apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H15 ;auto. 
+apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H15 ;auto.
 destruct H15. left. apply in_cons,in_cons;auto.
 right. auto.
 intros.
 apply in_split_l with (a:=(typeof (CON (Qvar q0)) T)) in H15;auto.
-apply H with (q:=q0);auto. 
+apply H with (q:=q0);auto.
 inversion H3. inversion H5. inversion H5. inversion H6. auto.
 intros. inversion H3. inversion H5. inversion H5. inversion H6.
 assert(h15:=H15).
 apply in_split_l with (a:=(typeof (CON (Qvar q0)) T)) in H15;auto.
 apply H0 with (q:=q0) in H15;auto.
 assert(h15':=h15).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h15.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h15';auto.
 destruct h15';inversion H7. contradict H9. auto.
@@ -3034,7 +3034,7 @@ rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H9.
 simpl. destruct (ProgLemmas1.eq_dec (typeof (Var 0) x1) (typeof (CON (Qvar q0)) T)).
 inversion e. destruct (ProgLemmas1.eq_dec (typeof (Var 0) x0) (typeof (CON (Qvar q0)) T)).
 inversion e.
-omega. 
+lia.
 intros. inversion H3. exists 0. left. auto.
 inversion H5. exists 0. left. auto.
 apply H1 in H6;auto.
@@ -3049,12 +3049,12 @@ intros. assert(h15:=H15).
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H15;auto.
 apply H0 with (q:=q0) in H15;auto.
 assert(h15':=h15).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h15.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h15';auto.
-destruct h15';inversion H5. 
+destruct h15';inversion H5.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H6.
-omega. 
+lia.
 contradict H7. auto.
 apply subcntxt_splits with (ll1:= lL2) (ll2:=lL4) in H2;auto.
 inversion H2;auto. auto.
@@ -3064,10 +3064,10 @@ assert(proper (Var 0)). apply proper_VAR;auto.
 apply H25 in H26. inversion H26.
 assert(proper (Var 0)). apply proper_VAR;auto.
 apply H31 in H32. inversion H32. inversion H37.
-inversion H43. inversion H49. 
-apply seq_mono_cor with (k:=i) in H55;try omega.
+inversion H43. inversion H49.
+apply seq_mono_cor with (k:=i) in H55;try lia.
 inversion H20. inversion H64. subst. apply split_ident in H59. subst.
-apply seq_mono_cor with (k:=i) in H63;try omega.
+apply seq_mono_cor with (k:=i) in H63;try lia.
 apply seq_weakening_cor with (il':= is_qexp (Var 0) :: typeof (Var 0) (bang x1)
          :: is_qexp (Var 0) :: typeof (Var 0) (bang x0) :: IL) in H55.
 rewrite FQ_LET with (i:=0);auto.
@@ -3076,28 +3076,28 @@ clear - IHi H H0 H1 H2 H4  h3 h5 H15 H55 H63.
 apply IHi with (q:=q) in H63;auto.
 apply IHi with (q:=q) in H55;auto.
 rewrite set_union_iff, H55,H63.
-split;intros. destruct H3.  
+split;intros. destruct H3.
 apply in_split_l with (a:=(typeof (CON (Qvar q)) qubit)) in H15;auto.
 apply in_split_r with (a:=(typeof (CON (Qvar q)) qubit)) in H15;auto.
-apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H15 ;auto. 
+apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H15 ;auto.
 intros.
 apply in_split_l with (a:=(typeof (CON (Qvar q0)) T)) in H15;auto.
-apply H with (q:=q0);auto. 
+apply H with (q:=q0);auto.
 intros. assert(h15:=H15).
 apply in_split_l with (a:=(typeof (CON (Qvar q0)) T)) in H15;auto.
 apply H0 with (q:=q0) in H15;auto.
 assert(h15':=h15).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h15.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h15';auto.
 destruct h15';inversion H5. contradict H7. auto.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H7.
 simpl.
-omega. 
-intros. inversion H3. exists 0. left. auto. 
+lia.
+intros. inversion H3. exists 0. left. auto.
 inversion H5. exists 0.
 right. right. exists (bang x1). auto.
-inversion H6. 
+inversion H6.
 exists 0. left. auto.
 inversion H7. exists 0. right. right. exists (bang x0). auto.
 apply H1 in H8;auto.
@@ -3114,12 +3114,12 @@ intros. assert(h15:=H15).
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H15;auto.
 apply H0 with (q:=q0) in H15;auto.
 assert(h15':=h15).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h15.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h15';auto.
-destruct h15';inversion H5. 
+destruct h15';inversion H5.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H6.
-omega. 
+lia.
 contradict H7. auto.
 apply subcntxt_splits with (ll1:= lL2) (ll2:=lL4) in H2;auto.
 inversion H2;auto. auto.
@@ -3127,7 +3127,7 @@ clear. intros. inversion H. subst. apply in_cons,in_eq.
 inversion H0. subst. apply in_cons,in_cons,in_cons,in_eq.
 inversion H1. subst. apply in_eq.
 inversion H2. subst. apply in_eq.
-repeat apply in_cons. auto. 
+repeat apply in_cons. auto.
 auto.
 auto. auto. auto.
 
@@ -3141,15 +3141,15 @@ destruct H3;rexists; destruct_conj. destruct H9.
 inversion H8.
 inversion H17. subst. apply split_ident in  H12. inversion H12.
 subst. inversion H16.
-apply seq_mono_cor with (k:=i) in H19;try omega.
+apply seq_mono_cor with (k:=i) in H19;try lia.
 apply IHi with (q:=q) in H19;auto.
-apply seq_mono_cor with (k:=i) in H20;try omega.
+apply seq_mono_cor with (k:=i) in H20;try lia.
 apply IHi with (q:=q) in H20;auto.
 simpl. rewrite set_union_iff, H19,H20.
-split;intros. destruct H21. 
+split;intros. destruct H21.
 apply in_split_l with (a:=(typeof (CON (Qvar q)) qubit)) in H13;auto.
 apply in_split_r with (a:=(typeof (CON (Qvar q)) qubit)) in H13;auto.
-apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H13 ;auto. 
+apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H13 ;auto.
 intros.
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H13;auto.
 apply H with (q:=q0);auto.
@@ -3157,12 +3157,12 @@ intros. assert(h13:=H13).
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H13;auto.
 apply H0 with (q:=q0) in H13;auto.
 assert(h13':=h13).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h13.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h13';auto.
-destruct h13';inversion H22. 
+destruct h13';inversion H22.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H23.
-omega. contradict H24. auto.
+lia. contradict H24. auto.
 apply subcntxt_splits with (ll1:= LL1) (ll2:=LL2) in H2;auto.
 inversion H2;auto.
 intros.
@@ -3172,28 +3172,28 @@ intros. assert(h13:=H13).
 apply in_split_l with (a:=(typeof (CON (Qvar q0)) T)) in H13;auto.
 apply H0 with (q:=q0) in H13;auto.
 assert(h13':=h13).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h13.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h13';auto.
-destruct h13';inversion H22. 
+destruct h13';inversion H22.
 contradict H24. auto.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H24.
-omega. 
+lia.
 apply subcntxt_splits with (ll1:= LL1) (ll2:=LL2) in H2;auto.
 inversion H2;auto. auto.
 
 inversion H8.
 inversion H17. subst. apply split_ident in  H12. inversion H12.
 subst. inversion H16.
-apply seq_mono_cor with (k:=i) in H19;try omega.
+apply seq_mono_cor with (k:=i) in H19;try lia.
 apply IHi with (q:=q) in H19;auto.
-apply seq_mono_cor with (k:=i) in H20;try omega.
+apply seq_mono_cor with (k:=i) in H20;try lia.
 apply IHi with (q:=q) in H20;auto.
 simpl. rewrite set_union_iff, H19,H20.
-split;intros. destruct H21. 
+split;intros. destruct H21.
 apply in_split_l with (a:=(typeof (CON (Qvar q)) qubit)) in H13;auto.
 apply in_split_r with (a:=(typeof (CON (Qvar q)) qubit)) in H13;auto.
-apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H13 ;auto. 
+apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H13 ;auto.
 intros.
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H13;auto.
 apply H with (q:=q0);auto.
@@ -3201,12 +3201,12 @@ intros. assert(h13:=H13).
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H13;auto.
 apply H0 with (q:=q0) in H13;auto.
 assert(h13':=h13).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h13.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h13';auto.
-destruct h13';inversion H22. 
+destruct h13';inversion H22.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H23.
-omega. contradict H24. auto.
+lia. contradict H24. auto.
 apply subcntxt_splits with (ll1:= LL1) (ll2:=LL2) in H2;auto.
 inversion H2;auto.
 intros.
@@ -3216,13 +3216,13 @@ intros. assert(h13:=H13).
 apply in_split_l with (a:=(typeof (CON (Qvar q0)) T)) in H13;auto.
 apply H0 with (q:=q0) in H13;auto.
 assert(h13':=h13).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h13.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h13';auto.
-destruct h13';inversion H22. 
+destruct h13';inversion H22.
 contradict H24. auto.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H24.
-omega. 
+lia.
 apply subcntxt_splits with (ll1:= LL1) (ll2:=LL2) in H2;auto.
 inversion H2;auto. auto.
 
@@ -3230,15 +3230,15 @@ destruct H9.
 inversion H8.
 inversion H17. subst. apply split_ident in  H12. inversion H12.
 subst. inversion H16.
-apply seq_mono_cor with (k:=i) in H19;try omega.
+apply seq_mono_cor with (k:=i) in H19;try lia.
 apply IHi with (q:=q) in H19;auto.
-apply seq_mono_cor with (k:=i) in H20;try omega.
+apply seq_mono_cor with (k:=i) in H20;try lia.
 apply IHi with (q:=q) in H20;auto.
 simpl. rewrite set_union_iff, H19,H20.
-split;intros. destruct H21. 
+split;intros. destruct H21.
 apply in_split_l with (a:=(typeof (CON (Qvar q)) qubit)) in H13;auto.
 apply in_split_r with (a:=(typeof (CON (Qvar q)) qubit)) in H13;auto.
-apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H13 ;auto. 
+apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H13 ;auto.
 intros.
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H13;auto.
 apply H with (q:=q0);auto.
@@ -3246,12 +3246,12 @@ intros. assert(h13:=H13).
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H13;auto.
 apply H0 with (q:=q0) in H13;auto.
 assert(h13':=h13).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h13.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h13';auto.
-destruct h13';inversion H22. 
+destruct h13';inversion H22.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H23.
-omega. contradict H24. auto.
+lia. contradict H24. auto.
 apply subcntxt_splits with (ll1:= LL1) (ll2:=LL2) in H2;auto.
 inversion H2;auto.
 intros.
@@ -3261,28 +3261,28 @@ intros. assert(h13:=H13).
 apply in_split_l with (a:=(typeof (CON (Qvar q0)) T)) in H13;auto.
 apply H0 with (q:=q0) in H13;auto.
 assert(h13':=h13).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h13.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h13';auto.
-destruct h13';inversion H22. 
+destruct h13';inversion H22.
 contradict H24. auto.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H24.
-omega. 
+lia.
 apply subcntxt_splits with (ll1:= LL1) (ll2:=LL2) in H2;auto.
 inversion H2;auto. auto.
 
 inversion H8.
 inversion H17. subst. apply split_ident in  H12. inversion H12.
 subst. inversion H16.
-apply seq_mono_cor with (k:=i) in H19;try omega.
+apply seq_mono_cor with (k:=i) in H19;try lia.
 apply IHi with (q:=q) in H19;auto.
-apply seq_mono_cor with (k:=i) in H20;try omega.
+apply seq_mono_cor with (k:=i) in H20;try lia.
 apply IHi with (q:=q) in H20;auto.
 simpl. rewrite set_union_iff, H19,H20.
-split;intros. destruct H21. 
+split;intros. destruct H21.
 apply in_split_l with (a:=(typeof (CON (Qvar q)) qubit)) in H13;auto.
 apply in_split_r with (a:=(typeof (CON (Qvar q)) qubit)) in H13;auto.
-apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H13 ;auto. 
+apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H13 ;auto.
 intros.
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H13;auto.
 apply H with (q:=q0);auto.
@@ -3290,12 +3290,12 @@ intros. assert(h13:=H13).
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H13;auto.
 apply H0 with (q:=q0) in H13;auto.
 assert(h13':=h13).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h13.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h13';auto.
-destruct h13';inversion H22. 
+destruct h13';inversion H22.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H23.
-omega. contradict H24. auto.
+lia. contradict H24. auto.
 apply subcntxt_splits with (ll1:= LL1) (ll2:=LL2) in H2;auto.
 inversion H2;auto.
 intros.
@@ -3305,13 +3305,13 @@ intros. assert(h13:=H13).
 apply in_split_l with (a:=(typeof (CON (Qvar q0)) T)) in H13;auto.
 apply H0 with (q:=q0) in H13;auto.
 assert(h13':=h13).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h13.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h13';auto.
-destruct h13';inversion H22. 
+destruct h13';inversion H22.
 contradict H24. auto.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H24.
-omega. 
+lia.
 apply subcntxt_splits with (ll1:= LL1) (ll2:=LL2) in H2;auto.
 inversion H2;auto. auto. auto.
 
@@ -3322,21 +3322,21 @@ destruct H5. inversion H5. inversion H5. inversion H8.
 
 (*If Case*)
 - subst. apply if_typed in H3.
-destruct H3;rexists; destruct_conj. 
+destruct H3;rexists; destruct_conj.
 inversion H9.
 inversion H17. subst. apply split_ident in  H12. inversion H12.
 subst. inversion H16.
-apply seq_mono_cor with (k:=i) in H19;try omega.
+apply seq_mono_cor with (k:=i) in H19;try lia.
 apply IHi with (q:=q) in H19;auto.
 inversion H20.
-apply seq_mono_cor with (k:=i) in H26;try omega.
+apply seq_mono_cor with (k:=i) in H26;try lia.
 apply IHi with (q:=q) in H26;auto.
-apply seq_mono_cor with (k:=i) in H27;try omega.
+apply seq_mono_cor with (k:=i) in H27;try lia.
 apply IHi with (q:=q) in H27;auto.
 simpl. rewrite set_union_iff, set_union_iff, H19,H26,H27.
 assert(forall a b, a \/ b \/ a <-> b \/a); [intuition|..].
 rewrite H28.
-split;intros. destruct H29. 
+split;intros. destruct H29.
 apply in_split_l with (a:=(typeof (CON (Qvar q)) qubit)) in H13;auto.
 apply in_split_r with (a:=(typeof (CON (Qvar q)) qubit)) in H13;auto.
 apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H13 ;auto.
@@ -3347,12 +3347,12 @@ intros. assert(h13:=H13).
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H13;auto.
 apply H0 with (q:=q0) in H13;auto.
 assert(h13':=h13).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h13.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h13';auto.
-destruct h13';inversion H29. 
+destruct h13';inversion H29.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H30.
-omega. contradict H31. auto.
+lia. contradict H31. auto.
 apply subcntxt_splits with (ll1:= LL1) (ll2:=LL2) in H2;auto.
 inversion H2;auto.
 intros.
@@ -3362,12 +3362,12 @@ intros. assert(h13:=H13).
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H13;auto.
 apply H0 with (q:=q0) in H13;auto.
 assert(h13':=h13).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h13.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h13';auto.
-destruct h13';inversion H29. 
+destruct h13';inversion H29.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H30.
-omega. contradict H31. auto.
+lia. contradict H31. auto.
 apply subcntxt_splits with (ll1:= LL1) (ll2:=LL2) in H2;auto.
 inversion H2;auto.
 intros.
@@ -3377,12 +3377,12 @@ intros. assert(h13:=H13).
 apply in_split_l with (a:=(typeof (CON (Qvar q0)) T)) in H13;auto.
 apply H0 with (q:=q0) in H13;auto.
 assert(h13':=h13).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h13.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h13';auto.
-destruct h13';inversion H22. contradict H23. auto. 
+destruct h13';inversion H22. contradict H23. auto.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H24.
-omega. 
+lia.
 apply subcntxt_splits with (ll1:= LL1) (ll2:=LL2) in H2;auto.
 inversion H2;auto. auto.
 
@@ -3390,17 +3390,17 @@ inversion H2;auto. auto.
 inversion H9.
 inversion H17. subst. apply split_ident in  H12. inversion H12.
 subst. inversion H16.
-apply seq_mono_cor with (k:=i) in H19;try omega.
+apply seq_mono_cor with (k:=i) in H19;try lia.
 apply IHi with (q:=q) in H19;auto.
 inversion H20.
-apply seq_mono_cor with (k:=i) in H26;try omega.
+apply seq_mono_cor with (k:=i) in H26;try lia.
 apply IHi with (q:=q) in H26;auto.
-apply seq_mono_cor with (k:=i) in H27;try omega.
+apply seq_mono_cor with (k:=i) in H27;try lia.
 apply IHi with (q:=q) in H27;auto.
 simpl. rewrite set_union_iff, set_union_iff, H19,H26,H27.
 assert(forall a b, a \/ b \/ a <-> b \/a); [intuition|..].
 rewrite H28.
-split;intros. destruct H29. 
+split;intros. destruct H29.
 apply in_split_l with (a:=(typeof (CON (Qvar q)) qubit)) in H13;auto.
 apply in_split_r with (a:=(typeof (CON (Qvar q)) qubit)) in H13;auto.
 apply in_split_or with (a:=(typeof (CON (Qvar q)) qubit)) in H13 ;auto.
@@ -3411,12 +3411,12 @@ intros. assert(h13:=H13).
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H13;auto.
 apply H0 with (q:=q0) in H13;auto.
 assert(h13':=h13).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h13.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h13';auto.
-destruct h13';inversion H29. 
+destruct h13';inversion H29.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H30.
-omega. contradict H31. auto.
+lia. contradict H31. auto.
 apply subcntxt_splits with (ll1:= LL1) (ll2:=LL2) in H2;auto.
 inversion H2;auto.
 intros.
@@ -3426,12 +3426,12 @@ intros. assert(h13:=H13).
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H13;auto.
 apply H0 with (q:=q0) in H13;auto.
 assert(h13':=h13).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h13.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h13';auto.
-destruct h13';inversion H29. 
+destruct h13';inversion H29.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H30.
-omega. contradict H31. auto.
+lia. contradict H31. auto.
 apply subcntxt_splits with (ll1:= LL1) (ll2:=LL2) in H2;auto.
 inversion H2;auto.
 intros.
@@ -3441,12 +3441,12 @@ intros. assert(h13:=H13).
 apply in_split_l with (a:=(typeof (CON (Qvar q0)) T)) in H13;auto.
 apply H0 with (q:=q0) in H13;auto.
 assert(h13':=h13).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h13.
 apply unique_in_split with (a:=(typeof (CON (Qvar q0)) T)) in h13';auto.
-destruct h13';inversion H22. contradict H23. auto. 
+destruct h13';inversion H22. contradict H23. auto.
 rewrite count_occ_not_In with (eq_dec:=ProgLemmas1.eq_dec) in H24.
-omega. 
+lia.
 apply subcntxt_splits with (ll1:= LL1) (ll2:=LL2) in H2;auto.
 inversion H2;auto. auto.
 auto.
@@ -3456,7 +3456,7 @@ destruct H5. inversion H5. inversion H5. inversion H8.
 
 (*circ Case*)
 -
-subst. apply sub_Circ_inv in H3. 
+subst. apply sub_Circ_inv in H3.
 destruct H3;rexists;destruct_conj;subst;simpl;intuition.
 auto.
 contradict H2. apply H1 in H2.
@@ -3466,7 +3466,7 @@ destruct H5. inversion H5. inversion H5. inversion H8.
 - apply H1 in H7. inversion H7.  inversion H8.
 inversion H9. subst. inversion H3. inversion H6. subst.
 inversion H13. inversion H20. subst. apply split_ident in H12. subst.
-assert(i0=i);try omega. subst. apply IHi with (q:=q) in H18;auto.
+assert(i0=i);try lia. subst. apply IHi with (q:=q) in H18;auto.
 auto. subst. inversion H13. simpl. intuition.
 
 subst. simpl. split;intros. intuition. destruct H4.
@@ -3474,17 +3474,17 @@ inversion H4. intuition. subst. simpl. intuition.
 
 inversion H9. inversion H10. subst. inversion H3. inversion H6. subst.
 inversion H14. inversion H21. subst. apply split_ident in H13. subst.
-assert(i0=i);try omega. subst. apply IHi with (q:=q) in H19;auto.
+assert(i0=i);try lia. subst. apply IHi with (q:=q) in H19;auto.
 auto. subst. inversion H11. apply split_nil in H13. inversion H13. subst.
-inversion H18. apply seq_mono_cor with (k:=i) in H21;try omega. inversion H14. subst.
-apply IHi with (q:=q) in H21;auto.  
+inversion H18. apply seq_mono_cor with (k:=i) in H21;try lia. inversion H14. subst.
+apply IHi with (q:=q) in H21;auto.
 
-subst. simpl. split;intros. destruct H4. 
-inversion H4.  subst. 
+subst. simpl. split;intros. destruct H4.
+inversion H4.  subst.
 assert(In (typeof (CON (Qvar q)) A) [typeof (CON (Qvar q)) A]); try apply in_eq.
 apply H in H5. subst. left. auto.
 intuition. destruct H4.  inversion H4. subst. auto.
-intuition. 
+intuition.
 
 apply H1 in H12. inversion H12. destruct H13. inversion H13.
 destruct H13. inversion H13. inversion H13. inversion H14.
@@ -3492,11 +3492,11 @@ destruct H13. inversion H13. inversion H13. inversion H14.
 inversion H10. inversion H11.
 Qed.
 
-Theorem LL_FQ_ALT_L: forall  i u A a a' IL LL LL' ll ll1, 
+Theorem LL_FQ_ALT_L: forall  i u A a a' IL LL LL' ll ll1,
 common_ll a a' ll LL'-> LSL.split ll LL ll1 ->
 (forall t, In t IL -> (exists i, t = is_qexp (Var i) \/ t = is_qexp (CON (Qvar i)) \/
      exists T, t = typeof (Var i) T)) ->
-Subtypecontext IL ll IL ll ->   
+Subtypecontext IL ll IL ll ->
 seq_ i IL LL (atom_(typeof u A)) ->
 (forall q, In (CON (Qvar q))  (FQ u)   <-> In (typeof (CON (Qvar q)) qubit) LL ).
 Proof.
@@ -3508,22 +3508,22 @@ intros.
 assert(h0:=H0).
 apply in_split_l with (a:=(typeof (CON (Qvar q0)) T)) in H0;auto.
 assert(h0':=h0).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h0.
 assert(h:=H). apply in_common_l_T with (q:=q0) (T:=T) in h;auto.
 subst.
 apply in_common_l with (q:=q0) in H;auto. inversion H.
 subst. rewrite count_occ_In with (eq_dec:=ProgLemmas1.eq_dec) in H4.
-omega.
+lia.
 apply subcntxt_splits with (ll1:= LL) (ll2:=ll1) in H2;auto.
 inversion H2;auto.
 Qed.
 
-Theorem LL_FQ_ALT_R: forall  i u A a a' IL LL LL' ll ll1, 
+Theorem LL_FQ_ALT_R: forall  i u A a a' IL LL LL' ll ll1,
 common_ll a a' ll LL'-> LSL.split ll ll1 LL ->
 (forall t, In t IL -> (exists i, t = is_qexp (Var i) \/ t = is_qexp (CON (Qvar i)) \/
      exists T, t = typeof (Var i) T)) ->
-Subtypecontext IL ll IL ll ->   
+Subtypecontext IL ll IL ll ->
 seq_ i IL LL (atom_(typeof u A)) ->
 (forall q, In (CON (Qvar q))  (FQ u)   <-> In (typeof (CON (Qvar q)) qubit) LL ).
 intros. apply LL_FQ with (q:=q) in H3;auto.
@@ -3534,14 +3534,13 @@ intros.
 assert(h0:=H0).
 apply in_split_r with (a:=(typeof (CON (Qvar q0)) T)) in H0;auto.
 assert(h0':=h0).
-apply count_split with 
+apply count_split with
 (eq_dec:=ProgLemmas1.eq_dec) (a:=(typeof (CON (Qvar q0)) T)) in h0.
 assert(h:=H). apply in_common_l_T with (q:=q0) (T:=T) in h;auto.
 subst.
 apply in_common_l with (q:=q0) in H;auto. inversion H.
 subst. rewrite count_occ_In with (eq_dec:=ProgLemmas1.eq_dec) in H4.
-omega.
+lia.
 apply subcntxt_splits with (ll1:= ll1) (ll2:=LL) in H2;auto.
 inversion H2;auto.
 Qed.
-

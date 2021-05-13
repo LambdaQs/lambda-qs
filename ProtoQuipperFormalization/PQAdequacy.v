@@ -91,14 +91,14 @@ inversion h2; subst; clear h2.
     specialize (H6 x h2).
     inversion H6; subst; clear H6.
     apply i_imp; auto.
-    apply h with (is_qexp x::Phi1); auto; try omega.
+    apply h with (is_qexp x::Phi1); auto; try lia.
     (* proof of extended context inv *)
     intro T; generalize (h1 T); simpl; tauto.
   + (* App case *)
     inversion H1; subst; clear H1.
     inversion H7; subst; clear H7.
     inversion H2; subst; clear H2.
-    assert (hi:i<i+1+1); try omega.
+    assert (hi:i<i+1+1); try lia.
     generalize h; intro h'.
     specialize h with (1:=hi) (2:=h1) (3:=H6).
     specialize h' with (1:=hi) (2:=h1) (3:=H9).
@@ -111,7 +111,7 @@ inversion h2; subst; clear h2.
     inversion H1; subst; clear H1.
     inversion H7; subst; clear H7.
     inversion H2; subst; clear H2.
-    assert (hi:i<i+1+1); try omega.
+    assert (hi:i<i+1+1); try lia.
     generalize h; intro h'.
     specialize h with (1:=hi) (2:=h1) (3:=H6).
     specialize h' with (1:=hi) (2:=h1) (3:=H9).
@@ -143,18 +143,18 @@ inversion h2; subst; clear h2.
       inversion H6; subst; clear H6.
       apply i_imp; auto.
       apply i_imp; auto.
-      apply h with (is_qexp y::is_qexp x::Phi1); auto; try omega.
+      apply h with (is_qexp y::is_qexp x::Phi1); auto; try lia.
       intro T; generalize (h1 T); simpl; tauto.
     * apply ss_general with [] []; auto with hybrid.
       { inversion H10. inversion H11.  subst. 
         apply split_ident in H1;auto. subst.
-        apply h with Phi1; auto with hybrid; try omega. }
+        apply h with Phi1; auto with hybrid; try lia. }
       { apply ss_init. }
   + (* Slet case *)
     inversion H1; subst; clear H1.
     inversion H7; subst; clear H7.
     inversion H2; subst; clear H2.
-    assert (hi:i<i+1+1); try omega.
+    assert (hi:i<i+1+1); try lia.
     generalize h; intro h'.
     specialize h with (1:=hi) (2:=h1) (3:=H6).
     specialize h' with (1:=hi) (2:=h1) (3:=H9).
@@ -175,10 +175,10 @@ inversion h2; subst; clear h2.
                   (atom_(is_qexp a2)))]; auto with hybrid.
     apply ss_general with [] []; auto with hybrid.
     apply a_and; auto with hybrid.
-    apply h with Phi1; auto; try omega.
+    apply h with Phi1; auto; try lia.
     apply a_and; auto with hybrid.
-    * apply h with Phi1; auto; try omega.
-    * apply h with Phi1; auto; try omega.
+    * apply h with Phi1; auto; try lia.
+    * apply h with Phi1; auto; try lia.
   + (* Circ case *)
     inversion H1; subst; clear H1.
     inversion H3; subst; clear H3.
@@ -191,10 +191,10 @@ inversion h2; subst; clear h2.
             auto.
           { apply move_from_il in H8;auto.
             { assert (H: length (FQ a) <= i0 ->
-                         i0 - length (FQ a) + length (FQ a) = i0); try omega.
+                         i0 - length (FQ a) + length (FQ a) = i0); try lia.
               rewrite <- H;auto. }
             { apply fq_all_qvar. }}
-          { omega. }
+          { lia. }
           { intros. apply in_app_iff in H. destruct H.
             { apply in_or_app. left;auto. }
             { apply in_or_app. right;auto. }}}
@@ -240,13 +240,13 @@ inversion h1; subst; clear h1.
     inversion H1; subst; clear H1.
     inversion H2; subst; clear H2.
     generalize seq_mono; unfold Psinglell; intro h2.
-    apply h2 with i0; try omega; auto.
+    apply h2 with i0; try lia; auto.
   + (* axc2 case *)
     inversion H1; subst; clear H1.
     inversion H2; subst; clear H2.
     inversion H8; subst; clear H8.
     generalize seq_mono; unfold Psinglell; intro h2.
-    apply h2 with i; try omega; auto.
+    apply h2 with i; try lia; auto.
     (* cases starl, stari, truel, truei, falsel, falsei, box, unbox, rev *)
   + apply s_bc with [] []; auto with hybrid.
   + apply s_bc with [] []; auto with hybrid.
@@ -273,11 +273,11 @@ inversion h1; subst; clear h1.
     inversion H9; subst; clear H9.
     apply i_imp; auto.
     apply h with T2  (typeof x T1 :: lL2);
-      eauto with hybrid; try omega.
+      eauto with hybrid; try lia.
     * apply subcnxt_llg;auto.  
       apply sub_ref,bang_valid;auto.
     * generalize seq_mono; unfold Psinglell; intro h2.
-      apply h2 with i; try omega; auto with hybrid.
+      apply h2 with i; try lia; auto with hybrid.
   + (* lambda1i case *)
     inversion H5; subst; clear H5.
     inversion H11; subst; clear H11.
@@ -299,12 +299,12 @@ inversion h1; subst; clear h1.
         { inversion H5. }
         { apply in_cons;auto. }}
     * apply h with T2  lL2;
-        eauto with hybrid; try omega.
+        eauto with hybrid; try lia.
       { apply subcnxt_iig;auto.  
         { apply sub_ref;auto. }
         { exists T1. auto. }}
       { generalize seq_mono; unfold Psinglell; intro h2.
-        apply h2 with i; try omega; auto with hybrid.
+        apply h2 with i; try lia; auto with hybrid.
         apply seq_weakening_cor with (typeof x (bang T1) :: is_qexp x :: it);auto.
         intros. inversion H.
         { subst. apply in_cons, in_eq;auto. }
@@ -334,12 +334,12 @@ inversion h1; subst; clear h1.
         { inversion H1. }
         { apply in_cons;auto. }}
     * apply h with T2  [];
-        eauto with hybrid; try omega.
+        eauto with hybrid; try lia.
       { apply subcnxt_iig;auto.  
         { apply sub_ref;auto. }
         { exists T1. auto. }}
       { generalize seq_mono; unfold Psinglell; intro h2.
-        apply h2 with i; try omega; auto with hybrid.
+        apply h2 with i; try lia; auto with hybrid.
         apply seq_weakening_cor with (typeof x (bang T1) :: is_qexp x :: it);auto.
         intros. inversion H.
         { subst. apply in_cons, in_eq;auto. }
@@ -362,11 +362,11 @@ inversion h1; subst; clear h1.
     inversion H5; subst; clear H5.
     inversion H6; subst; clear H6.
     apply i_imp; auto.
-    apply h with T2  [typeof x T1]; eauto with hybrid; try omega.
+    apply h with T2  [typeof x T1]; eauto with hybrid; try lia.
     * apply subcnxt_llg;auto.  
       apply sub_ref,bang_valid;auto.
     *  generalize seq_mono; unfold Psinglell; intro h2.
-      apply h2 with i ; try omega ; auto with hybrid.
+      apply h2 with i ; try lia ; auto with hybrid.
   + (* tap case *)
     inversion H5. inversion H9. subst. 
     apply split_ident_alt in H2; auto. subst.
@@ -380,8 +380,8 @@ inversion h1; subst; clear h1.
       { apply init. }
       { apply a_and;auto.
         { apply h with (arrow T' T)  LL1;auto.
-          omega. }
-        { apply h with T' LL2;auto. omega. }}
+          lia. }
+        { apply h with T' LL2;auto. lia. }}
       { apply ss_init. }
     * apply ss_init.
   + (* tensorl case *)
@@ -394,8 +394,8 @@ inversion h1; subst; clear h1.
         [] [And (atom_(is_qexp E1)) (atom_(is_qexp E2))];auto with hybrid.
     apply ss_general with [] [];auto with hybrid.
     apply a_and;auto with hybrid.
-    * apply h with T0 LL1; auto; omega.
-    *  apply h with T' LL2; auto; omega.
+    * apply h with T0 LL1; auto; lia.
+    *  apply h with T' LL2; auto; lia.
   + (* tensori case *)
     inversion H5. inversion H10. subst. 
     apply split_ident_alt in H2; auto. subst.
@@ -406,8 +406,8 @@ inversion h1; subst; clear h1.
         [] [And (atom_(is_qexp E1)) (atom_(is_qexp E2))];auto with hybrid.
     apply ss_general with [] [];auto with hybrid. 
     apply a_and;auto with hybrid.
-    * apply h with (bang T0) LL1;auto; omega.
-    * apply h with (bang T') LL2;auto; omega.
+    * apply h with (bang T0) LL1;auto; lia.
+    * apply h with (bang T') LL2;auto; lia.
   + (* tletl case *)  
     inversion H5.
     apply subcntxt_splits with (il:=it) in H2;auto.
@@ -425,15 +425,15 @@ inversion h1; subst; clear h1.
       inversion H20. apply s_all. intros. assert(H26':=H26). 
       apply H25 in H26. inversion H26. inversion H31. 
       inversion H37.  inversion H43. repeat apply i_imp.
-      apply h with T (typeof x0 T2 :: typeof x T1 :: lL2);auto with hybrid; try omega.
+      apply h with T (typeof x0 T2 :: typeof x T1 :: lL2);auto with hybrid; try lia.
       { repeat apply cons_l_cr;auto.
         repeat apply subcnxt_llg;auto with hybrid.
         { apply sub_ref,bang_valid;auto. }
         { apply sub_ref,bang_valid;auto. }}
-      { apply seq_mono_cor with i6;auto; omega. }
+      { apply seq_mono_cor with i6;auto; lia. }
     * inversion H12. inversion H27. subst. apply split_ident in H22; auto.
       subst. apply ss_general with [] [];auto with hybrid.
-      apply h with (tensor T1 T2) (lL4); auto; omega. 
+      apply h with (tensor T1 T2) (lL4); auto; lia. 
   + (* tleti case *)
     inversion H5.
     apply subcntxt_splits with (il:=it) in H2;auto.
@@ -462,14 +462,14 @@ inversion h1; subst; clear h1.
             { inversion H54.
               { inversion H55. }
               { apply in_cons,in_cons;auto. }}}}}
-      { apply h with T (lL2);auto; try omega.
+      { apply h with T (lL2);auto; try lia.
         { repeat apply cons_i_cr;auto with hybrid.
           repeat apply subcnxt_iig;auto with hybrid.
           { apply sub_ref;auto with hybrid. }
           { exists T2; auto. }
           { apply sub_ref;auto with hybrid. }
           { exists T1; auto. }}
-        { apply seq_mono_cor with i6;auto; try omega.
+        { apply seq_mono_cor with i6;auto; try lia.
           apply seq_weakening with
               (typeof x0 (bang T2)::typeof x (bang T1)::is_qexp x0::is_qexp x::it);
             auto with hybrid.
@@ -484,7 +484,7 @@ inversion h1; subst; clear h1.
                 { repeat apply in_cons; auto. }}}}}}
     * inversion H12. inversion H27. subst. apply split_ident in H22; auto.
       subst. apply ss_general with [] [];auto with hybrid.
-      apply h with (bang (tensor T1 T2)) (lL4);auto; try omega.
+      apply h with (bang (tensor T1 T2)) (lL4);auto; try lia.
   + (* tsletl case *)
     inversion H5. inversion H9. subst. 
     apply split_ident_alt in H2; auto. subst.
@@ -495,8 +495,8 @@ inversion h1; subst; clear h1.
         [] [And (atom_(is_qexp E)) (atom_(is_qexp b0))];auto with hybrid.
     apply ss_general with [] [];auto with hybrid. 
     apply a_and;auto with hybrid.
-    { apply h with T LL1;auto; omega. }
-    { apply h with one LL2;auto; omega. }
+    { apply h with T LL1;auto; lia. }
+    { apply h with one LL2;auto; lia. }
   +  (* tsleti case *)
     inversion H5. inversion H9. subst. 
     apply split_ident_alt in H2; auto. subst.
@@ -506,8 +506,8 @@ inversion h1; subst; clear h1.
         [] [And (atom_(is_qexp E)) (atom_(is_qexp b0))];auto with hybrid.
     apply ss_general with [] [];auto with hybrid. 
     apply a_and;auto with hybrid.
-    * apply h with T LL1;auto; omega.
-    * apply h with (bang one) LL2;auto; omega.
+    * apply h with T LL1;auto; lia.
+    * apply h with (bang one) LL2;auto; lia.
   + (* tif case *)
     inversion H5. inversion H10. subst. 
     apply split_ident_alt in H2; auto. subst.
@@ -519,10 +519,10 @@ inversion h1; subst; clear h1.
       auto with hybrid.
     apply ss_general with [] [];auto with hybrid. 
     apply a_and;auto.
-    * apply h with bool  LL1;auto; omega. 
+    * apply h with bool  LL1;auto; lia. 
     * inversion H12. apply a_and;auto.
-      { apply h with T LL2;auto; omega. }
-      { apply h with T LL2;auto; omega. }
+      { apply h with T LL2;auto; lia. }
+      { apply h with T LL2;auto; lia. }
   + (* tcircl case *)
     inversion H1. inversion H12. subst. 
     apply split_ident_alt in H2; auto. subst.
@@ -531,13 +531,13 @@ inversion h1; subst; clear h1.
     assert(H10':=H10). apply toimp_ilength in H10';auto.
     * apply move_to_ll in H10.
       { apply ss_general with [] [];auto with hybrid.
-        { apply h with (T:=U) in H10;auto with hybrid; try omega.
+        { apply h with (T:=U) in H10;auto with hybrid; try lia.
           { apply move_from_il in H10;auto.
             { apply seq_mono_cor with (k:=i+1) in H10;auto.
               assert (H':length (FQ a) + length (FQ a) <= i -> 
                          i - length (FQ a) - length (FQ a) + length (FQ a) <= i+1);
-                omega. }
-            { apply fq_all_qvar; omega. }}
+                lia. }
+            { apply fq_all_qvar; lia. }}
           { rewrite rev_toqlist,rev_toiqlist,app_nil_r. apply subcnxt_add;auto.
             inversion H5. subst. auto. }}
         { apply ss_init. }}
@@ -551,13 +551,13 @@ inversion h1; subst; clear h1.
     assert(H10':=H10). apply toimp_ilength in H10';auto.
     * apply move_to_ll in H10.
       { apply ss_general with [] [];auto with hybrid.
-        { apply h with (T:=U) in H10;auto with hybrid; try omega.
+        { apply h with (T:=U) in H10;auto with hybrid; try lia.
           { apply move_from_il in H10;auto.
             { apply seq_mono_cor with (k:=i+1) in H10;auto.
               assert (H':length (FQ a) + length (FQ a) <= i -> 
                            i - length (FQ a) - length (FQ a) +  length (FQ a) <=i+1);
-                omega. }
-            { apply fq_all_qvar; omega. }}
+                lia. }
+            { apply fq_all_qvar; lia. }}
           { rewrite rev_toqlist,rev_toiqlist,app_nil_r. apply subcnxt_add;auto.
             inversion H5. subst. auto. }}
         { apply ss_init. }}
@@ -599,11 +599,11 @@ intros t H. induction H.
      * apply init. 
      * apply a_and; auto.
        { apply [is_qexp (CON STAR)]. }
-       { apply seq_mono_cor with (j:= x); try omega.
+       { apply seq_mono_cor with (j:= x); try lia.
          apply seq_weakening_cor with (il:=toiqlist (FQ a));auto.
          apply toiqlist_union. simpl.
          intros.  apply set_union_intro1. unfold set_In. auto. }
-       { apply seq_mono_cor with (j:= x0);try omega.
+       { apply seq_mono_cor with (j:= x0);try lia.
          apply seq_weakening_cor with (il:=toiqlist (FQ b));auto.
          apply toiqlist_union. simpl.
          intros.  apply set_union_intro2. unfold set_In. auto. }

@@ -174,7 +174,7 @@ Theorem count_occ_remove_in: forall l a,
 Proof.
 intros l a. induction l; simpl; auto.
 destruct (eq_dec a a0) as [e | n].
-- destruct (eq_dec a0 a). omega. contradict n. auto.
+- destruct (eq_dec a0 a). lia. contradict n. auto.
 - simpl. destruct (eq_dec a a0).
   + contradict n. auto.
   + destruct (eq_dec a0 a); auto. contradict n. auto.
@@ -187,14 +187,14 @@ Proof.
 intros l l' A H a. destruct l.
 - destruct (eq_dec A a) as [e | n].
   + subst. rewrite count_occ_remove_in. rewrite <- H.
-    simpl. destruct (eq_dec a a);omega. 
+    simpl. destruct (eq_dec a a);lia. 
   + assert(h:=n).
     apply count_occ_remove_nin with (l:=l') in n.
     rewrite n, <- H. simpl.
     destruct (eq_dec A a); auto. contradict h. auto.
 - destruct (eq_dec A a).
   + subst. rewrite count_occ_remove_in. rewrite <- H.
-    simpl. destruct (eq_dec a a); try omega.
+    simpl. destruct (eq_dec a a); try lia.
     contradict n. auto.
   + assert(h:=n).
     apply count_occ_remove_nin with (l:=l') in n.
@@ -283,7 +283,7 @@ auto. contradict n1. auto.
 destruct (eq_dec a t). simpl.
 destruct (eq_dec A a). 
 contradict n. auto.  destruct (eq_dec t a).
-omega. contradict n1. auto.
+lia. contradict n1. auto.
 simpl. rewrite H7. destruct (eq_dec t a).
 contradict n0. auto.
 destruct (eq_dec A a). contradict n. auto.
@@ -335,7 +335,7 @@ auto. contradict n1. auto.
 destruct (eq_dec a t). simpl.
 destruct (eq_dec A a). 
 contradict n. auto.  destruct (eq_dec t a).
-omega. contradict n1. auto.
+lia. contradict n1. auto.
 simpl. rewrite H7. destruct (eq_dec t a).
 contradict n0. auto.
 destruct (eq_dec A a). contradict n. auto.
@@ -435,7 +435,7 @@ Theorem count_split: forall (l l1 l2:list T), split l l1 l2 ->
 Proof.
 intros l l1 l2 H. induction H; intros;
 simpl; auto; rewrite IHsplit; 
-destruct (eq_dec A a); omega; auto.
+destruct (eq_dec A a); lia; auto.
 Qed.
 
 Theorem count_app: forall (l l1 l2:list T) (q:T),
@@ -450,7 +450,7 @@ intro l. induction l; intros.
     rewrite <- H in *. simpl in *. auto.
   + inversion H. assert(h:=H2).
     apply IHl with (q:=q) in H2. simpl.
-    destruct (eq_dec t q);rewrite <- h,H2; omega.
+    destruct (eq_dec t q);rewrite <- h,H2; lia.
 Qed.
 
 Theorem split_identr_alt: forall (l1 l2 l3:list T), split l1 l2 l3 ->l2 = [] ->  l1 = l3.
@@ -526,7 +526,7 @@ split l l1 l2 -> forall a,
 count_occ eq_dec l a = 1 ->
  (~ (In a l1) /\ (In a l2)) \/ ( (In a l1) /\ ~(In a l2)) . 
 Proof.
-intros l l1 l2 H. induction H;intros. simpl in H. omega.
+intros l l1 l2 H. induction H;intros. simpl in H. lia.
 destruct (eq_dec A a). 
 subst. rewrite count_occ_cons_eq in  H0;auto.
 inversion H0. rewrite <- count_occ_not_In in H2. 
@@ -802,31 +802,31 @@ Proof.
 intros j il ll b H.
 apply seq_split_ind with (P := P_seq_mono) (P0:=P0_splitseq_mono); auto;
   unfold P_seq_mono, P0_splitseq_mono;
-  intros; try destruct k; try assert (S k = k + 1); try omega;
+  intros; try destruct k; try assert (S k = k + 1); try lia;
   try constructor; auto.  (* handles the init and tt cases *)
 - (* s_bc case *)
   rewrite H6. apply s_bc with lL iL; auto.
-  + apply H2; omega.
-  + apply H4; omega.
+  + apply H2; lia.
+  + apply H4; lia.
 - (* m_and case *)
   rewrite H6.
   apply m_and with LL1 LL2; auto.
-  + apply H2; omega.
-  + apply H4; omega. 
+  + apply H2; lia.
+  + apply H4; lia. 
 - (* a_and case *)
   rewrite H5.
   apply a_and; auto.
-  + apply H1;omega. 
-  + apply H3;omega.
+  + apply H1;lia. 
+  + apply H3;lia.
 - (* i_imp case *)
   rewrite H3.
-  apply i_imp; auto. apply H1; omega. 
+  apply i_imp; auto. apply H1; lia. 
 - (* l_imp case *)
   rewrite H3.
-  apply l_imp; auto. apply H1; omega. 
+  apply l_imp; auto. apply H1; lia. 
 - (* s_all case *)
   rewrite H3.
-  apply s_all; auto. intros; apply H1; auto ;omega. 
+  apply s_all; auto. intros; apply H1; auto ;lia. 
 - (* ss_general case *)
   apply ss_general with lL2 lL3; auto.
 Qed.
@@ -838,31 +838,31 @@ Proof.
 intros j il ll b H.
 apply split_seq_ind with (P := P_seq_mono) (P0:=P0_splitseq_mono); auto;
   unfold P_seq_mono, P0_splitseq_mono;
-  intros; try destruct k; try assert (S k = k + 1); try omega;
+  intros; try destruct k; try assert (S k = k + 1); try lia;
   try constructor; auto.  (* handles the init and tt cases *)
 - (* s_bc case *)
   rewrite H6. apply s_bc with lL iL;auto.
-  + apply H2; omega.
-  + apply H4; omega. 
+  + apply H2; lia.
+  + apply H4; lia. 
 - (* m_and case *)
   rewrite H6.
   apply m_and with LL1 LL2; auto.
-  + apply H2; omega. 
-  + apply H4; omega.
+  + apply H2; lia. 
+  + apply H4; lia.
 - (* a_and case *)
   rewrite H5.
   apply a_and; auto. 
-  + apply H1; omega.
-  + apply H3; omega.
+  + apply H1; lia.
+  + apply H3; lia.
 - (* i_imp case *)
   rewrite H3.
-  apply i_imp; auto. apply H1; omega. 
+  apply i_imp; auto. apply H1; lia. 
 - (* l_imp case *)
   rewrite H3.
-  apply l_imp; auto. apply H1; omega. 
+  apply l_imp; auto. apply H1; lia. 
 - (* s_all case *)
   rewrite H3.
-  apply s_all;auto. intros; apply H1; auto; omega. 
+  apply s_all;auto. intros; apply H1; auto; lia. 
 - (* ss_general case *)
   apply ss_general with lL2 lL3; auto.
 Qed.
@@ -908,14 +908,14 @@ Proof.
 intros i a b il ll H.
 apply seq_split_ind with (P0:=P0_splitseq_cut);
   unfold P_seq_cut, P0_splitseq_cut; intros;
-  try replace (i0+1+j) with ((i0+j)+1); try omega; auto.
+  try replace (i0+1+j) with ((i0+j)+1); try lia; auto.
 - (* s_bc case *)
   apply s_bc with (lL:=lL) (iL:=iL); auto.          
 - (* l_init case *)
   constructor; auto.
 - (* i_init case *)
   destruct (eq_dec a0 A).
-  + subst. apply seq_mono_cor with j; try omega; auto.
+  + subst. apply seq_mono_cor with j; try lia; auto.
   + constructor; auto. apply remove_In; auto.
 - (* s_tt case *)
   constructor; auto.
@@ -971,14 +971,14 @@ apply seq_split_ind with (P0 := P0_splitseq_exchange);
 - (* l_init case *)
   assert(h:=H0).
   apply count_occ_length in H0. destruct ll'.
-  + simpl in H0. omega. 
+  + simpl in H0. lia. 
   + destruct ll'. 
     * assert(In A [A]);try apply in_eq.
       rewrite count_occ_In,h,<-count_occ_In in H1.
       inversion H1. 
       { subst. apply l_init. }
       { inversion H2. }
-    * simpl in H0. omega.
+    * simpl in H0. lia.
 - (* i_init case *)
   simpl in H1. symmetry in H1.
   rewrite count_occ_inv_nil in H1. subst.
@@ -1019,14 +1019,14 @@ apply split_seq_ind with (P := P_seq_exchange);
 - (* l_init_case *)
   intros. assert(h:=H).
   apply count_occ_length in H. destruct ll'.
-  + simpl in H. omega. 
+  + simpl in H. lia. 
   + destruct ll'. 
     * assert(In A [A]);try apply in_eq.
       rewrite count_occ_In,h,<-count_occ_In in H0.
       inversion H0.
       { subst. apply l_init. }
       { inversion H1. }
-    * simpl in H. omega. 
+    * simpl in H. lia. 
 - (* i_init case *)
   simpl in H0. symmetry in H0.
   rewrite count_occ_inv_nil in H0. subst.
@@ -1100,14 +1100,14 @@ intros i a b il ll H.
 apply seq_split_ind with (P0:=P0_splitseq_cut_linear);
   unfold P_seq_cut_linear,P0_splitseq_cut_linear; intros; auto.
 - (* s_bc case *)
-  replace (i0 +1+j) with ((i0+j)+1); try omega.
+  replace (i0 +1+j) with ((i0+j)+1); try lia.
   apply s_bc with (lL:=lL) (iL:=iL);auto.
-  apply splitseq_mono_cor with (j:=i0). omega. auto.          
+  apply splitseq_mono_cor with (j:=i0). lia. auto.          
 - (* l_init case *)
   inversion H0.
   + subst. simpl. destruct (eq_dec a0 a0).
     * rewrite app_nil_r. apply seq_mono_cor with (j:=j); auto.
-      omega.
+      lia.
     * contradict n. auto.
   + inversion H2.
 - (* i_init case *)
@@ -1115,14 +1115,14 @@ apply seq_split_ind with (P0:=P0_splitseq_cut_linear);
 - (* s_tt case *)
   apply s_tt. 
 - (* m_and case *)
-  replace (i0 +1+j) with ((i0+j)+1); try omega. assert(h':=H0). 
+  replace (i0 +1+j) with ((i0+j)+1); try lia. assert(h':=H0). 
   apply in_split_or with (a:=a0) in H0;auto. destruct H0.
   + assert(h0:=H0).
     apply H2 with (j:=j) (ll':=ll') in H0;auto.
     apply seq_exchange_cor with (ll:=(ll'++ remove_one eq_dec LL1 a0)++ LL2).
     * apply m_and with (ll' ++ remove_one eq_dec LL1 a0) LL2;auto.
       { apply concat_split. auto. }
-      { apply seq_mono_cor with (j:=i0);try omega. auto. }
+      { apply seq_mono_cor with (j:=i0);try lia. auto. }
     * intros.
       rewrite count_app with (l1:=ll') (l2:=remove_one eq_dec LL a0) 
               (l:=ll' ++ remove_one eq_dec LL a0);auto.
@@ -1134,15 +1134,15 @@ apply seq_split_ind with (P0:=P0_splitseq_cut_linear);
       { subst. repeat rewrite count_occ_remove_in.
         apply count_split with (eq_dec:=eq_dec) (a:=a1) in h'.
         rewrite h'. rewrite count_occ_In with (eq_dec:=eq_dec) in h0,  H5.
-        omega. }
+        lia. }
       { apply count_split with (eq_dec:=eq_dec) (a:=a1) in h'.
-        repeat rewrite count_occ_remove_nin;auto. rewrite h'.  omega. }
+        repeat rewrite count_occ_remove_nin;auto. rewrite h'.  lia. }
   + assert(h0:=H0).
     apply H4 with (j:=j) (ll':=ll') in H0;auto.
     apply seq_exchange_cor with (ll:=LL1++(ll'++ remove_one eq_dec LL2 a0)).
     * apply m_and with LL1 (ll' ++ remove_one eq_dec LL2 a0) ;auto.
       { apply concat_split. auto. }
-      { apply seq_mono_cor with (j:=i0);try omega. auto. }
+      { apply seq_mono_cor with (j:=i0);try lia. auto. }
     * intros.
       rewrite count_app with (l1:=ll') (l2:=remove_one eq_dec LL a0) 
               (l:=ll' ++ remove_one eq_dec LL a0);auto.
@@ -1154,18 +1154,18 @@ apply seq_split_ind with (P0:=P0_splitseq_cut_linear);
       { subst. repeat rewrite count_occ_remove_in.
         apply count_split with (eq_dec:=eq_dec) (a:=a1) in h'.
         rewrite h'. rewrite count_occ_In with (eq_dec:=eq_dec) in h0, H5.
-        omega. }
+        lia. }
       { apply count_split with (eq_dec:=eq_dec) (a:=a1) in h'.
-        repeat rewrite count_occ_remove_nin;auto. rewrite h'.  omega. }
+        repeat rewrite count_occ_remove_nin;auto. rewrite h'.  lia. }
 - (* a_and case *)
-  replace (i0 +1+j) with ((i0+j)+1); try omega. apply a_and;auto. 
+  replace (i0 +1+j) with ((i0+j)+1); try lia. apply a_and;auto. 
 - (* i_imp case *)
-  replace (i0 +1+j) with ((i0+j)+1); try omega. 
+  replace (i0 +1+j) with ((i0+j)+1); try lia. 
   apply i_imp, H1;auto.
   apply seq_weakening_cor with ( il:=IL);auto.
   intros. apply in_cons. auto.
 - (* l_imp case *)
-  replace (i0 +1+j) with ((i0+j)+1); try omega. 
+  replace (i0 +1+j) with ((i0+j)+1); try lia. 
   apply l_imp.
   apply seq_exchange_cor with
     (ll:=ll' ++ remove_one eq_dec (A :: LL) a0);auto.
@@ -1179,11 +1179,11 @@ apply seq_split_ind with (P0:=P0_splitseq_cut_linear);
     destruct (eq_dec a0 a1).
     * subst. repeat rewrite count_occ_remove_in.
       simpl. destruct (eq_dec A a1); auto.
-      rewrite count_occ_In with (eq_dec:=eq_dec) in H2. omega.
+      rewrite count_occ_In with (eq_dec:=eq_dec) in H2. lia.
     * repeat rewrite count_occ_remove_nin;auto. simpl.
-      destruct (eq_dec A a1);omega.
+      destruct (eq_dec A a1);lia.
 - (* s_all case *)
-  replace (i0 +1+j) with ((i0+j)+1); try omega. apply s_all;auto.
+  replace (i0 +1+j) with ((i0+j)+1); try lia. apply s_all;auto.
 - (* ss_init case *)
   inversion H0.
 - (* ss_general case *)
@@ -1195,7 +1195,7 @@ apply seq_split_ind with (P0:=P0_splitseq_cut_linear);
           (ll:=(ll'++ remove_one eq_dec lL2 a0)++ lL3).
     * apply ss_general with (ll' ++ remove_one eq_dec lL2 a0) lL3;auto.
       { apply concat_split. auto. }
-      { apply splitseq_mono_cor with (j:=i0);try omega. auto. }
+      { apply splitseq_mono_cor with (j:=i0);try lia. auto. }
     * intros.
       rewrite count_app with (l1:=ll') (l2:=remove_one eq_dec lL1 a0) 
               (l:=ll' ++ remove_one eq_dec lL1 a0);auto.
@@ -1207,16 +1207,16 @@ apply seq_split_ind with (P0:=P0_splitseq_cut_linear);
       { subst. repeat rewrite count_occ_remove_in.
         apply count_split with (eq_dec:=eq_dec) (a:=a1) in h'.
         rewrite h'. rewrite count_occ_In with (eq_dec:=eq_dec) in h0, H5.
-        omega. }
+        lia. }
       { apply count_split with (eq_dec:=eq_dec) (a:=a1) in h'.
-        repeat rewrite count_occ_remove_nin;auto. rewrite h'.  omega. }
+        repeat rewrite count_occ_remove_nin;auto. rewrite h'.  lia. }
   + assert(h0:=H0).
     apply H4 with (j:=j) (ll':=ll') in H0;auto.
     apply splitseq_exchange_cor with
           (ll:=lL2++(ll'++ remove_one eq_dec lL3 a0)).
     * apply ss_general with lL2 (ll' ++ remove_one eq_dec lL3 a0) ;auto.
       { apply concat_split. auto. }
-      { apply seq_mono_cor with (j:=i0);try omega. auto. }
+      { apply seq_mono_cor with (j:=i0);try lia. auto. }
     * intros.
       rewrite count_app with (l1:=ll') (l2:=remove_one eq_dec lL1 a0) 
               (l:=ll' ++ remove_one eq_dec lL1 a0);auto.
@@ -1228,9 +1228,9 @@ apply seq_split_ind with (P0:=P0_splitseq_cut_linear);
       { subst. repeat rewrite count_occ_remove_in.
         apply count_split with (eq_dec:=eq_dec) (a:=a1) in h'.
         rewrite h'. rewrite count_occ_In with (eq_dec:=eq_dec) in h0, H5.
-        omega. }
+        lia. }
       { apply count_split with (eq_dec:=eq_dec) (a:=a1) in h'.
-        repeat rewrite count_occ_remove_nin;auto. rewrite h'. omega. }
+        repeat rewrite count_occ_remove_nin;auto. rewrite h'. lia. }
 Qed.
 
 Theorem seq_cut_linear_cor:
@@ -1259,24 +1259,24 @@ intros i a b il ll H.
 apply seq_split_ind with (P0:=P0_splitseq_cut_one); auto; 
   unfold P_seq_cut_one,P0_splitseq_cut_one; intros.
 - (* s_bc case *)
-  replace (i0 +1+j) with ((i0+j)+1); try omega.
+  replace (i0 +1+j) with ((i0+j)+1); try lia.
   apply  s_bc with (lL:=lL) (iL:=iL);auto.          
 - (* l_init case *)
   apply l_init.
 - (* i_init case *)
   destruct (eq_dec a0 A).
-  + subst. apply seq_mono_cor with j;try omega;auto.
+  + subst. apply seq_mono_cor with j;try lia;auto.
   + apply i_init. apply remove_one_in;auto.
 - (* s_tt case *)
   constructor.
 - (* m_and case *)
-  replace (i0 +1+j) with ((i0+j)+1); try omega. 
+  replace (i0 +1+j) with ((i0+j)+1); try lia. 
   apply m_and with LL1 LL2;auto. 
 - (* a_and case *)
-  replace (i0 +1+j) with ((i0+j)+1); try omega. constructor;auto. 
+  replace (i0 +1+j) with ((i0+j)+1); try lia. constructor;auto. 
 - (* i_imp case *)
   simpl remove_one in H1. specialize H1 with j a0. 
-  replace (i0 +1+j) with ((i0+j)+1); try omega. destruct (eq_dec a0 A).  
+  replace (i0 +1+j) with ((i0+j)+1); try lia. destruct (eq_dec a0 A).  
   + apply i_imp. apply seq_weakening_cor with IL;auto. 
     * apply H1.
       { subst. apply in_eq. }
@@ -1290,9 +1290,9 @@ apply seq_split_ind with (P0:=P0_splitseq_cut_one); auto;
     * apply seq_weakening_cor with (remove_one eq_dec IL a0);auto.
       intros. apply in_cons;auto.
 - (* l_limp case *)
-  replace (i0 +1+j) with ((i0+j)+1); try omega. apply l_imp;auto.
+  replace (i0 +1+j) with ((i0+j)+1); try lia. apply l_imp;auto.
 - (* s_all case *)
-  replace (i0 +1+j) with ((i0+j)+1); try omega. apply s_all;auto.
+  replace (i0 +1+j) with ((i0+j)+1); try lia. apply s_all;auto.
 - (* ss_init case *)
   apply ss_init.
 - (* ss_general case *)
