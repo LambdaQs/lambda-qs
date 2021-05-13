@@ -13,6 +13,7 @@ Require Import ProtoQuipperTypes.
 Require Import Coq.Lists.ListSet.
 Require Import Coq.Lists.List.
 Require Import FunInd.
+Require Import Lia.
 Import ListNotations.
 
 

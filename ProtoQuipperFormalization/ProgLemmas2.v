@@ -15,6 +15,7 @@ Require Import ProtoQuipperSyntax.
 Require Import ProtoQuipperTypes.
 Require Import Coq.Lists.List.
 Require Import Coq.Lists.ListSet.
+Require Import Lia.
 Import ListNotations.
 
 Definition seq_ := ProgLemmas1.seq_.

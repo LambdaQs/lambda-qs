@@ -16,12 +16,13 @@ Require Import ProtoQuipperTypes.
 Require Import Coq.Lists.List.
 Require Import Coq.Lists.ListSet.
 Require Import FunInd.
+Require Import Lia.
 Import ListNotations.
-Variable circIn: Econ -> set qexp.
-Variable circOut: Econ -> set qexp.
-Variable circApp: Econ -> Econ -> Econ .
-Variable circNew: list qexp -> nat.
-Variable circRev: nat -> nat.
+Local Parameter circIn: Econ -> set qexp.
+Local Parameter circOut: Econ -> set qexp.
+Local Parameter circApp: Econ -> Econ -> Econ .
+Local Parameter circNew: list qexp -> nat.
+Local Parameter circRev: nat -> nat.
 
 Definition seq_ := PQAdequacy.seq_ circIn circOut circApp circNew circRev.
 Definition prog := PQAdequacy.prog circIn circOut circApp circNew circRev.
@@ -6169,74 +6170,73 @@ apply  notqext_nottyped with
   contradict H5. auto. contradict H6. auto.
 
 
-Focus 2.
-
-assert (exists A, In (typeof (CON TRUE) A) IL \/ In (typeof (CON TRUE) A) LL).
-induction i. inversion H2.  lia. exists (tensor T U). right. apply in_eq.
-exists (tensor T U). left.   auto.
-inversion H2. inversion H5. inversion H15.  subst.
- inversion H9. inversion H16. subst. apply split_ident in H8.
-subst. inversion H14. inversion H7.  inversion H25.   subst.
-inversion H17. inversion H24.  subst. apply  split_ident in H11.
-subst. inversion H23.  inversion H10.  inversion H34. subst.
-inversion H26. inversion H33. subst.  apply split_ident in H18.
-subst.   assert (i = i0+1+1);try lia.
-apply subtypecontext_subtyping with (IL':= IL) (LL':=lL2) (B:= tensor T U) in H32;auto.
-rewrite <- H4  in H32. auto.  apply sub_trans with (B:= tensor A3 A4);auto.
-apply sub_trans with (B:= tensor A1 A2);auto. auto. subst.
-inversion H31. inversion H33. inversion H35. subst. inversion H11.
-inversion H31.  apply split_nil in H18.  inversion H18. subst.
-inversion H26. subst.
-apply subtypecontext_subtyping with (IL':= IL) (LL':=[]) (B:= tensor T U) in H43;auto.
-apply seq_mono_cor with (k:= i2 + 1 + 1 + 1) in H43;try lia.
-assert(i=i2+1+1+1); try lia.
-rewrite <- H4 in H43.   auto.
-apply sub_trans with (B:= tensor A3 A4);auto.
-apply sub_trans with (B:= tensor A1 A2);auto. subst. inversion H36.
-subst. apply notqext_nottyped with
- (lt:=[typeof (CON TRUE) (tensor A3 A4)]) (T:= tensor A3 A4) in H1;auto.
- inversion H1. contradict H10. apply in_eq. subst.
-apply notqext_nottyped with (lt:=[]) (T:= tensor A3 A4) in H1;auto.
- inversion H1. contradict H4. auto. auto. subst. inversion H22.
-inversion H24. inversion H26. subst.   inversion H17. subst.
-inversion H8. apply split_nil in H11.  inversion H11. subst.
-inversion H22. assert(i=i0+1+1); try lia.
-apply subtypecontext_subtyping with (IL':= IL) (LL':=[]) (B:= tensor T U) in H25;auto.
-rewrite <- H29 in H25. auto.
-apply sub_trans with (B:= tensor A1 A2);auto.
-subst. inversion H27. subst.
- apply notqext_nottyped with
- (lt:=[typeof (CON TRUE) (tensor A1 A2)]) (T:= tensor A1 A2) in H1;auto.
- inversion H1. contradict H7. apply in_eq.
-subst.  apply notqext_nottyped with (lt:=[]) (T:= tensor A1 A2) in H1;auto.
- inversion H1. contradict H4. auto. auto.
-subst. inversion H12. subst. inversion H14. inversion H7.
-subst. inversion H6. apply split_nil in H11. inversion H11. subst.
-inversion H18.
-inversion H20.  inversion H23. apply Subtyping_bang_inv in H34.
-inversion H34. inversion H35. subst. inversion H31. assert(H33':=H33).
-apply Subtyping_bang_inv in H33. inversion H33.
-inversion H34. inversion H35. subst. inversion H36. subst.
-inversion H24. apply split_nil in H12. inversion H12. subst.
-inversion H27. inversion H9. subst.
-apply subtypecontext_subtyping with (IL':= IL) (LL':=[]) (B:= tensor T U) in H30;auto.
-apply seq_mono_cor with (k:= i0 + 1 + 1 + 1) in H30;try lia.
- assert(i=i0+1+1+1); try lia. rewrite <- H4 in H30.  auto.
-apply sub_trans with (B:= bang (tensor A1 A2)); subst; auto.
-subst. apply SubAreVal in H33'.
-inversion H33'. inversion H12. inversion H9. subst.
-apply notqext_nottyped with (lt:=[]) (T:= bang(tensor A1 A2)) in H1;auto.
- inversion H1. contradict H4. auto. subst. inversion H8.
-subst. apply  notqext_nottyped with
-(lt:=[typeof (CON TRUE) (tensor T U)]) (T:= tensor T U) in H1;auto.
- inversion H1. contradict H4. apply in_eq.
-apply  notqext_nottyped with (lt:=[]) (T:= tensor T U) in H1;auto.
- inversion H1. contradict H4. auto. subst. auto.
- inversion H3. destruct H4;
-apply  notqext_nottyped with
-(lt:=LL) (T:= x) in H1;auto;inversion H1.
+2: {
+  assert (exists A, In (typeof (CON TRUE) A) IL \/ In (typeof (CON TRUE) A) LL).
+  induction i. inversion H2.  lia. exists (tensor T U). right. apply in_eq.
+  exists (tensor T U). left.   auto.
+  inversion H2. inversion H5. inversion H15.  subst.
+  inversion H9. inversion H16. subst. apply split_ident in H8.
+  subst. inversion H14. inversion H7.  inversion H25.   subst.
+  inversion H17. inversion H24.  subst. apply  split_ident in H11.
+  subst. inversion H23.  inversion H10.  inversion H34. subst.
+  inversion H26. inversion H33. subst.  apply split_ident in H18.
+  subst.   assert (i = i0+1+1);try lia.
+  apply subtypecontext_subtyping with (IL':= IL) (LL':=lL2) (B:= tensor T U) in H32;auto.
+  rewrite <- H4  in H32. auto.  apply sub_trans with (B:= tensor A3 A4);auto.
+  apply sub_trans with (B:= tensor A1 A2);auto. auto. subst.
+  inversion H31. inversion H33. inversion H35. subst. inversion H11.
+  inversion H31.  apply split_nil in H18.  inversion H18. subst.
+  inversion H26. subst.
+  apply subtypecontext_subtyping with (IL':= IL) (LL':=[]) (B:= tensor T U) in H43;auto.
+  apply seq_mono_cor with (k:= i2 + 1 + 1 + 1) in H43;try lia.
+  assert(i=i2+1+1+1); try lia.
+  rewrite <- H4 in H43.   auto.
+  apply sub_trans with (B:= tensor A3 A4);auto.
+  apply sub_trans with (B:= tensor A1 A2);auto. subst. inversion H36.
+  subst. apply notqext_nottyped with
+  (lt:=[typeof (CON TRUE) (tensor A3 A4)]) (T:= tensor A3 A4) in H1;auto.
+  inversion H1. contradict H10. apply in_eq. subst.
+  apply notqext_nottyped with (lt:=[]) (T:= tensor A3 A4) in H1;auto.
+  inversion H1. contradict H4. auto. auto. subst. inversion H22.
+  inversion H24. inversion H26. subst.   inversion H17. subst.
+  inversion H8. apply split_nil in H11.  inversion H11. subst.
+  inversion H22. assert(i=i0+1+1); try lia.
+  apply subtypecontext_subtyping with (IL':= IL) (LL':=[]) (B:= tensor T U) in H25;auto.
+  rewrite <- H29 in H25. auto.
+  apply sub_trans with (B:= tensor A1 A2);auto.
+  subst. inversion H27. subst.
+  apply notqext_nottyped with
+  (lt:=[typeof (CON TRUE) (tensor A1 A2)]) (T:= tensor A1 A2) in H1;auto.
+  inversion H1. contradict H7. apply in_eq.
+  subst.  apply notqext_nottyped with (lt:=[]) (T:= tensor A1 A2) in H1;auto.
+  inversion H1. contradict H4. auto. auto.
+  subst. inversion H12. subst. inversion H14. inversion H7.
+  subst. inversion H6. apply split_nil in H11. inversion H11. subst.
+  inversion H18.
+  inversion H20.  inversion H23. apply Subtyping_bang_inv in H34.
+  inversion H34. inversion H35. subst. inversion H31. assert(H33':=H33).
+  apply Subtyping_bang_inv in H33. inversion H33.
+  inversion H34. inversion H35. subst. inversion H36. subst.
+  inversion H24. apply split_nil in H12. inversion H12. subst.
+  inversion H27. inversion H9. subst.
+  apply subtypecontext_subtyping with (IL':= IL) (LL':=[]) (B:= tensor T U) in H30;auto.
+  apply seq_mono_cor with (k:= i0 + 1 + 1 + 1) in H30;try lia.
+  assert(i=i0+1+1+1); try lia. rewrite <- H4 in H30.  auto.
+  apply sub_trans with (B:= bang (tensor A1 A2)); subst; auto.
+  subst. apply SubAreVal in H33'.
+  inversion H33'. inversion H12. inversion H9. subst.
+  apply notqext_nottyped with (lt:=[]) (T:= bang(tensor A1 A2)) in H1;auto.
+  inversion H1. contradict H4. auto. subst. inversion H8.
+  subst. apply  notqext_nottyped with
+  (lt:=[typeof (CON TRUE) (tensor T U)]) (T:= tensor T U) in H1;auto.
+  inversion H1. contradict H4. apply in_eq.
+  apply  notqext_nottyped with (lt:=[]) (T:= tensor T U) in H1;auto.
+  inversion H1. contradict H4. auto. subst. auto.
+  inversion H3. destruct H4;
+  apply  notqext_nottyped with
+  (lt:=LL) (T:= x) in H1;auto;inversion H1.
   contradict H5. auto. contradict H6. auto.
-
+}
 
 assert (exists A, In (typeof (Circ t i0 a0) A) IL \/ In (typeof (Circ t i0 a0) A) LL).
 induction i. inversion H2.  lia. exists (tensor T U). right. apply in_eq.

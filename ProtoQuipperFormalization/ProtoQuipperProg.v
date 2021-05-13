@@ -16,6 +16,7 @@ Require Export ProtoQuipperTypes.
 Require Export Coq.Lists.List.
 Require Export Coq.Lists.ListSet.
 Require Import FunInd.
+Require Import Lia.
 Import ListNotations.
 
 Section Prog.

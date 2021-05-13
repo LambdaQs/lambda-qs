@@ -3,12 +3,13 @@
    Authors: Amy Felty and Mohamed Yousri Mahmoud
    Date: June 2018
    Current Version: Coq V8.9
-                                                                 
+
    Internal Adequacy of the representation of Proto Quipper typing
    rules (part of the definition of prog).
   ***************************************************************)
 
 Require Export ProtoQuipperProg.
+Require Import Lia.
 Import ListNotations.
 
 Section Adeq.
@@ -146,7 +147,7 @@ inversion h2; subst; clear h2.
       apply h with (is_qexp y::is_qexp x::Phi1); auto; try lia.
       intro T; generalize (h1 T); simpl; tauto.
     * apply ss_general with [] []; auto with hybrid.
-      { inversion H10. inversion H11.  subst. 
+      { inversion H10. inversion H11.  subst.
         apply split_ident in H1;auto. subst.
         apply h with Phi1; auto with hybrid; try lia. }
       { apply ss_init. }
@@ -274,7 +275,7 @@ inversion h1; subst; clear h1.
     apply i_imp; auto.
     apply h with T2  (typeof x T1 :: lL2);
       eauto with hybrid; try lia.
-    * apply subcnxt_llg;auto.  
+    * apply subcnxt_llg;auto.
       apply sub_ref,bang_valid;auto.
     * generalize seq_mono; unfold Psinglell; intro h2.
       apply h2 with i; try lia; auto with hybrid.
@@ -300,7 +301,7 @@ inversion h1; subst; clear h1.
         { apply in_cons;auto. }}
     * apply h with T2  lL2;
         eauto with hybrid; try lia.
-      { apply subcnxt_iig;auto.  
+      { apply subcnxt_iig;auto.
         { apply sub_ref;auto. }
         { exists T1. auto. }}
       { generalize seq_mono; unfold Psinglell; intro h2.
@@ -335,7 +336,7 @@ inversion h1; subst; clear h1.
         { apply in_cons;auto. }}
     * apply h with T2  [];
         eauto with hybrid; try lia.
-      { apply subcnxt_iig;auto.  
+      { apply subcnxt_iig;auto.
         { apply sub_ref;auto. }
         { exists T1. auto. }}
       { generalize seq_mono; unfold Psinglell; intro h2.
@@ -363,17 +364,17 @@ inversion h1; subst; clear h1.
     inversion H6; subst; clear H6.
     apply i_imp; auto.
     apply h with T2  [typeof x T1]; eauto with hybrid; try lia.
-    * apply subcnxt_llg;auto.  
+    * apply subcnxt_llg;auto.
       apply sub_ref,bang_valid;auto.
     *  generalize seq_mono; unfold Psinglell; intro h2.
       apply h2 with i ; try lia ; auto with hybrid.
   + (* tap case *)
-    inversion H5. inversion H9. subst. 
+    inversion H5. inversion H9. subst.
     apply split_ident_alt in H2; auto. subst.
-    inversion H8. symmetry in H4. 
+    inversion H8. symmetry in H4.
     apply subcntxt_splits with (il:=it) in H2;auto.
     inversion H2.
-    apply  s_bc with 
+    apply  s_bc with
         [] [And (atom_(is_qexp E1)) (atom_(is_qexp E2))];auto.
     * apply apq.
     * apply ss_general with [] [];auto.
@@ -385,45 +386,45 @@ inversion h1; subst; clear h1.
       { apply ss_init. }
     * apply ss_init.
   + (* tensorl case *)
-    inversion H5. inversion H9. subst. 
+    inversion H5. inversion H9. subst.
     apply split_ident_alt in H2; auto. subst.
-    inversion H8. symmetry in H4. 
+    inversion H8. symmetry in H4.
     apply subcntxt_splits with (il:=it) in H2;auto.
-    inversion H2. 
-    apply  s_bc with 
+    inversion H2.
+    apply  s_bc with
         [] [And (atom_(is_qexp E1)) (atom_(is_qexp E2))];auto with hybrid.
     apply ss_general with [] [];auto with hybrid.
     apply a_and;auto with hybrid.
     * apply h with T0 LL1; auto; lia.
     *  apply h with T' LL2; auto; lia.
   + (* tensori case *)
-    inversion H5. inversion H10. subst. 
+    inversion H5. inversion H10. subst.
     apply split_ident_alt in H2; auto. subst.
-    inversion H9. symmetry in H6. 
+    inversion H9. symmetry in H6.
     apply subcntxt_splits with (il:=it) in H2;auto.
-    inversion H2. 
-    apply  s_bc with 
+    inversion H2.
+    apply  s_bc with
         [] [And (atom_(is_qexp E1)) (atom_(is_qexp E2))];auto with hybrid.
-    apply ss_general with [] [];auto with hybrid. 
+    apply ss_general with [] [];auto with hybrid.
     apply a_and;auto with hybrid.
     * apply h with (bang T0) LL1;auto; lia.
     * apply h with (bang T') LL2;auto; lia.
-  + (* tletl case *)  
+  + (* tletl case *)
     inversion H5.
     apply subcntxt_splits with (il:=it) in H2;auto.
-    inversion H2. 
-    inversion H11. 
-    apply  s_bc with 
+    inversion H2.
+    inversion H11.
+    apply  s_bc with
         [] [(All (fun x : qexp =>
-                    (All (fun y:qexp => 
+                    (All (fun y:qexp =>
                             Imp (is_qexp x)
                                 (Imp (is_qexp y)
                                      (atom_ (is_qexp (E x y))))))));
             (atom_ (is_qexp b0))];auto with hybrid.
     apply ss_general with [] []; auto with hybrid.
     * apply s_all. intros. assert(H20':=H20). apply H19 in H20.
-      inversion H20. apply s_all. intros. assert(H26':=H26). 
-      apply H25 in H26. inversion H26. inversion H31. 
+      inversion H20. apply s_all. intros. assert(H26':=H26).
+      apply H25 in H26. inversion H26. inversion H31.
       inversion H37.  inversion H43. repeat apply i_imp.
       apply h with T (typeof x0 T2 :: typeof x T1 :: lL2);auto with hybrid; try lia.
       { repeat apply cons_l_cr;auto.
@@ -433,23 +434,23 @@ inversion h1; subst; clear h1.
       { apply seq_mono_cor with i6;auto; lia. }
     * inversion H12. inversion H27. subst. apply split_ident in H22; auto.
       subst. apply ss_general with [] [];auto with hybrid.
-      apply h with (tensor T1 T2) (lL4); auto; lia. 
+      apply h with (tensor T1 T2) (lL4); auto; lia.
   + (* tleti case *)
     inversion H5.
     apply subcntxt_splits with (il:=it) in H2;auto.
-    inversion H2. 
-    inversion H11. 
-    apply s_bc with 
+    inversion H2.
+    inversion H11.
+    apply s_bc with
         [] [(All (fun x : qexp =>
-                    (All (fun y:qexp => 
+                    (All (fun y:qexp =>
                             Imp (is_qexp x)
                                 (Imp (is_qexp y)
                                      (atom_ (is_qexp (E x y))))))));
             (atom_ (is_qexp b0))];auto with hybrid.
     apply ss_general with [] []; auto with hybrid.
     * apply s_all.  intros. assert(H20':=H20). apply H19 in H20.
-      inversion H20. apply s_all. intros. assert(H26':=H26). 
-      apply H25 in H26. inversion H26. inversion H31. 
+      inversion H20. apply s_all. intros. assert(H26':=H26).
+      apply H25 in H26. inversion H26. inversion H31.
       inversion H37.  inversion H43. repeat apply i_imp.
       apply qexp_strengthen_weaken with
           (is_qexp x0::typeof x0 (bang T2)::is_qexp x::typeof x (bang T1)::it).
@@ -486,47 +487,47 @@ inversion h1; subst; clear h1.
       subst. apply ss_general with [] [];auto with hybrid.
       apply h with (bang (tensor T1 T2)) (lL4);auto; try lia.
   + (* tsletl case *)
-    inversion H5. inversion H9. subst. 
+    inversion H5. inversion H9. subst.
     apply split_ident_alt in H2; auto. subst.
-    inversion H8.  
+    inversion H8.
     apply subcntxt_splits with (il:=it) in H2;auto.
     inversion H2.
-    apply  s_bc with 
+    apply  s_bc with
         [] [And (atom_(is_qexp E)) (atom_(is_qexp b0))];auto with hybrid.
-    apply ss_general with [] [];auto with hybrid. 
+    apply ss_general with [] [];auto with hybrid.
     apply a_and;auto with hybrid.
     { apply h with T LL1;auto; lia. }
     { apply h with one LL2;auto; lia. }
   +  (* tsleti case *)
-    inversion H5. inversion H9. subst. 
+    inversion H5. inversion H9. subst.
     apply split_ident_alt in H2; auto. subst.
-    inversion H8. 
+    inversion H8.
     apply subcntxt_splits with (il:=it) in H2;auto. inversion H2.
-    apply s_bc with 
+    apply s_bc with
         [] [And (atom_(is_qexp E)) (atom_(is_qexp b0))];auto with hybrid.
-    apply ss_general with [] [];auto with hybrid. 
+    apply ss_general with [] [];auto with hybrid.
     apply a_and;auto with hybrid.
     * apply h with T LL1;auto; lia.
     * apply h with (bang one) LL2;auto; lia.
   + (* tif case *)
-    inversion H5. inversion H10. subst. 
+    inversion H5. inversion H10. subst.
     apply split_ident_alt in H2; auto. subst.
-    inversion H9. 
+    inversion H9.
     apply subcntxt_splits with (il:=it) in H2;auto. inversion H2.
-    apply  s_bc with 
+    apply  s_bc with
         [] [And (atom_ (is_qexp b0))
                 (And (atom_ (is_qexp a1)) (atom_(is_qexp a2)))];
       auto with hybrid.
-    apply ss_general with [] [];auto with hybrid. 
+    apply ss_general with [] [];auto with hybrid.
     apply a_and;auto.
-    * apply h with bool  LL1;auto; lia. 
+    * apply h with bool  LL1;auto; lia.
     * inversion H12. apply a_and;auto.
       { apply h with T LL2;auto; lia. }
       { apply h with T LL2;auto; lia. }
   + (* tcircl case *)
-    inversion H1. inversion H12. subst. 
+    inversion H1. inversion H12. subst.
     apply split_ident_alt in H2; auto. subst.
-    inversion H11. 
+    inversion H11.
     apply  s_bc with [] [toimpexp (FQ a) (atom_(is_qexp a))];auto with hybrid.
     assert(H10':=H10). apply toimp_ilength in H10';auto.
     * apply move_to_ll in H10.
@@ -534,7 +535,7 @@ inversion h1; subst; clear h1.
         { apply h with (T:=U) in H10;auto with hybrid; try lia.
           { apply move_from_il in H10;auto.
             { apply seq_mono_cor with (k:=i+1) in H10;auto.
-              assert (H':length (FQ a) + length (FQ a) <= i -> 
+              assert (H':length (FQ a) + length (FQ a) <= i ->
                          i - length (FQ a) - length (FQ a) + length (FQ a) <= i+1);
                 lia. }
             { apply fq_all_qvar; lia. }}
@@ -544,9 +545,9 @@ inversion h1; subst; clear h1.
       { apply fq_all_qvar. }
     * apply fq_all_qvar.
   + (* tCrici case *)
-    inversion H1. inversion H12. subst. 
+    inversion H1. inversion H12. subst.
     apply split_ident_alt in H2; auto. subst.
-    inversion H11. 
+    inversion H11.
     apply s_bc with [] [toimpexp (FQ a) (atom_(is_qexp a))];auto with hybrid.
     assert(H10':=H10). apply toimp_ilength in H10';auto.
     * apply move_to_ll in H10.
@@ -554,7 +555,7 @@ inversion h1; subst; clear h1.
         { apply h with (T:=U) in H10;auto with hybrid; try lia.
           { apply move_from_il in H10;auto.
             { apply seq_mono_cor with (k:=i+1) in H10;auto.
-              assert (H':length (FQ a) + length (FQ a) <= i -> 
+              assert (H':length (FQ a) + length (FQ a) <= i ->
                            i - length (FQ a) - length (FQ a) +  length (FQ a) <=i+1);
                 lia. }
             { apply fq_all_qvar; lia. }}
@@ -564,11 +565,11 @@ inversion h1; subst; clear h1.
       { apply fq_all_qvar. }
     * apply fq_all_qvar.
 - (* l_init case case *)
-  apply i_init. 
+  apply i_init.
   apply memb_il  with (T:=T) (M:=M) (ll:=[typeof M T]) in h0; try tauto.
   apply in_eq.
 - (* l_init case case *)
-  apply i_init.  
+  apply i_init.
   apply memb_il_il with (il':=it) (ll:=[]) (ll':=[]) in H3; try tauto.
 Qed.
 
@@ -577,7 +578,7 @@ Qed.
 (*************************)
 
 (* Any term satisfying the quantum_data predicate is well-formed. *)
-Theorem quantumdata_qexp: forall t, quantum_data t -> 
+Theorem quantumdata_qexp: forall t, quantum_data t ->
   exists j, seq_ j (toiqlist (FQ t)) [] (atom_ (is_qexp t)).
 Proof.
 intros t H. induction H.
@@ -587,7 +588,7 @@ intros t H. induction H.
   apply s_bc with (lL:=[]) (iL:=[]);auto.
   + apply (atom_(is_qexp (CON STAR))).
   + apply starq.
-  + apply ss_init. 
+  + apply ss_init.
   + apply ss_init.
 -  inversion IHquantum_data1.
    inversion IHquantum_data2. exists (x+x0+1+1).
@@ -596,7 +597,7 @@ intros t H. induction H.
    + apply (atom_(is_qexp (CON STAR))).
    + apply prodq.
    + apply ss_general with (lL2:=[]) (lL3:=[]);auto.
-     * apply init. 
+     * apply init.
      * apply a_and; auto.
        { apply [is_qexp (CON STAR)]. }
        { apply seq_mono_cor with (j:= x); try lia.
@@ -607,9 +608,8 @@ intros t H. induction H.
          apply seq_weakening_cor with (il:=toiqlist (FQ b));auto.
          apply toiqlist_union. simpl.
          intros.  apply set_union_intro2. unfold set_In. auto. }
-     * apply ss_init. 
+     * apply ss_init.
    + apply ss_init.
 Qed.
 
 End Adeq.
-

@@ -16,6 +16,7 @@ Require Import ProtoQuipperSyntax.
 Require Import ProtoQuipperTypes.
 Require Import Coq.Lists.List.
 Require Import Coq.Lists.ListSet.
+Require Import Lia.
 Import ListNotations.
 
 Definition seq_ := ProgLemmas3.seq_.
@@ -37,11 +38,11 @@ Ltac rexists :=
     |_ => idtac end.
 
 
-Hypothesis  FQ_LET: forall i E b, abstr (fun x => lambda (E x)) ->
+Local Conjecture  FQ_LET: forall i E b, abstr (fun x => lambda (E x)) ->
          (forall x, proper x ->  abstr (E x)) ->
   FQ (Let E b) = set_union eq_dec (FQ (E (Var i) (Var i))) (FQ b).
 
-Hypothesis  FQU_LET: forall i E b, abstr (fun x => lambda (E x)) ->
+Local Conjecture  FQU_LET: forall i E b, abstr (fun x => lambda (E x)) ->
          (forall x, proper x ->  abstr (E x)) ->
   FQU (Let E b) =  (FQU (E (Var i) (Var i))) ++  (FQU b).
 

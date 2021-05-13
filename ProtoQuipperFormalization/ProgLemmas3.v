@@ -17,6 +17,7 @@ Require Import ProtoQuipperTypes.
 Require Import Coq.Lists.List.
 Require Import Coq.Lists.ListSet.
 Require Import FunInd.
+Require Import Lia.
 Import ListNotations.
 
 Definition seq_ := ProgLemmas2.seq_.
@@ -57,9 +58,9 @@ Ltac rexists :=
     |_ => idtac end.
 
 
-Hint Resolve LSL.init LSL.splitr1 LSL.splitr2
+Global Hint Resolve LSL.init LSL.splitr1 LSL.splitr2
               LSL.ss_init LSL.ss_general : hybrid.
-Hint Resolve starq trueq falseq boxq unboxq revq lambdaq apq prodq letq
+Global Hint Resolve starq trueq falseq boxq unboxq revq lambdaq apq prodq letq
      sletq ifq Circq axc1 axc2 starl stari truel truei falsel falsei
      box unbox rev lambda1l lambda1i lambda2l lambda2i tap
      ttensorl ttensori tletl tleti tsletl tsleti tif tCricl
@@ -545,15 +546,17 @@ apply H in H3. subst. auto.
 apply H0 in H7. inversion H7. destruct H8.
 inversion H8. destruct H8. inversion H8.
 inversion H8. inversion H9. inversion H2.
-Focus 2.
-subst.
-assert(In (typeof (CON (Qvar j)) A) [typeof (CON (Qvar j)) A]);
-try apply in_eq.
-apply H in H3. subst. auto.
-Focus 2.
-apply H0 in H7. inversion H7. destruct H8.
-inversion H8. destruct H8. inversion H8.
-inversion H8. inversion H9.
+2 :{
+  subst.
+  assert(In (typeof (CON (Qvar j)) A) [typeof (CON (Qvar j)) A]);
+  try apply in_eq.
+  apply H in H3. subst. auto.
+}
+2 :{
+  apply H0 in H7. inversion H7. destruct H8.
+  inversion H8. destruct H8. inversion H8.
+  inversion H8. inversion H9.
+}
 inversion H5. subst.
 inversion H9. inversion H16.
 subst. apply split_ident in H8. subst.
@@ -1012,7 +1015,7 @@ Inductive common_ll : qexp -> qexp -> list atm-> list atm  -> Prop :=
  common_ll a a' ((typeof e A)::ll1) ((typeof e A)::ll2).
 
 Hint Resolve com_empty com_r com_l com_lr common_g LSL.init LSL.splitr1
-LSL.splitr2.
+LSL.splitr2 : core.
 
 (* Old version
 
@@ -2259,7 +2262,7 @@ Proof.
     rewrite disjoint_NoDup in *.
     destruct H as [[H H1] [H2 H3]].
     specialize IHs with (1:=H2); specialize IHs0 with (1:=H3).
-    specialize (FQU_subset_FQUC e2); specialize (FQU_subset_FQUC e4); intros H4 H5.
+    specialize (FQU_subset_FQUC e2); specialize (FQU_subset_FQUC e3); intros H4 H5.
     repeat split; auto.
     + intros x H6 H7. specialize H4 with (1:=H6).
       specialize H with (1:=H4); elim H.
@@ -2271,7 +2274,7 @@ Proof.
     rewrite disjoint_NoDup in *.
     destruct H as [[H H1] [H2 H3]].
     specialize IHs with (1:=H2); specialize IHs0 with (1:=H3).
-    specialize (FQU_subset_FQUC e2); specialize (FQU_subset_FQUC e4); intros H4 H5.
+    specialize (FQU_subset_FQUC e2); specialize (FQU_subset_FQUC e3); intros H4 H5.
     repeat split; auto.
     + intros x H6 H7. specialize H4 with (1:=H6).
       specialize H with (1:=H4); elim H.
@@ -2283,7 +2286,7 @@ Proof.
     rewrite disjoint_NoDup in *.
     destruct H as [[H H1] [H2 H3]].
     specialize IHs with (1:=H2); specialize IHs0 with (1:=H3).
-    specialize (FQU_subset_FQUC e2); specialize (FQU_subset_FQUC e4); intros H4 H5.
+    specialize (FQU_subset_FQUC e2); specialize (FQU_subset_FQUC e3); intros H4 H5.
     repeat split; auto.
     + intros x H6 H7. specialize H4 with (1:=H6).
       specialize H with (1:=H4); elim H.
@@ -2296,7 +2299,7 @@ Proof.
     rewrite disjoint_app_r in *.
     destruct H as [[[H H0] [H1 H2]] [H3 [[H4 H5] [H6 H7]]]].
     specialize IHs with (1:=H3); specialize IHs0 with (1:=H6); specialize IHs1 with (1:=H7).
-    specialize (FQU_subset_FQUC e2); specialize (FQU_subset_FQUC e4);
+    specialize (FQU_subset_FQUC e2); specialize (FQU_subset_FQUC e3);
     specialize (FQU_subset_FQUC e7); intros H11 H12 H13.
     repeat split; auto; intros x H14 H15.
     + specialize H12 with (1:=H15). specialize H0 with (1:=H12); elim H0. apply H11; auto.
@@ -2307,14 +2310,14 @@ Proof.
     + specialize H12 with (1:=H15). specialize H4 with (1:=H12); elim H4. apply H13; auto.
 Qed.
 
-Hypothesis  FQ_FUN: forall i E, abstr E ->
+Local Conjecture  FQ_FUN: forall i E, abstr E ->
   FQ (Fun E) = FQ (E (Var i) ).
 
-Hypothesis  FQ_LET: forall i E b, abstr (fun x => lambda (E x)) ->
+Local Conjecture  FQ_LET: forall i E b, abstr (fun x => lambda (E x)) ->
          (forall x, proper x ->  abstr (E x)) ->
   FQ (Let E b) = set_union eq_dec (FQ (E (Var i) (Var i))) (FQ b).
 
-Hypothesis  FQU_LET: forall i E b, abstr (fun x => lambda (E x)) ->
+Local Conjecture  FQU_LET: forall i E b, abstr (fun x => lambda (E x)) ->
          (forall x, proper x ->  abstr (E x)) ->
   FQU (Let E b) =  (FQU (E (Var i) (Var i))) ++  (FQU b).
 
