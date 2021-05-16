@@ -4,7 +4,7 @@
 
    original: March 2014
    Feb 2021: Current Coq Version: V8.13.1
-                                                                 
+
    Subject Reduction for Call-by-Value Mini-ML using Hybrid
    Example showing why meta-level isterm1 cannot be used for
    equivalence proof of meval and eval
@@ -39,7 +39,7 @@ Inductive meval: uexp -> uexp -> Prop :=
                meval E1 (Fun (fun x => E1' x)) ->
                meval E2 V2 -> meval (E1' V2) V ->
                meval (App E1 E2) V
-| meval_Fun: forall E:uexp -> uexp, abstr E -> 
+| meval_Fun: forall E:uexp -> uexp, abstr E ->
                isterm1 nil (Fun (fun x => E x)) ->
                meval (Fun (fun x => E x)) (Fun (fun x => E x))
 | meval_Fix: forall E:uexp -> uexp, forall V:uexp,
@@ -99,7 +99,7 @@ Inductive prog : atm -> oo_ -> Prop :=
         (Conj (atom_ (eval E1 (Fun (fun x => E1' x))))
          (Conj (atom_ (eval E2 V2))
           (atom_ (eval (E1' V2) V))))
-  | eabs : forall E:uexp -> uexp, (abstr E) -> 
+  | eabs : forall E:uexp -> uexp, (abstr E) ->
       prog (eval (Fun (fun x => E x)) (Fun (fun x => E x)))
         (atom_ (isterm (Fun (fun x => E x))))
   | efix : forall E:uexp -> uexp, forall V:uexp,
@@ -118,7 +118,7 @@ Inductive prog : atm -> oo_ -> Prop :=
       abstr E ->
       prog (isterm (Fix (fun x => (E x))))
         (All (fun x:uexp => (Imp (isterm x) (atom_ (isterm (E x)))))).
-          
+
 (****************************************************************
    Instantiation of seq
   ****************************************************************)
@@ -182,7 +182,7 @@ intros E Gamma; split.
     * apply seq_mono with i2; auto; try lia.
   (* Fun case *)
   (* exists/forall quantification problem *)
-  +      
+  +
 Abort.
 
 (* MC-Theorem 25 from [1] *)
@@ -212,3 +212,5 @@ intros e v; split.
       eauto with hybrid.
 (* need the above failed lemma to continue *)
 Abort.
+
+End meta_sr.
