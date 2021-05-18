@@ -1,0 +1,5 @@
+(lang dune 2.8)
+(name lambdaQs)
+(version 0.1)
+(generate_opam_files true)
+(using coq 0.2)
