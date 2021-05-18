@@ -1,4 +1,4 @@
--R ../_build/default/src/ ""
+-R . ""
 
 Hybrid.v
 LambdaQsSyntax.v
