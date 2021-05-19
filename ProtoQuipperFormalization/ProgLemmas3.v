@@ -75,30 +75,30 @@ count_occ ProgLemmas1.eq_dec (toqlist a) (typeof (CON (Qvar q)) qubit) =
 count_occ ProtoQuipperSyntax.eq_dec a (CON (Qvar q)).
 Proof.
 intros. functional induction toqlist a;simpl;auto.
-destruct(eq_dec (CON qABS) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (CON qAPP) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (CON qPROD) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (CON qLET) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (CON sLET) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (CON qCIRC) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (CON qIF) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (CON (BOX _x)) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (CON UNBOX) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (CON REV) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (CON TRUE) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (CON FALSE) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (CON STAR) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (CON (Qvar x)) (CON (Qvar q))). inversion e.
+destruct(ProtoQuipperSyntax.eq_dec (CON qABS) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (CON qAPP) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (CON qPROD) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (CON qLET) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (CON sLET) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (CON qCIRC) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (CON qIF) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (CON (BOX _x)) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (CON UNBOX) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (CON REV) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (CON TRUE) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (CON FALSE) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (CON STAR) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (CON (Qvar x)) (CON (Qvar q))). inversion e.
 subst. destruct(ProgLemmas1.eq_dec (typeof (CON (Qvar q)) qubit)
     (typeof (CON (Qvar q)) qubit)). lia.
 contradict n. auto. destruct(ProgLemmas1.eq_dec (typeof (CON (Qvar x)) qubit)
     (typeof (CON (Qvar q)) qubit)). inversion e. subst. contradict n. auto.
 auto.
-destruct(eq_dec (CON (Crcons _x)) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (VAR Econ _x) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (BND Econ _x) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (APP _x _x0) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (ABS _x) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (CON (Crcons _x)) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (VAR Econ _x) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (BND Econ _x) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (APP _x _x0) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (ABS _x) (CON (Qvar q))). inversion e. auto.
 Qed.
 
 Theorem count_occ_toqlist: forall a b,
@@ -125,30 +125,30 @@ count_occ ProgLemmas1.eq_dec (toiqlist a) (is_qexp (CON (Qvar q))) =
 count_occ ProtoQuipperSyntax.eq_dec a (CON (Qvar q)).
 Proof.
 intros. functional induction toiqlist a;simpl;auto.
-destruct(eq_dec (CON qABS) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (CON qAPP) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (CON qPROD) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (CON qLET) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (CON sLET) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (CON qCIRC) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (CON qIF) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (CON (BOX _x)) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (CON UNBOX) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (CON REV) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (CON TRUE) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (CON FALSE) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (CON STAR) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (CON (Qvar x)) (CON (Qvar q))). inversion e.
+destruct(ProtoQuipperSyntax.eq_dec (CON qABS) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (CON qAPP) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (CON qPROD) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (CON qLET) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (CON sLET) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (CON qCIRC) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (CON qIF) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (CON (BOX _x)) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (CON UNBOX) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (CON REV) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (CON TRUE) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (CON FALSE) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (CON STAR) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (CON (Qvar x)) (CON (Qvar q))). inversion e.
 subst. destruct(ProgLemmas1.eq_dec (is_qexp (CON (Qvar q)) )
     (is_qexp (CON (Qvar q)) )). lia.
 contradict n. auto. destruct(ProgLemmas1.eq_dec (is_qexp (CON (Qvar x)) )
     (is_qexp (CON (Qvar q)) )). inversion e. subst. contradict n. auto.
 auto.
-destruct(eq_dec (CON (Crcons _x)) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (VAR Econ _x) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (BND Econ _x) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (APP _x _x0) (CON (Qvar q))). inversion e. auto.
-destruct(eq_dec (ABS _x) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (CON (Crcons _x)) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (VAR Econ _x) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (BND Econ _x) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (APP _x _x0) (CON (Qvar q))). inversion e. auto.
+destruct(ProtoQuipperSyntax.eq_dec (ABS _x) (CON (Qvar q))). inversion e. auto.
 Qed.
 
 Theorem count_occ_toiqlist: forall a b,
@@ -1014,7 +1014,7 @@ Inductive common_ll : qexp -> qexp -> list atm-> list atm  -> Prop :=
 ~(exists q, e = CON (Qvar q)) ->
  common_ll a a' ((typeof e A)::ll1) ((typeof e A)::ll2).
 
-Hint Resolve com_empty com_r com_l com_lr common_g LSL.init LSL.splitr1
+#[global] Hint Resolve com_empty com_r com_l com_lr common_g LSL.init LSL.splitr1
 LSL.splitr2 : core.
 
 (* Old version
@@ -1624,8 +1624,8 @@ auto.
 Qed.
 
 Theorem common_fq_inter: forall a a' ,
-common_ll a a' (toqlist (set_inter eq_dec (FQ a) (FQ a')))
-(toqlist (set_inter eq_dec (FQ a) (FQ a'))).
+common_ll a a' (toqlist (set_inter ProtoQuipperSyntax.eq_dec (FQ a) (FQ a')))
+(toqlist (set_inter ProtoQuipperSyntax.eq_dec (FQ a) (FQ a'))).
 Proof.
 intros. apply common_com.
 intros. apply intoqlist_infq in H. inversion H.
@@ -1658,8 +1658,8 @@ inversion H0. auto. inversion H0. auto.
 Qed.
 
 Theorem common_fq_diff: forall a a' ,
-common_ll a a' (toqlist (set_diff eq_dec (FQ a) (FQ a')))
-(toqlist (set_diff eq_dec (FQ a') (FQ a))).
+common_ll a a' (toqlist (set_diff ProtoQuipperSyntax.eq_dec (FQ a) (FQ a')))
+(toqlist (set_diff ProtoQuipperSyntax.eq_dec (FQ a') (FQ a))).
 Proof.
 intros. apply common_diff.
 intros. apply intoqlist_infq in H. inversion H.
@@ -1684,88 +1684,88 @@ count_occ  ProtoQuipperSyntax.eq_dec (FQ a') q)
 common_ll a a' (toqlist l) (toqlist l').
 Proof.
 intros.
-exists ((set_diff eq_dec (FQ a) (FQ a'))++(set_inter eq_dec (FQ a) (FQ a'))).
-exists ((set_diff eq_dec (FQ a') (FQ a))++(set_inter eq_dec (FQ a) (FQ a'))).
+exists ((set_diff ProtoQuipperSyntax.eq_dec (FQ a) (FQ a'))++(set_inter ProtoQuipperSyntax.eq_dec (FQ a) (FQ a'))).
+exists ((set_diff ProtoQuipperSyntax.eq_dec (FQ a') (FQ a))++(set_inter ProtoQuipperSyntax.eq_dec (FQ a) (FQ a'))).
 intros. repeat rewrite toqlist_app.
 split.
 intros.
-rewrite count_app with (l1:=set_diff eq_dec (FQ a) (FQ a'))
-(l2:=set_inter eq_dec (FQ a) (FQ a'));auto.
-destruct (in_dec eq_dec q (FQ a) ).
+rewrite count_app with (l1:=set_diff ProtoQuipperSyntax.eq_dec (FQ a) (FQ a'))
+(l2:=set_inter ProtoQuipperSyntax.eq_dec (FQ a) (FQ a'));auto.
+destruct (in_dec ProtoQuipperSyntax.eq_dec q (FQ a) ).
 assert (H:=fq_nodup a). rewrite NoDup_count_occ'
-with (decA:=eq_dec)in H.
+with (decA:=ProtoQuipperSyntax.eq_dec)in H.
 assert (h1:=i). apply H in i. rewrite i.
-destruct (in_dec eq_dec q (set_diff eq_dec (FQ a) (FQ a')) ).
-assert (NoDup (set_diff eq_dec (FQ a) (FQ a'))).
+destruct (in_dec ProtoQuipperSyntax.eq_dec q (set_diff ProtoQuipperSyntax.eq_dec (FQ a) (FQ a')) ).
+assert (NoDup (set_diff ProtoQuipperSyntax.eq_dec (FQ a) (FQ a'))).
 apply set_diff_nodup;apply fq_nodup.
   rewrite NoDup_count_occ'
-with (decA:=eq_dec)in H0.
+with (decA:=ProtoQuipperSyntax.eq_dec)in H0.
 assert (h2:=i0). apply H0 in i0.
  rewrite i0.
-assert (~ (In q (set_inter eq_dec (FQ a) (FQ a')))).
+assert (~ (In q (set_inter ProtoQuipperSyntax.eq_dec (FQ a) (FQ a')))).
 rewrite set_diff_iff in h2. destruct h2.
 rewrite set_inter_iff.
 apply  or_not_and. right. auto.
-rewrite count_occ_not_In with (eq_dec:=eq_dec) in H1. lia.
+rewrite count_occ_not_In with (eq_dec:=ProtoQuipperSyntax.eq_dec) in H1. lia.
 assert(h2:=n). rewrite set_diff_iff in n.
 apply not_and_or in n. destruct n.
 contradict H0. auto. apply  not_not in H0.
-assert ((In q (set_inter eq_dec (FQ a) (FQ a')))).
+assert ((In q (set_inter ProtoQuipperSyntax.eq_dec (FQ a) (FQ a')))).
 rewrite set_inter_iff. split;auto.
-rewrite count_occ_not_In with (eq_dec:=eq_dec) in h2.
-assert (NoDup (set_inter eq_dec (FQ a) (FQ a'))).
+rewrite count_occ_not_In with (eq_dec:=ProtoQuipperSyntax.eq_dec) in h2.
+assert (NoDup (set_inter ProtoQuipperSyntax.eq_dec (FQ a) (FQ a'))).
 apply set_inter_nodup;apply fq_nodup.
   rewrite NoDup_count_occ'
-with (decA:=eq_dec)in H2. apply H2 in H1.
- lia. unfold decidable.   destruct(in_dec  eq_dec q (FQ a')).
+with (decA:=ProtoQuipperSyntax.eq_dec)in H2. apply H2 in H1.
+ lia. unfold decidable.   destruct(in_dec  ProtoQuipperSyntax.eq_dec q (FQ a')).
 left. auto. right. auto. assert(h:=n).
-assert (~ (In q (set_inter eq_dec (FQ a) (FQ a')))).
+assert (~ (In q (set_inter ProtoQuipperSyntax.eq_dec (FQ a) (FQ a')))).
 rewrite set_inter_iff.
 apply  or_not_and. left. auto.
-assert (~ (In q (set_diff eq_dec (FQ a) (FQ a')))).
+assert (~ (In q (set_diff ProtoQuipperSyntax.eq_dec (FQ a) (FQ a')))).
 rewrite set_diff_iff.
 apply  or_not_and. left. auto.
-rewrite count_occ_not_In with (eq_dec:=eq_dec) in n,H,H0.
+rewrite count_occ_not_In with (eq_dec:=ProtoQuipperSyntax.eq_dec) in n,H,H0.
 lia.
 split.
 intros.
-rewrite count_app with (l1:=set_diff eq_dec (FQ a') (FQ a))
-(l2:=set_inter eq_dec (FQ a) (FQ a'));auto.
-destruct (in_dec eq_dec q (FQ a') ).
+rewrite count_app with (l1:=set_diff ProtoQuipperSyntax.eq_dec (FQ a') (FQ a))
+(l2:=set_inter ProtoQuipperSyntax.eq_dec (FQ a) (FQ a'));auto.
+destruct (in_dec ProtoQuipperSyntax.eq_dec q (FQ a') ).
 assert (H:=fq_nodup a'). rewrite NoDup_count_occ'
-with (decA:=eq_dec)in H.
+with (decA:=ProtoQuipperSyntax.eq_dec)in H.
 assert (h1:=i). apply H in i. rewrite i.
-destruct (in_dec eq_dec q (set_diff eq_dec (FQ a') (FQ a)) ).
-assert (NoDup (set_diff eq_dec (FQ a') (FQ a))).
+destruct (in_dec ProtoQuipperSyntax.eq_dec q (set_diff ProtoQuipperSyntax.eq_dec (FQ a') (FQ a)) ).
+assert (NoDup (set_diff ProtoQuipperSyntax.eq_dec (FQ a') (FQ a))).
 apply set_diff_nodup;apply fq_nodup.
   rewrite NoDup_count_occ'
-with (decA:=eq_dec)in H0.
+with (decA:=ProtoQuipperSyntax.eq_dec)in H0.
 assert (h2:=i0). apply H0 in i0.
  rewrite i0.
-assert (~ (In q (set_inter eq_dec (FQ a) (FQ a')))).
+assert (~ (In q (set_inter ProtoQuipperSyntax.eq_dec (FQ a) (FQ a')))).
 rewrite set_diff_iff in h2. destruct h2.
 rewrite set_inter_iff.
 apply  or_not_and. left. auto.
-rewrite count_occ_not_In with (eq_dec:=eq_dec) in H1. lia.
+rewrite count_occ_not_In with (eq_dec:=ProtoQuipperSyntax.eq_dec) in H1. lia.
 assert(h2:=n). rewrite set_diff_iff in n.
 apply not_and_or in n. destruct n.
 contradict H0. auto. apply  not_not in H0.
-assert ((In q (set_inter eq_dec (FQ a) (FQ a')))).
+assert ((In q (set_inter ProtoQuipperSyntax.eq_dec (FQ a) (FQ a')))).
 rewrite set_inter_iff. split;auto.
-rewrite count_occ_not_In with (eq_dec:=eq_dec) in h2.
-assert (NoDup (set_inter eq_dec (FQ a) (FQ a'))).
+rewrite count_occ_not_In with (eq_dec:=ProtoQuipperSyntax.eq_dec) in h2.
+assert (NoDup (set_inter ProtoQuipperSyntax.eq_dec (FQ a) (FQ a'))).
 apply set_inter_nodup;apply fq_nodup.
   rewrite NoDup_count_occ'
-with (decA:=eq_dec)in H2. apply H2 in H1.
- lia. unfold decidable.   destruct(in_dec  eq_dec q (FQ a)).
+with (decA:=ProtoQuipperSyntax.eq_dec)in H2. apply H2 in H1.
+ lia. unfold decidable.   destruct(in_dec  ProtoQuipperSyntax.eq_dec q (FQ a)).
 left. auto. right. auto. assert(h:=n).
-assert (~ (In q (set_inter eq_dec (FQ a) (FQ a')))).
+assert (~ (In q (set_inter ProtoQuipperSyntax.eq_dec (FQ a) (FQ a')))).
 rewrite set_inter_iff.
 apply  or_not_and. right. auto.
-assert (~ (In q (set_diff eq_dec (FQ a') (FQ a)))).
+assert (~ (In q (set_diff ProtoQuipperSyntax.eq_dec (FQ a') (FQ a)))).
 rewrite set_diff_iff.
 apply  or_not_and. left. auto.
-rewrite count_occ_not_In with (eq_dec:=eq_dec) in n,H,H0.
+rewrite count_occ_not_In with (eq_dec:=ProtoQuipperSyntax.eq_dec) in n,H,H0.
 lia.
 
 apply common_app. apply common_fq_diff.
@@ -2099,12 +2099,12 @@ match goal  with
 |[H:False|-_] => contradiction
 |_=>idtac end;auto;
 match goal with
-|[H:In _ (_++_), H1: In _ _<-> In _ ?x, H2:In _ _<-> In _ ?y|- In _ (set_union eq_dec ?x ?y)] =>
+|[H:In _ (_++_), H1: In _ _<-> In _ ?x, H2:In _ _<-> In _ ?y|- In _ (set_union ProtoQuipperSyntax.eq_dec ?x ?y)] =>
   rewrite in_app_iff in H; rewrite set_union_iff;
  destruct H;[rewrite <- H1;left| rewrite <- H2;right];auto
 |_=>idtac end;
 match goal with
-|[H:In _ (set_union eq_dec _ _), H1: In _ ?x<-> In _ _, H2:In _ ?y<-> In _ _|- In _ (?x++?y)] =>
+|[H:In _ (set_union ProtoQuipperSyntax.eq_dec _ _), H1: In _ ?x<-> In _ _, H2:In _ ?y<-> In _ _|- In _ (?x++?y)] =>
   rewrite set_union_iff  in H; rewrite in_app_iff;
  destruct H;[rewrite  H1;left| rewrite  H2;right];auto
 |_=>idtac end.
@@ -2212,7 +2212,7 @@ simpl in h''.
 (l1:=FQU a) (l2:=FQU b) (a:=q) in h'';auto.
 destruct h''. inversion H7. contradict H9. auto.
 inversion H7. auto.
-apply eq_dec.
+apply ProtoQuipperSyntax.eq_dec.
 rewrite in_app_iff. right. auto.
 Qed.
 
@@ -2315,7 +2315,7 @@ Local Conjecture  FQ_FUN: forall i E, abstr E ->
 
 Local Conjecture  FQ_LET: forall i E b, abstr (fun x => lambda (E x)) ->
          (forall x, proper x ->  abstr (E x)) ->
-  FQ (Let E b) = set_union eq_dec (FQ (E (Var i) (Var i))) (FQ b).
+  FQ (Let E b) = set_union ProtoQuipperSyntax.eq_dec (FQ (E (Var i) (Var i))) (FQ b).
 
 Local Conjecture  FQU_LET: forall i E b, abstr (fun x => lambda (E x)) ->
          (forall x, proper x ->  abstr (E x)) ->
