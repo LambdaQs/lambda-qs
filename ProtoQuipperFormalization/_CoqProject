@@ -1,4 +1,4 @@
--R . ""
+-R . ProtoQuipperFormalization
 
 ProtoQuipperTypes.v
 Hybrid.v

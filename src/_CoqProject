@@ -1,5 +1,0 @@
--R . ""
-
-Hybrid.v
-LambdaQsSyntax.v
-LambdaQsTypes.v
