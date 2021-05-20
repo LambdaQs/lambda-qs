@@ -17,11 +17,23 @@ Require Import Lia.
 Import ListNotations.
 
 
-Inductive Econ: Set := qABS: Econ | qAPP: Econ | qPROD : Econ
-	|qLET:Econ |sLET:Econ| qCIRC:Econ | qIF:Econ
-	|BOX:qtp->Econ|UNBOX:Econ|REV:Econ
-        |TRUE:Econ|FALSE:Econ|STAR:Econ|
-         Qvar:nat->Econ|Crcons:nat->Econ.
+Inductive Econ: Set :=
+  qABS   : Econ
+| qAPP   : Econ
+| qPROD  : Econ
+| qLET   : Econ
+| sLET   : Econ
+| qCIRC  : Econ
+| qIF    : Econ
+| BOX    : qtp -> Econ
+| UNBOX  : Econ
+| REV    : Econ
+| TRUE   : Econ
+| FALSE  : Econ
+| STAR   : Econ
+| Qvar   : nat -> Econ
+| Crcons : nat -> Econ
+.
 
 Definition qexp : Set := expr Econ.
 
@@ -33,7 +45,7 @@ Definition qexp : Set := expr Econ.
 
 Theorem eq_dec: forall x y:qexp, {x=y}+{x<>y}.
 Proof.
-decide equality; decide equality; decide equality.
+  decide equality; decide equality; decide equality.
 Qed.
 
 Theorem set_add_new: forall a x,
@@ -92,33 +104,33 @@ Theorem union_eq: forall x y,
     NoDup y ->
     set_union eq_dec x y = add_list y x.
 Proof.
-intros. functional induction add_list y x.
-- simpl. auto.
-- simpl.  assert(_x':=_x).
-  apply set_union_intro1 with (Aeq_dec:=eq_dec)
-                              (y:=x1) in _x'.
-  apply add_ident in _x'.
-  rewrite _x'.
-  rewrite NoDup_cons_iff in H. inversion H.
-  auto.
-- simpl. rewrite NoDup_cons_iff in H. inversion H.
-  assert(~ set_In a1 (set_union eq_dec x x1)).
-  { contradict H0. apply set_union_elim in H0.
-    destruct H0; auto.
-    assert(_x':=_x). contradict _x'.  auto. }
-  apply set_add_new in H2. rewrite H2.
-  apply IHs in H1. rewrite H1. auto.
+  intros. functional induction add_list y x.
+  - simpl. auto.
+  - simpl.  assert(_x':=_x).
+    apply set_union_intro1 with (Aeq_dec:=eq_dec)
+                                (y:=x1) in _x'.
+    apply add_ident in _x'.
+    rewrite _x'.
+    rewrite NoDup_cons_iff in H. inversion H.
+    auto.
+  - simpl. rewrite NoDup_cons_iff in H. inversion H.
+    assert(~ set_In a1 (set_union eq_dec x x1)).
+    { contradict H0. apply set_union_elim in H0.
+      destruct H0; auto.
+      assert(_x':=_x). contradict _x'.  auto. }
+    apply set_add_new in H2. rewrite H2.
+    apply IHs in H1. rewrite H1. auto.
 Qed.
 
 Theorem union_same: forall (x y:set qexp),
     NoDup y -> (forall a, In a  y -> In a x) ->
     add_list y x = x.
-intros. functional induction add_list y x; auto.
-- rewrite NoDup_cons_iff in H. inversion H.
-  apply IHs;auto. intros.
-  apply H0. apply in_cons. auto.
-- assert(In a1 (a1::x1)); try apply in_eq.
-  apply H0 in H1. contradict H1. auto.
+  intros. functional induction add_list y x; auto.
+  - rewrite NoDup_cons_iff in H. inversion H.
+    apply IHs;auto. intros.
+    apply H0. apply in_cons. auto.
+  - assert(In a1 (a1::x1)); try apply in_eq.
+    apply H0 in H1. contradict H1. auto.
 Qed.
 
 Theorem union_same_alt: forall (x y:set qexp),
@@ -131,7 +143,7 @@ Qed.
 
 Lemma set_add_iff a b l : In a (set_add eq_dec b l) <-> a = b \/ In a l.
   Proof.
-  split. apply set_add_elim. apply set_add_intro.
+    split. apply set_add_elim. apply set_add_intro.
   Qed.
 
 Lemma set_add_nodup a l : NoDup l -> NoDup (set_add eq_dec  a l).
@@ -253,54 +265,6 @@ unfold proper;  apply level_CON.
 unfold Prod. repeat apply proper_APP;auto.
 unfold proper;  apply level_CON.
 Qed.
-
-(* No longer needed
-
-Inductive validqexp : qexp -> Prop:=
-VVar : forall v, validqexp (Var v)
-|VQar: forall i, validqexp (CON (Qvar i))
-|VRev: validqexp (CON REV)
-|VUnbox: validqexp (CON UNBOX)
-|VBox: validqexp (CON BOX)
-|VTrue: validqexp (CON TRUE)
-|VFalse: validqexp (CON FALSE)
-|VStart: validqexp (CON STAR)
-|VApp : forall e1 e2, validqexp e1 ->  validqexp e2 ->
-   validqexp (App e1 e2)
-|VFun: forall f, abstr f -> (forall v, validqexp (f (Var v))) -> validqexp (Fun f)
-|VProd: forall e1 e2, validqexp e1 ->  validqexp e2 ->
-   validqexp (Prod e1 e2)
-|VLet: forall f e, validqexp (lambda (fun x=> (lambda (f x))))
-  -> validqexp e -> validqexp (Let f e)
-|VSlet: forall e1 e2, validqexp e1 ->  validqexp e2 ->
-   validqexp (Slet e1 e2)
-|VIf: forall e1 e2 e3, validqexp e1 ->  validqexp e2 -> validqexp e3 ->
-   validqexp (If e1 e2 e3)
-|VCirc: forall e1 e2 i, validqexp e1 ->  validqexp e2 ->
-   validqexp (Circ e1 i e2).
-
-Inductive tvalidqexp : qexp -> Prop:=
-tVVar : forall v, tvalidqexp (Var v)
-|tVQar: forall i, tvalidqexp (CON (Qvar i))
-|tVRev: tvalidqexp (CON REV)
-|tVUnbox: tvalidqexp (CON UNBOX)
-|tVBox: tvalidqexp (CON BOX)
-|tVTrue: tvalidqexp (CON TRUE)
-|tVFalse: tvalidqexp (CON FALSE)
-|tVStart: tvalidqexp (CON STAR)
-|tVApp : forall e1 e2, tvalidqexp e1 ->  tvalidqexp e2 ->
-   tvalidqexp (App e1 e2)
-|tVFun: forall f, abstr f -> (forall x, proper x -> validqexp x -> tvalidqexp (f x)) -> tvalidqexp (Fun f)
-|tVProd: forall e1 e2, tvalidqexp e1 ->  tvalidqexp e2 ->
-   tvalidqexp (Prod e1 e2)
-|tVLet: forall f e, tvalidqexp (lambda (fun x=> (lambda (f x))))
-  -> tvalidqexp e -> tvalidqexp (Let f e)
-|tVSlet: forall e1 e2, tvalidqexp e1 ->  tvalidqexp e2 ->
-   tvalidqexp (Slet e1 e2)
-|tVIf: forall e1 e2 e3, tvalidqexp e1 -> tvalidqexp e2 -> tvalidqexp e3 ->
-   tvalidqexp (If e1 e2 e3)
-|tVCirc: forall e1 e2 i, tvalidqexp e1 ->  tvalidqexp e2 ->
-   tvalidqexp (Circ e1 i e2).*)
 
 Fixpoint FV (e:qexp) :set qexp :=
 match e with
