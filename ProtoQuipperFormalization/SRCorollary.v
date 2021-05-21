@@ -3,7 +3,7 @@
    Authors: Mohamend Yousri Mahmoud and Amy Felty
    Date: June 2018
    Current Version: Coq V8.9
-                                                                 
+
    Subject Reduction (Type Soundness) for Proto-Quipper
    for closed terms (no free term variables, only free
    quantum variables)
@@ -24,12 +24,12 @@ Import ListNotations.
 Definition seq_ := SubjectReduction.seq_.
 Definition prog := SubjectReduction.prog.
 
-Hint Constructors validT Subtyping.
+#[global] Hint Constructors validT Subtyping : core.
 
 Theorem subject_reduction': forall i, forall IL C C' a a' LL1 LL2 A,
-      (forall V, In V (get_boxed a) -> 
-                 ~ (exists n, V = (Var n) \/ V = (CON (Qvar n))))-> 
-      NoDup (FQUC a') -> NoDup(FQU a')->  
+      (forall V, In V (get_boxed a) ->
+                 ~ (exists n, V = (Var n) \/ V = (CON (Qvar n))))->
+      NoDup (FQUC a') -> NoDup(FQU a')->
       (forall t, In t IL ->
                  (exists n, t = is_qexp (Var n) \/ t = is_qexp (CON (Qvar n)) \/
                             exists T, t = typeof (Var n) T)) ->
@@ -47,7 +47,7 @@ Proof.
   exists j; intros H9.
   specialize (H8 LL1 LL2 A H4 H5 H6 H3 H9).
   assumption.
-Qed.  
+Qed.
 
 Inductive qvar_ctx_rel : qexp -> qexp -> list atm ->list atm -> list atm -> Prop :=
 | qcr_nil: forall a a', qvar_ctx_rel a a' [] [] []
@@ -97,7 +97,7 @@ Proof.
   - constructor; auto.
   - apply subcnxt_llg; auto.
 Qed.
-  
+
 Lemma ctx_constraints_weaken_Subtypecontext2 : forall a a' IL LL1 LL2,
     qvar_context_constraints a a' IL LL1 LL2 -> Subtypecontext IL LL2 IL LL2.
 Proof.
@@ -110,7 +110,7 @@ Proof.
   - apply subcnxt_llg; auto.
   - apply subcnxt_llg; auto.
 Qed.
-  
+
 Lemma ctx_constraints_weaken_common_ll : forall a a' IL LL1 LL2,
     qvar_context_constraints a a' IL LL1 LL2 -> common_ll a a' LL1 LL2.
 Proof.
@@ -119,13 +119,13 @@ Proof.
   clear H H0. induction H1; auto.
 Qed.
 
-Hint Resolve ctx_constraints_weaken_Subtypecontext1 ctx_constraints_weaken_Subtypecontext2
-     ctx_constraints_weaken_common_ll.
-  
+#[global] Hint Resolve ctx_constraints_weaken_Subtypecontext1 ctx_constraints_weaken_Subtypecontext2
+     ctx_constraints_weaken_common_ll : core.
+
 Corollary subject_reduction_cor: forall i, forall IL C C' a a' LL1 LL2 A,
-      (forall V, In V (get_boxed a)  -> 
-                 ~(exists i, V = (Var i) \/ V = (CON (Qvar i)))) -> 
-      NoDup (FQUC a') -> NoDup(FQU a') ->  
+      (forall V, In V (get_boxed a)  ->
+                 ~(exists i, V = (Var i) \/ V = (CON (Qvar i)))) ->
+      NoDup (FQUC a') -> NoDup(FQU a') ->
       qvar_context_constraints a a' IL LL1 LL2 ->
       seq_ i IL [] (atom_ (reduct C a C' a')) ->
       exists j, seq_ j IL LL1 (atom_ (typeof a A)) ->

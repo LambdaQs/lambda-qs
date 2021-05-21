@@ -8,7 +8,7 @@
    programming language.
   ***************************************************************)
 
-Require Export Hybrid.
+From HybridSys Require Export Hybrid.
 Require Import ProtoQuipperTypes.
 Require Import Coq.Lists.ListSet.
 Require Import Coq.Lists.List.
