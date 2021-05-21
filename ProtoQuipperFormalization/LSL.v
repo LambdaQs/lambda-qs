@@ -8,7 +8,7 @@
    An intuitionistic linear sequent calculus used as a specification
    logic, for use in two-level Hybrid.
   ***************************************************************)
-Require Export Hybrid.
+From HybridSys Require Export Hybrid.
 Require Import Coq.Lists.List.
 Import ListNotations.
 Require Import FunInd.

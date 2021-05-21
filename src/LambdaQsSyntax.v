@@ -1,4 +1,4 @@
-Require Export Hybrid.
+From HybridSys Require Export Hybrid.
 Require Import LambdaQsTypes.
 
 Inductive Econ : Set :=
