@@ -3614,23 +3614,26 @@ intros i. induction i.
                       (ll':=LL0) (j:=i1+1+1) in H60. simpl in H60.
                       destruct ( ProgLemmas1.eq_dec (typeof v x3) (typeof v x3)).
                       apply seq_exchange_cor with (ll':=lL2) (eq_dec:=ProgLemmas1.eq_dec) in H60;auto.
-                      assert(h60:=H60). apply common_eq in H1''. Focus 2. intros. split.
-                      intros. assert(h61:=H61). apply fq_all_qvar in H61. inversion H61. subst.
-                      apply LL_FQ_ALT_L with
-                      (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                       (ll:=lL2) (LL':=LL2)  (q:=x) in H60;auto.
-                      rewrite H60.  apply LL_FQ_ALT_L with
-                      (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                       (ll:=lL2) (LL':=LL2)  (q:=x) in h4;auto.
-                      rewrite <- h4. auto. apply split_ref. apply split_ref.
-                      intros. assert(h61:=H61). apply fq_all_qvar in H61. inversion H61. subst.
-                      apply LL_FQ_ALT_L with
-                      (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                       (ll:=lL2) (LL':=LL2)  (q:=x) in h4;auto.
-                      rewrite h4.  apply LL_FQ_ALT_L with
-                      (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                       (ll:=lL2) (LL':=LL2)  (q:=x) in h60;auto.
-                      rewrite <- h60. auto. apply split_ref. apply split_ref.
+                      assert(h60:=H60). apply common_eq in H1''.
+                      2: {
+                        intros. split.
+                        intros. assert(h61:=H61). apply fq_all_qvar in H61. inversion H61. subst.
+                        apply LL_FQ_ALT_L with
+                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                        (ll:=lL2) (LL':=LL2)  (q:=x) in H60;auto.
+                        rewrite H60.  apply LL_FQ_ALT_L with
+                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                        (ll:=lL2) (LL':=LL2)  (q:=x) in h4;auto.
+                        rewrite <- h4. auto. apply split_ref. apply split_ref.
+                        intros. assert(h61:=H61). apply fq_all_qvar in H61. inversion H61. subst.
+                        apply LL_FQ_ALT_L with
+                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                        (ll:=lL2) (LL':=LL2)  (q:=x) in h4;auto.
+                        rewrite h4.  apply LL_FQ_ALT_L with
+                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                        (ll:=lL2) (LL':=LL2)  (q:=x) in h60;auto.
+                        rewrite <- h60. auto. apply split_ref. apply split_ref.
+                      }
                       rewrite <- H1''.
                       exists (i4 + 1 + 1 + (i1 + 1 + 1) + (i1 + 1 + 1)). auto.
                       intros. rewrite count_app with (l:=LL0 ++ lL0) (l1:=LL0) (l2:=lL0) ;auto.
@@ -3668,23 +3671,27 @@ intros i. induction i.
                       destruct (ProgLemmas1.eq_dec (typeof v (bang x3)) (typeof v (bang x3))).
                       apply split_ident in H20. subst.
                       assert(h18:=H18).
-                      apply common_eq in H1''.  Focus 2. intros. split.
-                      intros. assert(h19:=H19). apply fq_all_qvar in H19. inversion H19. subst.
-                      apply LL_FQ_ALT_L with
-                      (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                       (ll:=lL0) (LL':=LL2)  (q:=x) in h18;auto.
-                      rewrite h18.  apply LL_FQ_ALT_L with
-                      (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                       (ll:=lL0) (LL':=LL2)  (q:=x) in h4;auto.
-                      rewrite <- h4. auto. apply split_ref. apply split_ref.
-                      intros. assert(h19:=H19). apply fq_all_qvar in H19. inversion H19. subst.
-                      apply LL_FQ_ALT_L with
-                      (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                       (ll:=lL0) (LL':=LL2)  (q:=x) in h4;auto.
-                      rewrite h4.  apply LL_FQ_ALT_L with
-                      (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                       (ll:=lL0) (LL':=LL2)  (q:=x) in h18;auto.
-                      rewrite <- h18. auto. apply split_ref. apply split_ref. subst.
+                      apply common_eq in H1''.
+                      2: {
+                        intros. split.
+                        intros. assert(h19:=H19). apply fq_all_qvar in H19. inversion H19. subst.
+                        apply LL_FQ_ALT_L with
+                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                        (ll:=lL0) (LL':=LL2)  (q:=x) in h18;auto.
+                        rewrite h18.  apply LL_FQ_ALT_L with
+                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                        (ll:=lL0) (LL':=LL2)  (q:=x) in h4;auto.
+                        rewrite <- h4. auto. apply split_ref. apply split_ref.
+                        intros. assert(h19:=H19). apply fq_all_qvar in H19. inversion H19. subst.
+                        apply LL_FQ_ALT_L with
+                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                        (ll:=lL0) (LL':=LL2)  (q:=x) in h4;auto.
+                        rewrite h4.  apply LL_FQ_ALT_L with
+                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                        (ll:=lL0) (LL':=LL2)  (q:=x) in h18;auto.
+                        rewrite <- h18. auto. apply split_ref. apply split_ref.
+                      }
+                      subst.
                       exists (i4 + 1 + 1 + (i1 + 1 + 1) + (i1 + 1 + 1)). auto.
                       auto. contradict n. auto. simpl.
                       destruct (ProgLemmas1.eq_dec (typeof v (bang x3)) (typeof v (bang x3))). auto.
@@ -3787,23 +3794,27 @@ intros i. induction i.
                        try apply in_eq. apply H64 with (j:=i1+1+1) in H18 . simpl in H18.
                       destruct (ProgLemmas1.eq_dec (typeof v (bang x3)) (typeof v (bang x3))).
                       assert(h18:=H18).
-                      apply common_eq in H1''. Focus 2. intros. split.
-                      intros. assert(h19:=H19). apply fq_all_qvar in H19. inversion H19. subst.
-                      apply LL_FQ_ALT_L with
-                      (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                     (ll:=[]) (LL':=LL2)  (q:=x) in h18;auto.
-                      rewrite h18.  apply LL_FQ_ALT_L with
-                      (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                       (ll:=[]) (LL':=LL2)  (q:=x) in h4;auto.
-                      rewrite <- h4. auto.
-                      intros. assert(h19:=H19). apply fq_all_qvar in H19. inversion H19. subst.
-                      apply LL_FQ_ALT_L with
-                      (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                       (ll:=[]) (LL':=LL2)  (q:=x) in h4;auto.
-                      rewrite h4.  apply LL_FQ_ALT_L with
-                      (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                       (ll:=[]) (LL':=LL2)  (q:=x) in h18;auto.
-                      rewrite <- h18. auto.   subst.
+                      apply common_eq in H1''.
+                      2: {
+                        intros. split.
+                        intros. assert(h19:=H19). apply fq_all_qvar in H19. inversion H19. subst.
+                        apply LL_FQ_ALT_L with
+                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                        (ll:=[]) (LL':=LL2)  (q:=x) in h18;auto.
+                        rewrite h18.  apply LL_FQ_ALT_L with
+                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                        (ll:=[]) (LL':=LL2)  (q:=x) in h4;auto.
+                        rewrite <- h4. auto.
+                        intros. assert(h19:=H19). apply fq_all_qvar in H19. inversion H19. subst.
+                        apply LL_FQ_ALT_L with
+                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                        (ll:=[]) (LL':=LL2)  (q:=x) in h4;auto.
+                        rewrite h4.  apply LL_FQ_ALT_L with
+                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                        (ll:=[]) (LL':=LL2)  (q:=x) in h18;auto.
+                        rewrite <- h18. auto.
+                      }
+                      subst.
                       exists (i4 + 1 + 1 + (i1 + 1 + 1) + (i1 + 1 + 1)). auto.
                       contradict n. auto. simpl.
                       destruct (ProgLemmas1.eq_dec (typeof v (bang x3)) (typeof v (bang x3))). auto.
@@ -3845,23 +3856,27 @@ intros i. induction i.
                       destruct ( ProgLemmas1.eq_dec (typeof v x3) (typeof v x3)).
                       apply seq_exchange_cor with (ll':=lL2) (eq_dec:=ProgLemmas1.eq_dec) in H56;auto.
                       assert(h56:=H56).
-                      apply common_eq in H1''. Focus 2. intros. split.
-                      intros. assert(h57:=H57). apply fq_all_qvar in H57. inversion H57. subst.
-                      apply LL_FQ_ALT_L with
-                      (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                       (ll:=lL2) (LL':=LL2)  (q:=x) in h56;auto.
-                      rewrite h56.  apply LL_FQ_ALT_L with
-                      (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                       (ll:=lL2) (LL':=LL2)  (q:=x) in h4;auto.
-                      rewrite <- h4. auto. apply split_ref. apply split_ref.
-                      intros. assert(h57:=H57). apply fq_all_qvar in H57. inversion H57. subst.
-                      apply LL_FQ_ALT_L with
-                      (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                       (ll:=lL2) (LL':=LL2)  (q:=x) in h4;auto.
-                      rewrite h4.  apply LL_FQ_ALT_L with
-                      (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                       (ll:=lL2) (LL':=LL2)  (q:=x) in h56;auto.
-                      rewrite <- h56. auto. apply split_ref. apply split_ref. subst.
+                      apply common_eq in H1''.
+                      2: {
+                        intros. split.
+                        intros. assert(h57:=H57). apply fq_all_qvar in H57. inversion H57. subst.
+                        apply LL_FQ_ALT_L with
+                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                        (ll:=lL2) (LL':=LL2)  (q:=x) in h56;auto.
+                        rewrite h56.  apply LL_FQ_ALT_L with
+                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                        (ll:=lL2) (LL':=LL2)  (q:=x) in h4;auto.
+                        rewrite <- h4. auto. apply split_ref. apply split_ref.
+                        intros. assert(h57:=H57). apply fq_all_qvar in H57. inversion H57. subst.
+                        apply LL_FQ_ALT_L with
+                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                        (ll:=lL2) (LL':=LL2)  (q:=x) in h4;auto.
+                        rewrite h4.  apply LL_FQ_ALT_L with
+                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                        (ll:=lL2) (LL':=LL2)  (q:=x) in h56;auto.
+                        rewrite <- h56. auto. apply split_ref. apply split_ref.
+                      }
+                      subst.
                       exists (i4 + 1 + 1 + (i1 + 1 + 1) + (i1 + 1 + 1)). auto.
                       intros. rewrite count_app with (l:=LL0 ++ lL0) (l1:=LL0) (l2:=lL0) ;auto.
                       apply count_split with (eq_dec:=ProgLemmas1.eq_dec) (a:=a) in H20.
@@ -3897,23 +3912,27 @@ intros i. induction i.
                       destruct (ProgLemmas1.eq_dec (typeof v (bang x3)) (typeof v (bang x3))).
                       apply split_ident in H20. subst.
                       assert(h18:=H18).
-                      apply common_eq in H1''. Focus 2. intros. split.
-                      intros. assert(h19:=H19). apply fq_all_qvar in H19. inversion H19. subst.
-                      apply LL_FQ_ALT_L with
-                      (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                       (ll:=lL0) (LL':=LL2)  (q:=x) in h18;auto.
-                      rewrite h18.  apply LL_FQ_ALT_L with
-                      (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                       (ll:=lL0) (LL':=LL2)  (q:=x) in h4;auto.
-                      rewrite <- h4. auto. apply split_ref. apply split_ref.
-                      intros. assert(h19:=H19). apply fq_all_qvar in H19. inversion H19. subst.
-                      apply LL_FQ_ALT_L with
-                      (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                       (ll:=lL0) (LL':=LL2)  (q:=x) in h4;auto.
-                      rewrite h4.  apply LL_FQ_ALT_L with
-                      (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                       (ll:=lL0) (LL':=LL2)  (q:=x) in h18;auto.
-                      rewrite <- h18. auto. apply split_ref. apply split_ref.  subst.
+                      apply common_eq in H1''.
+                      2: {
+                        intros. split.
+                        intros. assert(h19:=H19). apply fq_all_qvar in H19. inversion H19. subst.
+                        apply LL_FQ_ALT_L with
+                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                        (ll:=lL0) (LL':=LL2)  (q:=x) in h18;auto.
+                        rewrite h18.  apply LL_FQ_ALT_L with
+                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                        (ll:=lL0) (LL':=LL2)  (q:=x) in h4;auto.
+                        rewrite <- h4. auto. apply split_ref. apply split_ref.
+                        intros. assert(h19:=H19). apply fq_all_qvar in H19. inversion H19. subst.
+                        apply LL_FQ_ALT_L with
+                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                        (ll:=lL0) (LL':=LL2)  (q:=x) in h4;auto.
+                        rewrite h4.  apply LL_FQ_ALT_L with
+                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                        (ll:=lL0) (LL':=LL2)  (q:=x) in h18;auto.
+                        rewrite <- h18. auto. apply split_ref. apply split_ref.
+                      }
+                      subst.
                       exists (i4 + 1 + 1 + (i1 + 1 + 1) + (i1 + 1 + 1)). auto.
                       auto. contradict n. auto. simpl.
                       destruct (ProgLemmas1.eq_dec (typeof v (bang x3)) (typeof v (bang x3))).
@@ -3981,23 +4000,27 @@ intros i. induction i.
                         destruct ( ProgLemmas1.eq_dec (typeof v x2) (typeof v x2)).
                         apply seq_exchange_cor with (ll':=lL2) (eq_dec:=ProgLemmas1.eq_dec) in H57;auto.
                         assert(h57:=H57).
-                        apply common_eq in H1''. Focus 2. intros. split.
-                        intros. assert(h58:=H58). apply fq_all_qvar in H58. inversion H58. subst.
-                        apply LL_FQ_ALT_L with
-                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                         (ll:=lL2) (LL':=LL2)  (q:=x) in h57;auto.
-                        rewrite h57.  apply LL_FQ_ALT_L with
-                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                         (ll:=lL2) (LL':=LL2)  (q:=x) in h4;auto.
-                        rewrite <- h4. auto. apply split_ref. apply split_ref.
-                        intros. assert(h58:=H58). apply fq_all_qvar in H58. inversion H58. subst.
-                        apply LL_FQ_ALT_L with
-                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                         (ll:=lL2) (LL':=LL2)  (q:=x) in h4;auto.
-                        rewrite h4.  apply LL_FQ_ALT_L with
-                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                         (ll:=lL2) (LL':=LL2)  (q:=x) in h57;auto.
-                        rewrite <- h57. auto. apply split_ref. apply split_ref.   subst.
+                        apply common_eq in H1''.
+                        2: {
+                          intros. split.
+                          intros. assert(h58:=H58). apply fq_all_qvar in H58. inversion H58. subst.
+                          apply LL_FQ_ALT_L with
+                          (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                          (ll:=lL2) (LL':=LL2)  (q:=x) in h57;auto.
+                          rewrite h57.  apply LL_FQ_ALT_L with
+                          (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                          (ll:=lL2) (LL':=LL2)  (q:=x) in h4;auto.
+                          rewrite <- h4. auto. apply split_ref. apply split_ref.
+                          intros. assert(h58:=H58). apply fq_all_qvar in H58. inversion H58. subst.
+                          apply LL_FQ_ALT_L with
+                          (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                          (ll:=lL2) (LL':=LL2)  (q:=x) in h4;auto.
+                          rewrite h4.  apply LL_FQ_ALT_L with
+                          (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                          (ll:=lL2) (LL':=LL2)  (q:=x) in h57;auto.
+                          rewrite <- h57. auto. apply split_ref. apply split_ref.
+                        }
+                        subst.
                         exists (i4 + 1 + 1 + (i1 + 1 + 1) + (i1 + 1 + 1)). auto.
                         intros. rewrite count_app with (l:=LL0 ++ lL0) (l1:=LL0) (l2:=lL0) ;auto.
                         apply count_split with (eq_dec:=ProgLemmas1.eq_dec) (a:=a) in H17.
@@ -4033,23 +4056,27 @@ intros i. induction i.
                         destruct (ProgLemmas1.eq_dec (typeof v (bang x2)) (typeof v (bang x2))).
                         apply split_ident in H17. subst.
                         assert(h12:=H12).
-                        apply common_eq in H1''. Focus 2. intros. split.
-                        intros. assert(h16:=H16). apply fq_all_qvar in H16. inversion H16. subst.
-                        apply LL_FQ_ALT_L with
-                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                         (ll:=lL0) (LL':=LL2)  (q:=x) in h12;auto.
-                        rewrite h12.  apply LL_FQ_ALT_L with
-                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                         (ll:=lL0) (LL':=LL2)  (q:=x) in h4;auto.
-                        rewrite <- h4. auto. apply split_ref. apply split_ref.
-                        intros. assert(h16:=H16). apply fq_all_qvar in H16. inversion H16. subst.
-                        apply LL_FQ_ALT_L with
-                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                         (ll:=lL0) (LL':=LL2)  (q:=x) in h4;auto.
-                        rewrite h4.  apply LL_FQ_ALT_L with
-                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                         (ll:=lL0) (LL':=LL2)  (q:=x) in h12;auto.
-                        rewrite <- h12. auto. apply split_ref. apply split_ref.   subst.
+                        apply common_eq in H1''.
+                        2: {
+                          intros. split.
+                          intros. assert(h16:=H16). apply fq_all_qvar in H16. inversion H16. subst.
+                          apply LL_FQ_ALT_L with
+                          (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                          (ll:=lL0) (LL':=LL2)  (q:=x) in h12;auto.
+                          rewrite h12.  apply LL_FQ_ALT_L with
+                          (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                          (ll:=lL0) (LL':=LL2)  (q:=x) in h4;auto.
+                          rewrite <- h4. auto. apply split_ref. apply split_ref.
+                          intros. assert(h16:=H16). apply fq_all_qvar in H16. inversion H16. subst.
+                          apply LL_FQ_ALT_L with
+                          (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                          (ll:=lL0) (LL':=LL2)  (q:=x) in h4;auto.
+                          rewrite h4.  apply LL_FQ_ALT_L with
+                          (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                          (ll:=lL0) (LL':=LL2)  (q:=x) in h12;auto.
+                          rewrite <- h12. auto. apply split_ref. apply split_ref.
+                        }
+                        subst.
                         exists (i4 + 1 + 1 + (i1 + 1 + 1) + (i1 + 1 + 1)). auto.
                         auto. contradict n. auto. simpl.
                         destruct (ProgLemmas1.eq_dec (typeof v (bang x2)) (typeof v (bang x2))). auto.
@@ -4099,23 +4126,27 @@ intros i. induction i.
                         destruct ( ProgLemmas1.eq_dec (typeof v x2) (typeof v x2)).
                         apply seq_exchange_cor with (ll':=LL0) (eq_dec:=ProgLemmas1.eq_dec) in H57;auto.
                         assert(h57:=H57).
-                        apply common_eq in H1''. Focus 2. intros. split.
-                        intros. assert(h58:=H58). apply fq_all_qvar in H58. inversion H58. subst.
-                        apply LL_FQ_ALT_L with
-                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                         (ll:=LL0) (LL':=LL2)  (q:=x) in h57;auto.
-                        rewrite h57.  apply LL_FQ_ALT_L with
-                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                         (ll:=LL0) (LL':=LL2)  (q:=x) in h4;auto.
-                        rewrite <- h4. auto. apply split_ref. apply split_ref.
-                        intros. assert(h58:=H58). apply fq_all_qvar in H58. inversion H58. subst.
-                        apply LL_FQ_ALT_L with
-                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                         (ll:=LL0) (LL':=LL2)  (q:=x) in h4;auto.
-                        rewrite h4.  apply LL_FQ_ALT_L with
-                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                         (ll:=LL0) (LL':=LL2)  (q:=x) in h57;auto.
-                        rewrite <- h57. auto. apply split_ref. apply split_ref.   subst.
+                        apply common_eq in H1''.
+                        2: {
+                          intros. split.
+                          intros. assert(h58:=H58). apply fq_all_qvar in H58. inversion H58. subst.
+                          apply LL_FQ_ALT_L with
+                          (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                          (ll:=LL0) (LL':=LL2)  (q:=x) in h57;auto.
+                          rewrite h57.  apply LL_FQ_ALT_L with
+                          (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                          (ll:=LL0) (LL':=LL2)  (q:=x) in h4;auto.
+                          rewrite <- h4. auto. apply split_ref. apply split_ref.
+                          intros. assert(h58:=H58). apply fq_all_qvar in H58. inversion H58. subst.
+                          apply LL_FQ_ALT_L with
+                          (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                          (ll:=LL0) (LL':=LL2)  (q:=x) in h4;auto.
+                          rewrite h4.  apply LL_FQ_ALT_L with
+                          (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                          (ll:=LL0) (LL':=LL2)  (q:=x) in h57;auto.
+                          rewrite <- h57. auto. apply split_ref. apply split_ref.
+                        }
+                        subst.
                         exists (i4 + 1 + 1 + (i1 + 1 + 1) + (i1 + 1 + 1)). auto.
                         rewrite app_nil_r. auto.
                          contradict n. auto. apply in_eq. auto.
@@ -4151,23 +4182,27 @@ intros i. induction i.
                          try apply in_eq. apply H61 with (j:=i1+1+1) in H12 . simpl in H12.
                         destruct (ProgLemmas1.eq_dec (typeof v (bang x2)) (typeof v (bang x2))).
                         assert(h12:=H12).
-                        apply common_eq in H1''. Focus 2. intros. split.
-                        intros. assert(h16:=H16). apply fq_all_qvar in H16. inversion H16. subst.
-                        apply LL_FQ_ALT_L with
-                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                         (ll:=[]) (LL':=LL2)  (q:=x) in h12;auto.
-                        rewrite h12.  apply LL_FQ_ALT_L with
-                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                         (ll:=[]) (LL':=LL2)  (q:=x) in h4;auto.
-                        rewrite <- h4. auto.
-                        intros. assert(h16:=H16). apply fq_all_qvar in H16. inversion H16. subst.
-                        apply LL_FQ_ALT_L with
-                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                         (ll:=[]) (LL':=LL2)  (q:=x) in h4;auto.
-                        rewrite h4.  apply LL_FQ_ALT_L with
-                        (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
-                         (ll:=[]) (LL':=LL2)  (q:=x) in h12;auto.
-                        rewrite <- h12. auto.   subst.
+                        apply common_eq in H1''.
+                        2: {
+                          intros. split.
+                          intros. assert(h16:=H16). apply fq_all_qvar in H16. inversion H16. subst.
+                          apply LL_FQ_ALT_L with
+                          (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                          (ll:=[]) (LL':=LL2)  (q:=x) in h12;auto.
+                          rewrite h12.  apply LL_FQ_ALT_L with
+                          (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                          (ll:=[]) (LL':=LL2)  (q:=x) in h4;auto.
+                          rewrite <- h4. auto.
+                          intros. assert(h16:=H16). apply fq_all_qvar in H16. inversion H16. subst.
+                          apply LL_FQ_ALT_L with
+                          (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                          (ll:=[]) (LL':=LL2)  (q:=x) in h4;auto.
+                          rewrite h4.  apply LL_FQ_ALT_L with
+                          (a:=(App (Fun E) v)) (a':=(E v)) (ll1:=[])
+                          (ll:=[]) (LL':=LL2)  (q:=x) in h12;auto.
+                          rewrite <- h12. auto.
+                        }
+                        subst.
                         exists (i4 + 1 + 1 + (i1 + 1 + 1) + (i1 + 1 + 1)). auto.
                         contradict n. auto. simpl. Optimize Proof.
                         destruct (ProgLemmas1.eq_dec (typeof v (bang x2)) (typeof v (bang x2))). auto.
@@ -6206,23 +6241,27 @@ intros i. induction i.
                     destruct ( ProgLemmas1.eq_dec (typeof v x0) (typeof v x0)).
                     apply seq_exchange_cor with (ll':=LL1) (eq_dec:=ProgLemmas1.eq_dec) in H72;auto.
                     assert(h72:=H72).
-                    apply common_eq in H1''. Focus 2. intros. split.
-                    intros. assert(h73:=H73). apply fq_all_qvar in H73. inversion H73. subst.
-                    apply LL_FQ_ALT_L with
-                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                     (ll:=LL1) (LL':=LL2)  (q:=x6) in h72;auto.
-                    rewrite h72.  apply LL_FQ_ALT_L with
-                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                     (ll:=LL1) (LL':=LL2)  (q:=x6) in h4;auto.
-                    rewrite <- h4. auto. apply split_ref. apply split_ref.
-                    intros. assert(h73:=H73). apply fq_all_qvar in H73. inversion H73. subst.
-                    apply LL_FQ_ALT_L with
-                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                     (ll:=LL1) (LL':=LL2)  (q:=x6) in h4;auto.
-                    rewrite h4.  apply LL_FQ_ALT_L with
-                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                     (ll:=LL1) (LL':=LL2)  (q:=x6) in h72;auto.
-                    rewrite <- h72. auto. apply split_ref. apply split_ref.  subst.
+                    apply common_eq in H1''.
+                    2: {
+                      intros. split.
+                      intros. assert(h73:=H73). apply fq_all_qvar in H73. inversion H73. subst.
+                      apply LL_FQ_ALT_L with
+                      (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                      (ll:=LL1) (LL':=LL2)  (q:=x6) in h72;auto.
+                      rewrite h72.  apply LL_FQ_ALT_L with
+                      (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                      (ll:=LL1) (LL':=LL2)  (q:=x6) in h4;auto.
+                      rewrite <- h4. auto. apply split_ref. apply split_ref.
+                      intros. assert(h73:=H73). apply fq_all_qvar in H73. inversion H73. subst.
+                      apply LL_FQ_ALT_L with
+                      (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                      (ll:=LL1) (LL':=LL2)  (q:=x6) in h4;auto.
+                      rewrite h4.  apply LL_FQ_ALT_L with
+                      (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                      (ll:=LL1) (LL':=LL2)  (q:=x6) in h72;auto.
+                      rewrite <- h72. auto. apply split_ref. apply split_ref.
+                    }
+                    subst.
                     exists (i7 + 1 + 1 + (i1 + 1 + 1) + (i1 + 1 + 1)+(i1 + 1 + 1) + (i1 + 1 + 1)). auto.
                     intros.
                     rewrite count_app with (l:=LL0 ++ LL3 ++lL2) (l1:=LL0++LL3) (l2:=lL2) ;auto.
@@ -6308,23 +6347,27 @@ intros i. induction i.
                     destruct ( ProgLemmas1.eq_dec (typeof v x0) (typeof v x0)).
                     apply seq_exchange_cor with (ll':=LL1) (eq_dec:=ProgLemmas1.eq_dec) in H72;auto.
                     assert(h72:=H72).
-                    apply common_eq in H1''. Focus 2. intros. split.
-                    intros. assert(h69:=H69). apply fq_all_qvar in H69. inversion H69. subst.
-                    apply LL_FQ_ALT_L with
-                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                     (ll:=LL1) (LL':=LL2)  (q:=x6) in h72;auto.
-                    rewrite h72.  apply LL_FQ_ALT_L with
-                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                     (ll:=LL1) (LL':=LL2)  (q:=x6) in h4;auto.
-                    rewrite <- h4. auto. apply split_ref. apply split_ref.
-                    intros. assert(h69:=H69). apply fq_all_qvar in H69. inversion H69. subst.
-                    apply LL_FQ_ALT_L with
-                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                     (ll:=LL1) (LL':=LL2)  (q:=x6) in h4;auto.
-                    rewrite h4.  apply LL_FQ_ALT_L with
-                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                     (ll:=LL1) (LL':=LL2)  (q:=x6) in h72;auto.
-                    rewrite <- h72. auto. apply split_ref. apply split_ref.  subst.
+                    apply common_eq in H1''.
+                    2: {
+                      intros. split.
+                      intros. assert(h69:=H69). apply fq_all_qvar in H69. inversion H69. subst.
+                      apply LL_FQ_ALT_L with
+                      (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                      (ll:=LL1) (LL':=LL2)  (q:=x6) in h72;auto.
+                      rewrite h72.  apply LL_FQ_ALT_L with
+                      (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                      (ll:=LL1) (LL':=LL2)  (q:=x6) in h4;auto.
+                      rewrite <- h4. auto. apply split_ref. apply split_ref.
+                      intros. assert(h69:=H69). apply fq_all_qvar in H69. inversion H69. subst.
+                      apply LL_FQ_ALT_L with
+                      (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                      (ll:=LL1) (LL':=LL2)  (q:=x6) in h4;auto.
+                      rewrite h4.  apply LL_FQ_ALT_L with
+                      (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                      (ll:=LL1) (LL':=LL2)  (q:=x6) in h72;auto.
+                      rewrite <- h72. auto. apply split_ref. apply split_ref.
+                    }
+                    subst.
                     exists (i7 + 1 + 1 + (i1 + 1 + 1) + (i1 + 1 + 1)+(i1 + 1 + 1) + (i1 + 1 + 1)). auto.
                     intros. rewrite count_app with (l:=LL0 ++ LL3 ++lL2) (l1:=LL0++LL3) (l2:=lL2) ;auto.
                     apply count_split with (eq_dec:=ProgLemmas1.eq_dec) (a:=a) in H25.
@@ -6411,23 +6454,27 @@ intros i. induction i.
                     destruct ( ProgLemmas1.eq_dec (typeof v x4) (typeof v x4)).
                     apply seq_exchange_cor with (ll':=LL1) (eq_dec:=ProgLemmas1.eq_dec) in H64;auto.
                     assert(h64:=H64).
-                    apply common_eq in H1''.  Focus 2. intros. split.
-                    intros. assert(h65:=H65). apply fq_all_qvar in H65. inversion H65. subst.
-                    apply LL_FQ_ALT_L with
-                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                     (ll:=LL1) (LL':=LL2)  (q:=x0) in h64;auto.
-                    rewrite h64.  apply LL_FQ_ALT_L with
-                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                     (ll:=LL1) (LL':=LL2)  (q:=x0) in h4;auto.
-                    rewrite <- h4. auto. apply split_ref. apply split_ref.
-                    intros. assert(h65:=H65). apply fq_all_qvar in H65. inversion H65. subst.
-                    apply LL_FQ_ALT_L with
-                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                     (ll:=LL1) (LL':=LL2)  (q:=x0) in h4;auto.
-                    rewrite h4.  apply LL_FQ_ALT_L with
-                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                     (ll:=LL1) (LL':=LL2)  (q:=x0) in h64;auto.
-                    rewrite <- h64. auto. apply split_ref. apply split_ref. subst.
+                    apply common_eq in H1''.
+                    2: {
+                      intros. split.
+                      intros. assert(h65:=H65). apply fq_all_qvar in H65. inversion H65. subst.
+                      apply LL_FQ_ALT_L with
+                      (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                      (ll:=LL1) (LL':=LL2)  (q:=x0) in h64;auto.
+                      rewrite h64.  apply LL_FQ_ALT_L with
+                      (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                      (ll:=LL1) (LL':=LL2)  (q:=x0) in h4;auto.
+                      rewrite <- h4. auto. apply split_ref. apply split_ref.
+                      intros. assert(h65:=H65). apply fq_all_qvar in H65. inversion H65. subst.
+                      apply LL_FQ_ALT_L with
+                      (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                      (ll:=LL1) (LL':=LL2)  (q:=x0) in h4;auto.
+                      rewrite h4.  apply LL_FQ_ALT_L with
+                      (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                      (ll:=LL1) (LL':=LL2)  (q:=x0) in h64;auto.
+                      rewrite <- h64. auto. apply split_ref. apply split_ref.
+                    }
+                    subst.
                     exists (i7 + 1 + 1 + (i1 ) + (i1 )+(i1 ) + (i1 )). auto.
                     intros. rewrite count_app with (l:=LL0 ++ LL3 ++lL2) (l1:=LL0++LL3) (l2:=lL2) ;auto.
                     apply count_split with (eq_dec:=ProgLemmas1.eq_dec) (a:=a) in H25.
@@ -6527,23 +6574,27 @@ intros i. induction i.
                     apply H73 with (j:=i1+1+1) in H74. simpl in H74.
                     destruct (ProgLemmas1.eq_dec (typeof v (bang x0)) (typeof v (bang x0))).
                     assert(h74:=H74).
-                    apply common_eq in H1''.  Focus 2. intros. split.
-                    intros. assert(h4':=H4). apply fq_all_qvar in H4. inversion H4. subst.
-                    apply LL_FQ_ALT_L with
-                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                     (ll:=lL2) (LL':=LL2)  (q:=x) in h74;auto.
-                    rewrite h74.  apply LL_FQ_ALT_L with
-                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                     (ll:=lL2) (LL':=LL2)  (q:=x) in h4;auto.
-                    rewrite <- h4. auto. apply split_ref. apply split_ref.
-                    intros. assert(h4':=H4). apply fq_all_qvar in H4. inversion H4. subst.
-                    apply LL_FQ_ALT_L with
-                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                     (ll:=lL2) (LL':=LL2)  (q:=x) in h4;auto.
-                    rewrite h4.  apply LL_FQ_ALT_L with
-                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                     (ll:=lL2) (LL':=LL2)  (q:=x) in h74;auto.
-                    rewrite <- h74. auto. apply split_ref. apply split_ref.  subst.
+                    apply common_eq in H1''.
+                    2: {
+                      intros. split.
+                      intros. assert(h4':=H4). apply fq_all_qvar in H4. inversion H4. subst.
+                      apply LL_FQ_ALT_L with
+                      (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                      (ll:=lL2) (LL':=LL2)  (q:=x) in h74;auto.
+                      rewrite h74.  apply LL_FQ_ALT_L with
+                      (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                      (ll:=lL2) (LL':=LL2)  (q:=x) in h4;auto.
+                      rewrite <- h4. auto. apply split_ref. apply split_ref.
+                      intros. assert(h4':=H4). apply fq_all_qvar in H4. inversion H4. subst.
+                      apply LL_FQ_ALT_L with
+                      (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                      (ll:=lL2) (LL':=LL2)  (q:=x) in h4;auto.
+                      rewrite h4.  apply LL_FQ_ALT_L with
+                      (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                      (ll:=lL2) (LL':=LL2)  (q:=x) in h74;auto.
+                      rewrite <- h74. auto. apply split_ref. apply split_ref.
+                    }
+                    subst.
                     exists (i7 + 1 + 1 + (i1 + 1 + 1) + (i1 + 1 + 1)+(i1 + 1 + 1) + (i1 + 1 + 1)). auto.
                     contradict n. auto.
                     simpl.
@@ -6645,23 +6696,27 @@ intros i. induction i.
                     apply H73 with (j:=i1) in H74. simpl in H74.
                     destruct (ProgLemmas1.eq_dec (typeof v (bang x4)) (typeof v (bang x4))).
                     assert(h74:=H74).
-                    apply common_eq in H1''.  Focus 2. intros. split.
-                    intros. assert(h4':=H4). apply fq_all_qvar in H4. inversion H4. subst.
-                    apply LL_FQ_ALT_L with
-                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                     (ll:=lL2) (LL':=LL2)  (q:=x) in h74;auto.
-                    rewrite h74.  apply LL_FQ_ALT_L with
-                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                     (ll:=lL2) (LL':=LL2)  (q:=x) in h4;auto.
-                    rewrite <- h4. auto. apply split_ref. apply split_ref.
-                    intros. assert(h4':=H4). apply fq_all_qvar in H4. inversion H4. subst.
-                    apply LL_FQ_ALT_L with
-                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                     (ll:=lL2) (LL':=LL2)  (q:=x) in h4;auto.
-                    rewrite h4.  apply LL_FQ_ALT_L with
-                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                     (ll:=lL2) (LL':=LL2)  (q:=x) in h74;auto.
-                    rewrite <- h74. auto. apply split_ref. apply split_ref.  subst.
+                    apply common_eq in H1''.
+                    2: {
+                      intros. split.
+                      intros. assert(h4':=H4). apply fq_all_qvar in H4. inversion H4. subst.
+                      apply LL_FQ_ALT_L with
+                      (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                      (ll:=lL2) (LL':=LL2)  (q:=x) in h74;auto.
+                      rewrite h74.  apply LL_FQ_ALT_L with
+                      (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                      (ll:=lL2) (LL':=LL2)  (q:=x) in h4;auto.
+                      rewrite <- h4. auto. apply split_ref. apply split_ref.
+                      intros. assert(h4':=H4). apply fq_all_qvar in H4. inversion H4. subst.
+                      apply LL_FQ_ALT_L with
+                      (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                      (ll:=lL2) (LL':=LL2)  (q:=x) in h4;auto.
+                      rewrite h4.  apply LL_FQ_ALT_L with
+                      (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                      (ll:=lL2) (LL':=LL2)  (q:=x) in h74;auto.
+                      rewrite <- h74. auto. apply split_ref. apply split_ref.
+                    }
+                    subst.
                     exists (i7 +1+1+ (i1 ) + (i1 )+(i1 ) + (i1 )). auto.
                     contradict n. auto.
                     simpl.
@@ -6759,23 +6814,27 @@ intros i. induction i.
                   destruct ( ProgLemmas1.eq_dec (typeof v x0) (typeof v x0)).
                   apply seq_exchange_cor with (ll':=LL1) (eq_dec:=ProgLemmas1.eq_dec) in H72;auto.
                   assert(h72:=H72).
-                  apply common_eq in H1''. Focus 2. intros. split.
-                  intros. assert(h69:=H69). apply fq_all_qvar in H69. inversion H69. subst.
-                  apply LL_FQ_ALT_L with
-                  (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                   (ll:=LL1) (LL':=LL2)  (q:=x5) in h72;auto.
-                  rewrite h72.  apply LL_FQ_ALT_L with
-                  (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                   (ll:=LL1) (LL':=LL2)  (q:=x5) in h4;auto.
-                  rewrite <- h4. auto. apply split_ref. apply split_ref.
-                  intros. assert(h69:=H69). apply fq_all_qvar in H69. inversion H69. subst.
-                  apply LL_FQ_ALT_L with
-                  (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                   (ll:=LL1) (LL':=LL2)  (q:=x5) in h4;auto.
-                  rewrite h4.  apply LL_FQ_ALT_L with
-                  (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                   (ll:=LL1) (LL':=LL2)  (q:=x5) in h72;auto.
-                  rewrite <- h72. auto. apply split_ref. apply split_ref.   subst.
+                  apply common_eq in H1''.
+                  2: {
+                    intros. split.
+                    intros. assert(h69:=H69). apply fq_all_qvar in H69. inversion H69. subst.
+                    apply LL_FQ_ALT_L with
+                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                    (ll:=LL1) (LL':=LL2)  (q:=x5) in h72;auto.
+                    rewrite h72.  apply LL_FQ_ALT_L with
+                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                    (ll:=LL1) (LL':=LL2)  (q:=x5) in h4;auto.
+                    rewrite <- h4. auto. apply split_ref. apply split_ref.
+                    intros. assert(h69:=H69). apply fq_all_qvar in H69. inversion H69. subst.
+                    apply LL_FQ_ALT_L with
+                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                    (ll:=LL1) (LL':=LL2)  (q:=x5) in h4;auto.
+                    rewrite h4.  apply LL_FQ_ALT_L with
+                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                    (ll:=LL1) (LL':=LL2)  (q:=x5) in h72;auto.
+                    rewrite <- h72. auto. apply split_ref. apply split_ref.
+                  }
+                  subst.
                   exists (i7 + (i1 + 1 + 1) + (i1 + 1 + 1)+(i1 + 1 + 1) + (i1 + 1 + 1)). auto.
                   intros. rewrite count_app with (l:=LL0 ++ LL3 ++lL2) (l1:=LL0++LL3) (l2:=lL2) ;auto.
                   apply count_split with (eq_dec:=ProgLemmas1.eq_dec) (a:=a) in h23.
@@ -6854,23 +6913,27 @@ intros i. induction i.
                   destruct ( ProgLemmas1.eq_dec (typeof v x0) (typeof v x0)).
                   apply seq_exchange_cor with (ll':=LL1) (eq_dec:=ProgLemmas1.eq_dec) in H72;auto.
                   assert(h72:=H72).
-                  apply common_eq in H1''. Focus 2. intros. split.
-                  intros. assert(h63:=H63). apply fq_all_qvar in H63. inversion H63. subst.
-                  apply LL_FQ_ALT_L with
-                  (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                   (ll:=LL1) (LL':=LL2)  (q:=x5) in h72;auto.
-                  rewrite h72.  apply LL_FQ_ALT_L with
-                  (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                   (ll:=LL1) (LL':=LL2)  (q:=x5) in h4;auto.
-                  rewrite <- h4. auto. apply split_ref. apply split_ref.
-                  intros. assert(h63':=H63). apply fq_all_qvar in H63. inversion H63. subst.
-                  apply LL_FQ_ALT_L with
-                  (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                   (ll:=LL1) (LL':=LL2)  (q:=x5) in h4;auto.
-                  rewrite h4.  apply LL_FQ_ALT_L with
-                  (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                   (ll:=LL1) (LL':=LL2)  (q:=x5) in h72;auto.
-                  rewrite <- h72. auto. apply split_ref. apply split_ref.  subst.
+                  apply common_eq in H1''.
+                  2: {
+                    intros. split.
+                    intros. assert(h63:=H63). apply fq_all_qvar in H63. inversion H63. subst.
+                    apply LL_FQ_ALT_L with
+                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                    (ll:=LL1) (LL':=LL2)  (q:=x5) in h72;auto.
+                    rewrite h72.  apply LL_FQ_ALT_L with
+                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                    (ll:=LL1) (LL':=LL2)  (q:=x5) in h4;auto.
+                    rewrite <- h4. auto. apply split_ref. apply split_ref.
+                    intros. assert(h63':=H63). apply fq_all_qvar in H63. inversion H63. subst.
+                    apply LL_FQ_ALT_L with
+                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                    (ll:=LL1) (LL':=LL2)  (q:=x5) in h4;auto.
+                    rewrite h4.  apply LL_FQ_ALT_L with
+                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                    (ll:=LL1) (LL':=LL2)  (q:=x5) in h72;auto.
+                    rewrite <- h72. auto. apply split_ref. apply split_ref.
+                  }
+                  subst.
                   exists (i7  + (i1 + 1 + 1) + (i1 + 1 + 1)+(i1 + 1 + 1) + (i1 + 1 + 1)). auto.
                   intros. rewrite count_app with (l:=LL0 ++ LL3 ++lL2) (l1:=LL0++LL3) (l2:=lL2) ;auto.
                   apply count_split with (eq_dec:=ProgLemmas1.eq_dec) (a:=a) in H23.
@@ -6950,23 +7013,27 @@ intros i. induction i.
                   destruct ( ProgLemmas1.eq_dec (typeof v x3) (typeof v x3)).
                   apply seq_exchange_cor with (ll':=LL1) (eq_dec:=ProgLemmas1.eq_dec) in H64;auto.
                   assert(h64:=H64).
-                  apply common_eq in H1''. Focus 2. intros. split.
-                  intros. assert(h61:=H61). apply fq_all_qvar in H61. inversion H61. subst.
-                  apply LL_FQ_ALT_L with
-                  (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                   (ll:=LL1) (LL':=LL2)  (q:=x0) in h64;auto.
-                  rewrite h64.  apply LL_FQ_ALT_L with
-                  (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                   (ll:=LL1) (LL':=LL2)  (q:=x0) in h4;auto.
-                  rewrite <- h4. auto. apply split_ref. apply split_ref.
-                  intros. assert(h61:=H61). apply fq_all_qvar in H61. inversion H61. subst.
-                  apply LL_FQ_ALT_L with
-                  (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                   (ll:=LL1) (LL':=LL2)  (q:=x0) in h4;auto.
-                  rewrite h4.  apply LL_FQ_ALT_L with
-                  (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                   (ll:=LL1) (LL':=LL2)  (q:=x0) in h64;auto.
-                  rewrite <- h64. auto. apply split_ref. apply split_ref.  subst.
+                  apply common_eq in H1''.
+                  2: {
+                    intros. split.
+                    intros. assert(h61:=H61). apply fq_all_qvar in H61. inversion H61. subst.
+                    apply LL_FQ_ALT_L with
+                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                    (ll:=LL1) (LL':=LL2)  (q:=x0) in h64;auto.
+                    rewrite h64.  apply LL_FQ_ALT_L with
+                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                    (ll:=LL1) (LL':=LL2)  (q:=x0) in h4;auto.
+                    rewrite <- h4. auto. apply split_ref. apply split_ref.
+                    intros. assert(h61:=H61). apply fq_all_qvar in H61. inversion H61. subst.
+                    apply LL_FQ_ALT_L with
+                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                    (ll:=LL1) (LL':=LL2)  (q:=x0) in h4;auto.
+                    rewrite h4.  apply LL_FQ_ALT_L with
+                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                    (ll:=LL1) (LL':=LL2)  (q:=x0) in h64;auto.
+                    rewrite <- h64. auto. apply split_ref. apply split_ref.
+                  }
+                  subst.
                   exists (i7 +  (i1 ) + (i1 )+(i1 ) + (i1 )). auto.
                   intros. rewrite count_app with (l:=LL0 ++ LL3 ++lL2) (l1:=LL0++LL3) (l2:=lL2) ;auto.
                   apply count_split with (eq_dec:=ProgLemmas1.eq_dec) (a:=a) in H23.
@@ -7061,23 +7128,27 @@ intros i. induction i.
                     apply H73 with (j:=i1+1+1) in H74. simpl in H74.
                     destruct (ProgLemmas1.eq_dec (typeof v (bang x0)) (typeof v (bang x0))).
                     assert(h74:=H74).
-                    apply common_eq in H1''.  Focus 2. intros. split.
-                    intros. assert(h4':=H4). apply fq_all_qvar in H4. inversion H4. subst.
-                    apply LL_FQ_ALT_L with
-                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                     (ll:=lL2) (LL':=LL2)  (q:=x) in h74;auto.
-                    rewrite h74.  apply LL_FQ_ALT_L with
-                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                     (ll:=lL2) (LL':=LL2)  (q:=x) in h4;auto.
-                    rewrite <- h4. auto. apply split_ref. apply split_ref.
-                    intros. assert(h4':=H4). apply fq_all_qvar in H4. inversion H4. subst.
-                    apply LL_FQ_ALT_L with
-                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                     (ll:=lL2) (LL':=LL2)  (q:=x) in h4;auto.
-                    rewrite h4.  apply LL_FQ_ALT_L with
-                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                     (ll:=lL2) (LL':=LL2)  (q:=x) in h74;auto.
-                    rewrite <- h74. auto. apply split_ref. apply split_ref.  subst.
+                    apply common_eq in H1''.
+                    2: {
+                      intros. split.
+                      intros. assert(h4':=H4). apply fq_all_qvar in H4. inversion H4. subst.
+                      apply LL_FQ_ALT_L with
+                      (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                      (ll:=lL2) (LL':=LL2)  (q:=x) in h74;auto.
+                      rewrite h74.  apply LL_FQ_ALT_L with
+                      (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                      (ll:=lL2) (LL':=LL2)  (q:=x) in h4;auto.
+                      rewrite <- h4. auto. apply split_ref. apply split_ref.
+                      intros. assert(h4':=H4). apply fq_all_qvar in H4. inversion H4. subst.
+                      apply LL_FQ_ALT_L with
+                      (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                      (ll:=lL2) (LL':=LL2)  (q:=x) in h4;auto.
+                      rewrite h4.  apply LL_FQ_ALT_L with
+                      (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                      (ll:=lL2) (LL':=LL2)  (q:=x) in h74;auto.
+                      rewrite <- h74. auto. apply split_ref. apply split_ref.
+                    }
+                    subst.
                     exists (i7 +  (i1 + 1 + 1) + (i1 + 1 + 1)+(i1 + 1 + 1) + (i1 + 1 + 1)). auto.
                     contradict n. auto.
                     simpl.
@@ -7175,23 +7246,27 @@ intros i. induction i.
                     apply H73 with (j:=i1) in H74. simpl in H74.
                     destruct (ProgLemmas1.eq_dec (typeof v (bang x3)) (typeof v (bang x3))).
                     assert(h74:=H74).
-                    apply common_eq in H1''.  Focus 2. intros. split.
-                    intros. assert(h4':=H4). apply fq_all_qvar in H4. inversion H4. subst.
-                    apply LL_FQ_ALT_L with
-                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                     (ll:=lL2) (LL':=LL2)  (q:=x) in h74;auto.
-                    rewrite h74.  apply LL_FQ_ALT_L with
-                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                     (ll:=lL2) (LL':=LL2)  (q:=x) in h4;auto.
-                    rewrite <- h4. auto. apply split_ref. apply split_ref.
-                    intros. assert(h4':=H4). apply fq_all_qvar in H4. inversion H4. subst.
-                    apply LL_FQ_ALT_L with
-                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                     (ll:=lL2) (LL':=LL2)  (q:=x) in h4;auto.
-                    rewrite h4.  apply LL_FQ_ALT_L with
-                    (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
-                     (ll:=lL2) (LL':=LL2)  (q:=x) in h74;auto.
-                    rewrite <- h74. auto. apply split_ref. apply split_ref. subst.
+                    apply common_eq in H1''.
+                    2: {
+                      intros. split.
+                      intros. assert(h4':=H4). apply fq_all_qvar in H4. inversion H4. subst.
+                      apply LL_FQ_ALT_L with
+                      (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                      (ll:=lL2) (LL':=LL2)  (q:=x) in h74;auto.
+                      rewrite h74.  apply LL_FQ_ALT_L with
+                      (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                      (ll:=lL2) (LL':=LL2)  (q:=x) in h4;auto.
+                      rewrite <- h4. auto. apply split_ref. apply split_ref.
+                      intros. assert(h4':=H4). apply fq_all_qvar in H4. inversion H4. subst.
+                      apply LL_FQ_ALT_L with
+                      (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                      (ll:=lL2) (LL':=LL2)  (q:=x) in h4;auto.
+                      rewrite h4.  apply LL_FQ_ALT_L with
+                      (a:=(Let E (Prod v u))) (a':=(E v u)) (ll1:=[])
+                      (ll:=lL2) (LL':=LL2)  (q:=x) in h74;auto.
+                      rewrite <- h74. auto. apply split_ref. apply split_ref.
+                    }
+                    subst.
                     exists (i7 + (i1 ) + (i1 )+(i1 ) + (i1 )). auto.
                     contradict n. auto.
                     simpl.
