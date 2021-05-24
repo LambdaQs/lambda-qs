@@ -33,9 +33,9 @@ Definition Let (e1:eexp) (f : eexp -> eexp) : eexp :=
   Some Properties of Constructors
 ****************************************************************)
 
-Hint Resolve level_CON level_VAR level_BND level_APP level_ABS : hybrid.
-Hint Resolve proper_APP abstr_proper : hybrid.
-Hint Unfold proper: hybrid.
+#[global] Hint Resolve level_CON level_VAR level_BND level_APP level_ABS : hybrid.
+#[global] Hint Resolve proper_APP abstr_proper : hybrid.
+#[global] Hint Unfold proper: hybrid.
 Hint Rewrite ext_eq_eta : hybrid.
 
 Lemma proper_Var: forall x:var, (proper (Var x)).
@@ -51,7 +51,7 @@ Proof.
    (* auto with hybrid.
 Qed. *)
 
-Hint Resolve proper_Var : hybrid.
+#[global] Hint Resolve proper_Var : hybrid.
 
 (****************************************************************
    The atm type and instantiation of oo.
@@ -65,7 +65,7 @@ Definition oo_ := oo atm Econ.
 Definition atom_ : atm -> oo_ := atom Econ.
 Definition T_ : oo_ := T atm Econ.
 
-Hint Unfold oo_ atom_ T_: hybrid.
+#[global] Hint Unfold oo_ atom_ T_: hybrid.
 
 Inductive prog : atm -> oo_ -> Prop :=
 | of_str : forall (s:string),
