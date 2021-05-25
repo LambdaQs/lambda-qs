@@ -86,6 +86,111 @@ Definition T_ : oo_ := T atm Econ.
 Hint Unfold oo_ atom_ T_: hybrid.
 
 (****************************************************************
+   Contexts with Unique Variables
+  ****************************************************************)
+
+(* newvar for atoms *)
+Definition nvA (a:atm) : var :=
+  match a with
+  | oft  e t => (newvar e)
+  | term e   => (newvar e)
+  end.
+
+Lemma nvA_oft : forall (e:eexp) (t:tp),
+  nvA (oft e t) = (newvar e).
+Proof.
+  simpl; auto.
+Qed.
+
+Lemma nvA_term : forall (e:eexp), nvA (term e) = (newvar e).
+Proof.
+  simpl; auto.
+Qed.
+
+(* newvar wrt a context *)
+Fixpoint nvC (l:list atm) {struct l} : var :=
+  match l with
+  | nil     => 0
+  | (a::l') => max (nvA a) (nvC l')
+  end.
+
+Lemma nvC_cons: forall (a:atm) (l:list atm),
+  nvC (a::l) = max (nvA a) (nvC l).
+Proof.
+  simpl; auto.
+Qed.
+
+Lemma greater_head_nvC : forall (v:var) (t:tp) (l:list atm),
+  (nvC (oft (Var v) t::l)) > v.
+Proof.
+  intros v t l; simpl.
+  assert (h:(exists n:nat, (nvC l)=n)).
+  { exists (nvC l); auto. }
+  elim h; clear h; intros n h; rewrite h; clear h.
+  case n; simpl; auto.
+  intro n0; rewrite max_SS.
+  generalize (max_dec (S v) (S n0)); intros [h | h].
+  - rewrite h; lia.
+  - generalize (PeanoNat.Nat.max_spec_le (S v) (S n0)).
+  rewrite h; lia.
+Qed.
+
+Lemma greater_nvC: forall (v:var) (t:tp) (l:list atm),
+  (In (oft (Var v) t) l) -> (nvC l > v).
+Proof.
+  induction l; try contradiction; auto.
+  (* cons case *)
+  generalize a; clear a; induction a; try contradiction; auto.
+  - generalize e; clear e; induction e.
+    (* CON case *)
+    + intro h; specialize in_inv with (1:=h); clear h; intros [h | h];
+        try discriminate h.
+      simpl; apply IHl; auto.
+    (* VAR case *)
+    + intro h; specialize in_inv with (1:=h); clear h; intros [h | h].
+      * unfold Var; injection h; intros; subst; clear h.
+        apply greater_head_nvC; auto.
+      * generalize (IHl h); clear IHl h; intro h.
+        rewrite -> nvC_cons.
+        rewrite -> nvA_oft.
+        unfold newvar.
+        generalize (PeanoNat.Nat.max_dec (S v0) (nvC l)); intros [h1 | h1].
+        -- generalize (PeanoNat.Nat.max_spec_le (S v0) (nvC l)).
+          rewrite h1; lia.
+        -- rewrite h1; auto.
+    (* BND case *)
+    + intro h; specialize in_inv with (1:=h); clear h; intros [h | h];
+        try discriminate h.
+      simpl; apply IHl; auto.
+    (* APP case *)
+    + intro h; specialize in_inv with (1:=h); clear h; intros [h | h];
+        try discriminate h.
+      simpl.
+      generalize (IHl h); intro h1.
+      generalize (PeanoNat.Nat.max_spec_le (max (newvar e1) (newvar e2)) (nvC l));
+        intro h2.
+      lia.
+    (* ABS case *)
+    + intro h; specialize in_inv with (1:=h); clear h; intros [h | h];
+        try discriminate h.
+      simpl.
+      generalize (IHl h); intro h1.
+      generalize (PeanoNat.Nat.max_spec_le (newvar e) (nvC l)); intro h2.
+      lia.
+  (* term case *)
+  - simpl; intros [h | h]; try discriminate h.
+    generalize (IHl h); intro h1.
+    generalize (PeanoNat.Nat.max_spec_le (newvar e) (nvC l)); lia.
+Qed.
+
+Lemma fresh_nvC: forall (v:var) (t:tp) (l:list atm),
+  (In (oft (Var v) t) l) -> (nvC l <> v).
+Proof.
+  intros v t l h; generalize (greater_nvC v t l); intro h1.
+  generalize (h1 h); intro; lia.
+Qed.
+
+(****************************************************************
    Definition of prog
   ****************************************************************)
 
