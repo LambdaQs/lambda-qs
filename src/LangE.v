@@ -70,12 +70,15 @@ Hint Resolve proper_Var : hybrid.
 
 (****************************************************************
    The atm type and instantiation of oo.
+
+   atm/atom represents atomic predicates of the object language
   ****************************************************************)
 Inductive atm : Set :=
 | oft  : eexp -> tp -> atm (* e : τ *)
 | term : eexp -> atm (* is_exp *)
 .
 
+(* oo is the type of SL (specification logic) propositions *)
 Definition oo_ := oo atm Econ.
 Definition atom_ : atm -> oo_ := atom Econ.
 Definition T_ : oo_ := T atm Econ.
@@ -86,6 +89,7 @@ Hint Unfold oo_ atom_ T_: hybrid.
    Definition of prog
   ****************************************************************)
 
+(* prog is the object level judgment *)
 Inductive prog : atm -> oo_ -> Prop :=
 (*
   Generic hypothetical judgment of the form
@@ -114,7 +118,9 @@ Inductive prog : atm -> oo_ -> Prop :=
       (Conj (atom_ (oft e1 t1))
         (All (fun x : eexp => Imp (oft x t1) (atom_ (oft (f x) t2)))))
 
-(* Well-formed terms? *)
+(* Well-formed terms.
+   This is not needed in Twelf and Beluga
+ *)
 | tm_num : forall (n:nat), prog (term (Num n)) T_
 | tm_str : forall (s:string), prog (term (Str s)) T_
 | tm_plus : forall (e1 e2: eexp),
@@ -134,6 +140,9 @@ Inductive prog : atm -> oo_ -> Prop :=
    Instantiation of seq
   ****************************************************************)
 
+(* seq is the SL level judgment,
+   the nat arg corresponds to height of the (inductive) proof
+*)
 Definition seq_ : nat -> list atm -> oo_ -> Prop := seq prog.
 Definition seq'_ := seq' prog.
 Definition seq0 (B : oo_) : Prop := exists i : nat, seq_ i nil B.
