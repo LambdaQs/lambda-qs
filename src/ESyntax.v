@@ -1,7 +1,24 @@
+(* Language E of simple expressions from PFPL Ch-4 *)
+
 From HybridSys Require Export Hybrid.
 From HybridSys Require Export sl.
 Require Import Strings.String.
-Require Import ETypes.
+
+Section encoding.
+
+(****************************************************************
+   Types
+  ****************************************************************)
+
+(* Typ, τ *)
+Inductive tp : Type :=
+| num : tp
+| str : tp
+.
+
+(****************************************************************
+   Constants for Lambda Terms
+  ****************************************************************)
 
 (* Exp, e *)
 Inductive Econ : Set :=
@@ -27,15 +44,15 @@ Definition Cat (e1 e2 : eexp) : eexp := APP (APP (CON eCAT) e1) e2.
 Definition Len (e:eexp) : eexp := APP (CON eLEN) e.
 (* let(e1; x.e2) *)
 Definition Let (e1:eexp) (f : eexp -> eexp) : eexp :=
-  APP (CON eLET) (APP e1 (lambda (fun x => f x))).
+  (APP (APP (CON eLET) e1) (lambda (fun x => f x))).
 
 (****************************************************************
   Some Properties of Constructors
 ****************************************************************)
 
-#[global] Hint Resolve level_CON level_VAR level_BND level_APP level_ABS : hybrid.
-#[global] Hint Resolve proper_APP abstr_proper : hybrid.
-#[global] Hint Unfold proper: hybrid.
+Hint Resolve level_CON level_VAR level_BND level_APP level_ABS : hybrid.
+Hint Resolve proper_APP abstr_proper : hybrid.
+Hint Unfold proper: hybrid.
 Hint Rewrite ext_eq_eta : hybrid.
 
 Lemma proper_Var: forall x:var, (proper (Var x)).
@@ -44,14 +61,12 @@ Proof.
 Qed.
 
 Lemma proper_Let: forall (e1:eexp) (f:eexp -> eexp),
-  abstr f -> proper (Let e1 (fun x => f x)).
+  proper e1 -> abstr f -> proper (Let e1 (fun x => f x)).
 Proof.
-  unfold Let.
-  Abort.
-   (* auto with hybrid.
-Qed. *)
+  unfold Let; auto with hybrid.
+Qed.
 
-#[global] Hint Resolve proper_Var : hybrid.
+Hint Resolve proper_Var : hybrid.
 
 (****************************************************************
    The atm type and instantiation of oo.
@@ -65,9 +80,19 @@ Definition oo_ := oo atm Econ.
 Definition atom_ : atm -> oo_ := atom Econ.
 Definition T_ : oo_ := T atm Econ.
 
-#[global] Hint Unfold oo_ atom_ T_: hybrid.
+Hint Unfold oo_ atom_ T_: hybrid.
+
+(****************************************************************
+   Definition of prog
+  ****************************************************************)
 
 Inductive prog : atm -> oo_ -> Prop :=
+(*
+  Generic hypothetical judgment of the form
+    Χ | Γ ⊢ e : τ
+  where Χ is a finite set of variables and Γ is the typing context
+  with hypotheses of the form x : τ, where x ∈ Χ.
+*)
 | of_str : forall (s:string),
     prog (oft (Str s) str) T_
 | of_num : forall (n:nat),
@@ -89,6 +114,7 @@ Inductive prog : atm -> oo_ -> Prop :=
       (Conj (atom_ (oft e1 t1))
         (All (fun x : eexp => Imp (oft x t1) (atom_ (oft (f x) t2)))))
 
+(* Well-formed terms? *)
 | tm_num : forall (n:nat), prog (term (Num n)) T_
 | tm_str : forall (s:string), prog (term (Str s)) T_
 | tm_plus : forall (e1 e2: eexp),
@@ -103,3 +129,13 @@ Inductive prog : atm -> oo_ -> Prop :=
     prog (term (Let e1 f))
       (All (fun x:eexp => (Imp (term x) (atom_ (term (f x))))))
 .
+
+(****************************************************************
+   Instantiation of seq
+  ****************************************************************)
+
+Definition seq_ : nat -> list atm -> oo_ -> Prop := seq prog.
+Definition seq'_ := seq' prog.
+Definition seq0 (B : oo_) : Prop := exists i : nat, seq_ i nil B.
+
+End encoding.
