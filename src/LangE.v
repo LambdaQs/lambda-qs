@@ -253,3 +253,149 @@ Definition seq'_ := seq' prog.
 Definition seq0 (B : oo_) : Prop := exists i : nat, seq_ i nil B.
 
 End encoding.
+
+#[global] Hint Resolve level_CON level_VAR level_BND level_APP level_ABS : hybrid.
+#[global] Hint Resolve proper_APP abstr_proper : hybrid.
+#[global] Hint Unfold proper: hybrid.
+#[global] Hint Resolve proper_Var : hybrid.
+#[global] Hint Resolve of_str of_num of_plus of_times of_cat of_len of_let : hybrid.
+#[global] Hint Resolve tm_str tm_num tm_plus tm_times tm_cat tm_len tm_let : hybrid.
+#[global] Hint Unfold oo_ atom_ T_: hybrid.
+#[global] Hint Unfold seq_ seq'_ seq0: hybrid.
+
+(****************************************************************
+ 1. Type Uniqueness
+  ****************************************************************)
+
+(************)
+(* Contexts *)
+(************)
+
+Section ctx_uniq.
+
+(* Context Gamma *)
+Inductive xtG : list atm -> Prop :=
+| nil_t : xtG nil
+| cons_t : forall (Phi_t:list atm) (t:tp),
+    xtG Phi_t -> xtG (oft (Var (nvC Phi_t)) t::Phi_t).
+
+(* TODO: this seems like a lot of work to introduce a lemma for each term :(
+
+Lemma memb_xtG_NoStr : forall (Phi_t:list atm) (E:eexp->eexp) (T T':tp),
+  xtG Phi_t -> ~(In (oft (lam T E) T') Phi_t).
+Proof.
+intros Phi_t E T T'; induction 1; simpl; try tauto.
+intro h; elim IHxtG.
+destruct h as [h2 | h2]; try discriminate h2; auto.
+Qed.
+
+Lemma memb_xtG_NoApp : forall (Phi_t:list atm) (M N:eexp) (T:tp),
+  xtG Phi_t -> ~(In (oft (app M N) T) Phi_t).
+Proof.
+intros Phi_t M N T; induction 1; simpl; try tauto.
+intro h; elim IHxtG.
+destruct h as [h2 | h2]; try discriminate h2; auto.
+Qed. *)
+
+(* Context invariant (induction hypothesis for type unicity):
+  > This invariant expresses that every term occurring in a typing judgment in
+  > the context is a variable, and if a variable occurs more than once
+  > associated with more than one type, then these types must all be the same.
+  > Note that this definition is just a restatement of type unicity specific to
+  > variables inside the context.
+  See:
+    Felty, Momigliano. Reasoning with hypothetical judgments and open terms in
+    Hybrid. PPDP 2009.
+  and
+    H-Lemma 31 (Context Membership) in
+    Felty, Momigliano, Pientka. The Next 700 Challenge Problems for Reasoning
+    with Higher-Order Abstract Syntax Representations: Part 2–A Survey. JAR 2015
+ *)
+Lemma memb_uniq : forall (Phi_t:list atm) (e:eexp) (t t':tp),
+  xtG Phi_t ->
+  In (oft e t) Phi_t -> In (oft e t') Phi_t ->
+   (exists v:var, e = Var v) /\ t = t'.
+Proof.
+  intros Phi_t e t t'; induction 1; try (simpl; tauto).
+  simpl; intros h1 h2; destruct h1 as [h1 | h1]; destruct h2 as [h2 | h2].
+  - injection h1; injection h2; intros; subst; subst; simpl; split; auto.
+    exists (nvC Phi_t); auto.
+  - injection h1; intros; subst; subst.
+    specialize fresh_nvC with (1:=h2); tauto.
+  - injection h2; intros; subst; subst.
+    specialize fresh_nvC with (1:=h1); tauto.
+  - auto.
+Qed.
+
+End ctx_uniq.
+
+(****************************)
+(* Main Lemmas and Theorems *)
+(****************************)
+
+#[global] Hint Resolve nil_t cons_t : hybrid.
+
+Section uniq.
+
+Lemma uniq : forall (i:nat) (Phi_t:list atm) (M:eexp) (A:tp),
+  xtG Phi_t ->
+  seq_ i Phi_t (atom_ (oft M A)) ->
+  forall (k:nat) (B:tp), seq_ k Phi_t (atom_ (oft M B)) -> A = B.
+Proof.
+  intros i Phi_t M A h1 h2 k B h3.
+  generalize
+  (lt_wf_ind i
+      (fun i:nat =>
+      forall (Phi_t:list atm) (M:eexp) (A:tp),
+      xtG Phi_t ->
+      seq_ i Phi_t (atom_ (oft M A)) ->
+      forall (k:nat) (B:tp), seq_ k Phi_t (atom_ (oft M B)) -> A = B)).
+  intro H'.
+  apply H' with Phi_t M k; clear H'; auto.
+  clear h1 h2 h3 i Phi_t M A B k.
+  intros i hInd Phi_t M A hCInv h1 k B h2.
+  inversion h1; subst.
+  - inversion H0; subst; clear H0.
+    (* str case *)
+    + inversion h2; subst; clear h2.
+      * inversion H0. auto.
+      * inversion H2. subst. clear H2.
+      Admitted.
+      (* inversion H0. auto.
+    + inversion H3; subst; clear H3.
+      inversion h2; subst; clear h2.
+      * inversion H0; subst; clear H0.
+        auto.
+      * inversion H2. subst. clear H2.
+        inversion h1. subst. absurd (In (oft (lam A0 (fun x:eexp => M0 x)) B) (A'::L)); eauto with hybrid.
+    (* app case *)
+    + inversion H3; subst; clear H3.
+      inversion h2; subst; clear h2.
+      * inversion H0; subst; clear H0.
+        inversion H3; subst; clear H3.
+        assert (h2: i < i+1+1); try lia.
+        generalize (hInd i h2 Phi_t M0 (arr B0 A) hCInv H4 i1 (arr B1 B) H6);
+          intro h4.
+        inversion h4; auto.
+      * absurd (In (oft (app M0 N) B) (A'::L)); eauto with hybrid.
+  - (* context case *)
+    generalize hCInv; intro h'.
+    inversion h'; subst.
+    specialize memb_uniq with (1:=hCInv) (2:=H2) (3:=H2);
+      intros [[v h3] h4]; clear h4; subst.
+    inversion h2; subst; clear h2.
+    + inversion H1.
+    + specialize memb_uniq with (1:=hCInv) (2:=H2) (3:=H3);
+        intros [h3 h4]; subst; auto.
+Qed. *)
+
+Lemma uniq_cor: forall (M:eexp) (A B:tp),
+  seq0 (atom_ (oft M A)) -> seq0 (atom_ (oft M B)) -> (A=B).
+Proof.
+  intros M A B h1 h2.
+  unfold seq0 in h1; elim h1; clear h1; intros i h1.
+  unfold seq0 in h2; elim h2; clear h2; intros k h2.
+  apply uniq with i (nil:list atm) M k; eauto with hybrid.
+Qed.
+
+End uniq.
