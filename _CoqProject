@@ -1,3 +1,4 @@
 -R _build/default/src LambdaQs
 -R _build/default/vendor/Hybrid/src HybridSys
+-R _build/default/vendor/PLF/src PLF
 -R _build/default/ProtoQuipperFormalization ProtoQuipperFormalization
