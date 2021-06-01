@@ -1,8 +1,10 @@
-(* Lambda-Q# formalization based on Software Foundations' STLC 
+(* Lambda-Q# formalization based on Software Foundations' STLC
 
    The plan here is to copy over the contents of PLF/MoreStlc.v and
    modify them as necessary to match the syntax of lambda-Q#. Hopefully
    the existing automation will transfer easily to our use case. -KH *)
+
+Set Warnings "-notation-overridden,-parsing".
 
 (* Imports needed for reproducing MoreStlc.v (not currently used) *)
 From PLF Require Import Maps.
@@ -24,9 +26,9 @@ Inductive τ : Type :=
   | ty_qref : κ -> τ
   | ty_arrow : τ -> τ -> τ
   | ty_cmd : τ -> τ
-  (* TODO: extend prod and sum to support multiple args. 
+  (* TODO: extend prod and sum to support multiple args.
      e.g. using a τ list or nat->τ function *)
-  | ty_prod : τ -> τ -> τ 
+  | ty_prod : τ -> τ -> τ
   | ty_sum : τ -> τ -> τ.
 
 (** Intrinsic Gates **)
@@ -52,7 +54,7 @@ Inductive exp : Type :=
   | snd : exp -> exp
   | inl : τ -> exp -> exp
   | inr : τ -> exp -> exp
-  | caseexp : exp -> var -> exp -> var -> exp -> exp 
+  | caseexp : exp -> var -> exp -> var -> exp -> exp
 
 with cmd : Type :=
   | ret : exp -> cmd
