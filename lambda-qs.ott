@@ -1,24 +1,24 @@
 metavar x ::= {{ com term variable }} {{ repr-locally-nameless }} {{ lex alphanum }}
 metavar a ::= {{ com assignable }}    {{ repr-locally-nameless }} {{ lex alphanum }}
 metavar q ::= {{ com qubit }}         {{ repr-locally-nameless }} {{ lex alphanum }}
-metavar k {{ tex \kappa }} ::= {{ com lifetime }}
-metavar l ::= {{ com label }}
+metavar k {{ tex \kappa }} ::= {{ com lifetime }} {{ coq atom }}
+metavar l ::= {{ com label }} {{ coq atom }}
 
-indexvar i, j, n, n_a {{ tex n_a }}, n_b {{ tex n_b }} ::= {{ com indices }} {{ coq nat }}
+% indexvar i, j, n, n_a {{ tex n_a }}, n_b {{ tex n_b }} ::= {{ com indices }} {{ coq nat }}
 
 grammar %% LNgen portion
 
-Typ, t {{ tex \tau }} :: '' ::= {{ com Types }}
+Typ, t {{ tex \tau }} :: 'Typ_' ::= {{ com Types }}
   | num                                         ::  :: number
   | array                                       ::  :: array
   | qbit                                        ::  :: qubit     {{ com \textcolor{blue}{qbit}, opaque qubit type }}
   | qref [ k ]                                  ::  :: qubitRef  {{ com \textcolor{blue}{qref}, qubit reference type }}
   | arr ( t1 ; t2 )                             ::  :: function  {{ com \textcolor{blue}{$[[t1]] \rightarrow [[t2]]$} }}
   | cmd ( t )                                   ::  :: command   {{ com \textcolor{blue}{$[[t]]$ cmd} }}
-  | prod ( </ li c-> ti // i IN 1 .. n /> )     ::  :: product   {{ com \textcolor{blue}{$\bigtimes_{l \in L}\,\tau_l$} }}
-  | sum ( </ li c-> ti // , // i IN 1 .. n /> ) ::  :: sum       {{ com \textcolor{blue}{$\bigplus_{l \in L}\,\tau_l$} }}
+  % | prod ( </ li c-> ti // i IN 1 .. n /> )     ::  :: product   {{ com \textcolor{blue}{$\bigtimes_{l \in L}\,\tau_l$} }}
+  % | sum ( </ li c-> ti // , // i IN 1 .. n /> ) ::  :: sum       {{ com \textcolor{blue}{$\bigplus_{l \in L}\,\tau_l$} }}
 
-Exp, e :: '' ::=  {{ com Expressions }}
+Exp, e :: 'Exp_' ::=  {{ com Expressions }}
   | q                         ::   :: qubitSymbol
   | x                         ::   :: variable                        {{ com variable }}
   | num [ n ]                 ::   :: numeral                         {{ com numeral }}
@@ -30,17 +30,17 @@ Exp, e :: '' ::=  {{ com Expressions }}
   | arrget ( e1 ; e2 )        ::   :: arrayGet                        {{ com \textcolor{blue}{$[[e1]]$[$[[e2]]$]}, where $[[e2]] < |[[e1]]|$ }}
   | cmd ( m )                 ::   :: encapsulation                   {{ com \textcolor{blue}{cmd $[[m]]$}, encapsulation }}
   | qloc [ q ]                ::   :: qubitLocation                   {{ com \textcolor{blue}{\&$[[q]]$}, qubit location }}
-  | tpl ( </ li c-> ei // , // i IN 1 .. n /> )           ::  :: tuple        {{ com \textcolor{blue}{$\langle e_l \rangle_{l \in L}$} }}
-  | pr [ li ] ( e )                                       ::  :: projection   {{ com \textcolor{blue}{$[[e]] \cdot l$} }}
-  | in [ li ] { </ ti // , // i IN 1 .. n /> } ( e )      ::  :: injection    {{ com \textcolor{blue}{$l \cdot [[e]]$} }}
-  % TODO: here xi's may need to bound in ei's
-  | case ( e ; </ li c-> xi . ei // , // i IN 1 .. n /> ) ::  :: caseAnalysis {{ com \textcolor{blue}{$\texttt{case}\,e\,\{ l \cdot x_l \hookrightarrow e_l \}_{l \in L}$} }}
-  | [ e1 / x ] e2             :: M :: subst                           {{ com substitution }}  {{ coq (open_exp_wrt_exp [[x e2]] [[e1]]) }}
+  % | tpl ( </ li c-> ei // , // i IN 1 .. n /> )           ::  :: tuple        {{ com \textcolor{blue}{$\langle e_l \rangle_{l \in L}$} }}
+  % | pr [ li ] ( e )                                       ::  :: projection   {{ com \textcolor{blue}{$[[e]] \cdot l$} }}
+  % | in [ li ] { </ ti // , // i IN 1 .. n /> } ( e )      ::  :: injection    {{ com \textcolor{blue}{$l \cdot [[e]]$} }}
+  % % TODO: here xi's may need to bound in ei's
+  % | case ( e ; </ li c-> xi . ei // , // i IN 1 .. n /> ) ::  :: caseAnalysis {{ com \textcolor{blue}{$\texttt{case}\,e\,\{ l \cdot x_l \hookrightarrow e_l \}_{l \in L}$} }}
+  | [ e1 / x ] e2             :: M :: subst                           {{ com substitution }}  {{ coq (open_Exp_wrt_Exp [[x e2]] [[e1]]) }}
   | ( e )                     :: M :: paren                           {{ com parentheses }}   {{ coq [[e]] }}
 
-Cmd, m :: '' ::= {{ com Commands }}
+Cmd, m :: 'Cmd_' ::= {{ com Commands }}
   | a                         ::   :: mutableSymbol
-  | ret ( e )                 ::   :: return                        {{ com \textcolor{blue}{ret $[[e]]$} }}
+  | ret ( e )                 ::   :: return_                       {{ com \textcolor{blue}{ret $[[e]]$} }}
   | bnd ( e ; x . m )         ::   :: sequence    (+ bind x in m +) %{{ com \textcolor{blue}{bind $[[x]] \leftarrow [[e]] ; [[m]]$} }}
   % NOTE: mutables in Q# are really different from ref types as they do not follow the reference semantics.
   % When we copy them, say `let b = a` for a mutable a, we don't get an alias (like for qubit references),
@@ -54,9 +54,9 @@ Cmd, m :: '' ::= {{ com Commands }}
   | ctrlapr ( e1 ; e2 ; U )   ::   :: ctrlAppRef                    {{ com \textcolor{blue}{Controlled $[[U]]$ $([[e1]], [[e2]])$}, controlled gate application }}
   | gateap [ q ] ( U )        ::   :: gateApp                       {{ com gate application (opaque) }}
   | ctrlap [ q1 , q2 ] ( U )  ::   :: ctrlApp                       {{ com controlled gate application  (opaque) }}
-  | [ e / x ] m               :: M :: substCmd                      {{ com substitution }} {{ coq (open_exp_wrt_exp [[x m]] [[e]]) }}
+  | [ e / x ] m               :: M :: substCmd                      {{ com substitution }} {{ coq (open_Cmd_wrt_Exp [[x m]] [[e]]) }}
 
-Intr, U :: '' ::= {{ com Intrinsics }}
+Intr, U :: 'Intr_' ::= {{ com Intrinsics }}
   | I     ::  :: Identity
   | X     ::  :: NOT
   | Y     ::  :: Y
@@ -72,7 +72,7 @@ freevars
   e x :: fv
 
 parsing
-  function right function
+  Typ_function right Typ_function
 
 embed {{ tex-preamble
   \usepackage[mathx]{mathabx}
@@ -87,7 +87,7 @@ embed {{ tex-preamble
 
 grammar %% non LNgen portion
 
-G {{ tex \Gamma }} :: 'G_' ::= {{ com Typing context }} {{ coq list (atom*typ) }}
+G {{ tex \Gamma }} :: 'G_' ::= {{ com Typing context }} {{ coq list (atom*Typ) }}
   | empty                 ::  :: empty                  {{ coq nil }}
   | G , x : t             ::  :: term                   {{ coq ([[x]]~[[t]] ++ [[G]]) }}
   | G , x ! k' qref [ k ] ::  :: blocking {{ tex [[G]], [[x]] :^{\dagger[[k']]} \mathbf{qref}[ [[k]]]  }}
@@ -136,49 +136,49 @@ terminals :: 'terminals_' ::=
 
 formula :: formula_ ::=
   | judgement            :: :: judgement
-  | formula1 .. formulan :: :: dots
-  | 1 <= i <= n          :: :: bounds
-  | 0 <= e2 < n          :: :: arrayBounds
-  | e1 = arrlit{t}(n,e)  :: :: arrayVal {{ tex e_1 = \textbf{arrlit}\{\tau\}(n,e) }}
+  % | formula1 .. formulan :: :: dots
+  % | 1 <= i <= n          :: :: bounds
+  % | 0 <= e2 < n          :: :: arrayBounds
+  % | e1 = arrlit{t}(n,e)  :: :: arrayVal {{ tex e_1 = \textbf{arrlit}\{\tau\}(n,e) }}
   % | t mobile                :: :: mobility
 
-defns
-Jdefined :: '' ::=
-  defn
-  s := user_syntax               :: :: deftypes :: '' {{ com Derived forms / syntactic sugar }} by
+% defns
+% Jdefined :: '' ::=
+%   defn
+%   s := user_syntax               :: :: deftypes :: '' {{ com Derived forms / syntactic sugar }} by
 
-    --------------:: Unit
-    unit := prod()
+%     % --------------:: Unit
+%     % unit := prod()
 
-    -------------:: Triv
-    triv := tpl()
+%     % -------------:: Triv
+%     % triv := tpl()
 
-    -----------------------------------------:: Bool
-    bool := sum(l0 c-> prod(), l1 c-> prod())
+%     % -----------------------------------------:: Bool
+%     % bool := sum(l0 c-> prod(), l1 c-> prod())
 
-    -------------------------------------:: True
-    true := in[l0]{prod(), prod()}(tpl())
+%     % -------------------------------------:: True
+%     % true := in[l0]{prod(), prod()}(tpl())
 
-    --------------------------------------:: False
-    false := in[l1]{prod(), prod()}(tpl())
+%     % --------------------------------------:: False
+%     % false := in[l1]{prod(), prod()}(tpl())
 
-    --------------------------------------------------:: Conditional
-    if(e;e1;e2) := case(e; l0 c-> x0.e1, l1 c-> x1.e2)
+%     % --------------------------------------------------:: Conditional
+%     % if(e;e1;e2) := case(e; l0 c-> x0.e1, l1 c-> x1.e2)
 
-    ---------------------------------:: SeqComp
-    {x<-m1; m2} := bnd(cmd(m1); x.m2)
+%     ---------------------------------:: SeqComp
+%     {x<-m1; m2} := bnd(cmd(m1); x.m2)
 
-    ------------------------:: Do
-    do e := bnd(e; x.ret(x))
+%     ------------------------:: Do
+%     do e := bnd(e; x.ret(x))
 
-    --------------------------------:: Procedure
-    proc (x:t) m := lam{t}(x.cmd(m))
+%     --------------------------------:: Procedure
+%     proc (x:t) m := lam{t}(x.cmd(m))
 
-    -----------------------------:: Call
-    call e1(e1) := do (ap(e1;e2))
+%     -----------------------------:: Call
+%     call e1(e1) := do (ap(e1;e2))
 
-    ----------------------------:: OperationType
-    t1 => t2 := arr(t1; cmd(t2))
+%     ----------------------------:: OperationType
+%     t1 => t2 := arr(t1; cmd(t2))
 
 defns
 Jstatics :: '' ::=
@@ -218,24 +218,24 @@ Jstatics :: '' ::=
     ----------------------:: ArrGet
     G |- arrget(e1;e2) : t
 
-    </ G |- ei : ti // i IN 1..n />
-    --------------------------------------------------------------------------- :: Tpl
-    G |- tpl(</ li c-> ei // i IN 1..n />) : prod(</ li c-> ti // i IN 1..n />)
+    % </ G |- ei : ti // i IN 1..n />
+    % --------------------------------------------------------------------------- :: Tpl
+    % G |- tpl(</ li c-> ei // i IN 1..n />) : prod(</ li c-> ti // i IN 1..n />)
 
-    G |- e : prod(</ li c-> ti // i IN 1..n />)
-    1 <= i <= n
-    ------------------------------------------- :: Pr
-    G |- pr[li](e) : ti
+    % G |- e : prod(</ li c-> ti // i IN 1..n />)
+    % 1 <= i <= n
+    % ------------------------------------------- :: Pr
+    % G |- pr[li](e) : ti
 
-    G |- e : ti
-    1 <= i <= n
-    ------------------------------------------------------------------------- :: Inj
-    G |- in[li]{</ ti // i IN 1..n />}(e) : sum(</ li c-> ti // i IN 1..n />)
+    % G |- e : ti
+    % 1 <= i <= n
+    % ------------------------------------------------------------------------- :: Inj
+    % G |- in[li]{</ ti // i IN 1..n />}(e) : sum(</ li c-> ti // i IN 1..n />)
 
-    G |- e : sum(</ li c-> ti // i IN 1..n />)
-    </ G, xi : ti |- ei : t // i IN 1..n />
-    --------------------------------------------------- :: Case
-    G |- case(e; </ li c-> xi . ei // i IN 1..n />) : t
+    % G |- e : sum(</ li c-> ti // i IN 1..n />)
+    % </ G, xi : ti |- ei : t // i IN 1..n />
+    % --------------------------------------------------- :: Case
+    % G |- case(e; </ li c-> xi . ei // i IN 1..n />) : t
 
   defn
   G |- sig e : t :: :: estyping :: tyS_ {{ com Expression Typing wrt Signature }} {{ tex [[G]] \vdash_{[[sig]]} [[e]] : [[t]] }} by
@@ -279,20 +279,20 @@ Jstatics :: '' ::=
     ----------------------- :: Dcl
     G |- sig dcl(q.m) ~. t'
 
-    -------------------------------------- :: GateAp
-    G |- sig,q~qbit gateap[q](U) ~. prod()
+    % -------------------------------------- :: GateAp
+    % G |- sig,q~qbit gateap[q](U) ~. prod()
 
-    --------------------------------------------------- :: CtrlAp
-    G |- sig,q1~qbit,q2~qbit ctrlap[q1,q2](U) ~. prod()
+    % --------------------------------------------------- :: CtrlAp
+    % G |- sig,q1~qbit,q2~qbit ctrlap[q1,q2](U) ~. prod()
 
-    G |- sig e:qref[k]
-    ------------------------------- :: GateApRef
-    G |- sig gateapr(e;U) ~. prod()
+    % G |- sig e:qref[k]
+    % ------------------------------- :: GateApRef
+    % G |- sig gateapr(e;U) ~. prod()
 
-    G |- sig e1:qref[k1]
-    G |- sig e2:qref[k2]
-    ----------------------------------- :: CtrlApRef
-    G |- sig ctrlapr(e1;e2;U) ~. prod()
+    % G |- sig e1:qref[k1]
+    % G |- sig e2:qref[k2]
+    % ----------------------------------- :: CtrlApRef
+    % G |- sig ctrlapr(e1;e2;U) ~. prod()
 
 defns
 Jdynamics :: '' ::=
@@ -311,13 +311,13 @@ Jdynamics :: '' ::=
     --------------------:: ArrLit
     arrlit{t}(e1;e2) val
 
-    </ ei val // i IN 1..n />
-    ------------------------------------- :: Tpl
-    tpl(</ li c-> ei // i IN 1..n />) val
+    % </ ei val // i IN 1..n />
+    % ------------------------------------- :: Tpl
+    % tpl(</ li c-> ei // i IN 1..n />) val
 
-    e val
-    -------------------------------------- :: Inj
-    in[li]{</ ti // i IN 1 .. n />}(e) val
+    % e val
+    % -------------------------------------- :: Inj
+    % in[li]{</ ti // i IN 1 .. n />}(e) val
 
   defn
   e val sig :: :: svalues :: vS_ {{ com Values wrt Signature }} {{ tex [[e]]\ \textbf{val}_{[[sig]]} }} by
@@ -374,37 +374,37 @@ Jdynamics :: '' ::=
     % perhaps arrlit should be encoded as a product type?
     e1 val
     e2 val
-    e1 = arrlit{t}(n,e)
-    0 <= e2 < n
+    % e1 = arrlit{t}(n,e)
+    % 0 <= e2 < n
     ---------------------------:: ArrGetInstr
     arrget(e1;e2) |--> ap(e;e2)
 
-    </ ei val // i IN 1..n_a />
-    e |--> e'
-    ------------------------------------------------------------------------------------------------------------------------------------------------------------------- :: Tpl
-    tpl(</ li c-> ei // i IN 1..n_a />, l c-> e, </ lj' c-> ej' // j IN 1..n_b />) |--> tpl(</ li c-> ei // i IN 1..n_a />, l c-> e', </ lj' c-> ej' // j IN 1..n_b />)
+    % </ ei val // i IN 1..n_a />
+    % e |--> e'
+    % ------------------------------------------------------------------------------------------------------------------------------------------------------------------- :: Tpl
+    % tpl(</ li c-> ei // i IN 1..n_a />, l c-> e, </ lj' c-> ej' // j IN 1..n_b />) |--> tpl(</ li c-> ei // i IN 1..n_a />, l c-> e', </ lj' c-> ej' // j IN 1..n_b />)
 
-    e |--> e'
-    ------------------------- :: Pr
-    pr[li](e) |--> pr[li](e')
+    % e |--> e'
+    % ------------------------- :: Pr
+    % pr[li](e) |--> pr[li](e')
 
-    tpl(</ li c-> ei // i IN 1..n />) val
-    1 <= j <= n
-    ------------------------------------------------- :: PrInstr
-    pr[lj](tpl(</ li c-> ei // i IN 1..n />)) |--> ej
+    % tpl(</ li c-> ei // i IN 1..n />) val
+    % 1 <= j <= n
+    % ------------------------------------------------- :: PrInstr
+    % pr[lj](tpl(</ li c-> ei // i IN 1..n />)) |--> ej
 
-    e |--> e'
-    ----------------------------------------------------------------------- :: Inj
-    in[li]{</ ti // i IN 1..n />}(e) |--> in[li]{</ ti // i IN 1..n />}(e')
+    % e |--> e'
+    % ----------------------------------------------------------------------- :: Inj
+    % in[li]{</ ti // i IN 1..n />}(e) |--> in[li]{</ ti // i IN 1..n />}(e')
 
-    e |--> e'
-    --------------------------------------------------------------------------------------- :: Case
-    case(e; </ li c-> xi.ei // i IN 1..n />) |--> case(e'; </ li c-> xi.ei // i IN 1..n />)
+    % e |--> e'
+    % --------------------------------------------------------------------------------------- :: Case
+    % case(e; </ li c-> xi.ei // i IN 1..n />) |--> case(e'; </ li c-> xi.ei // i IN 1..n />)
 
-    in[lj]{</ ti // i IN 1..n />}(e) val
-    1 <= j <= n
-    ------------------------------------------------------------------------------------- :: CaseInstr
-    case(in[lj]{</ ti // i IN 1..n />}(e); </ li c-> xi.ei // i IN 1..n />) |--> [e/xj]ej
+    % in[lj]{</ ti // i IN 1..n />}(e) val
+    % 1 <= j <= n
+    % ------------------------------------------------------------------------------------- :: CaseInstr
+    % case(in[lj]{</ ti // i IN 1..n />}(e); </ li c-> xi.ei // i IN 1..n />) |--> [e/xj]ej
 
   defn
   e |--> sig e' :: :: Strans :: trS_ {{ com Transition wrt Signature }} {{ tex [[e]] \underset{[[sig]]}{\longmapsto} [[e']] }} by
