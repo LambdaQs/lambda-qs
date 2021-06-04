@@ -19,10 +19,11 @@ Typ, t {{ tex \tau }} :: '' ::= {{ com Types }}
   | sum ( </ li c-> ti // , // i IN 1 .. n /> ) ::  :: sum       {{ com \textcolor{blue}{$\bigplus_{l \in L}\,\tau_l$} }}
 
 Exp, e :: '' ::=  {{ com Expressions }}
+  | q                         ::   :: qubitSymbol
   | x                         ::   :: variable                        {{ com variable }}
   | num [ n ]                 ::   :: numeral                         {{ com numeral }}
-  | let ( e1 ; x . e2 )       ::   :: definition  (+ bind x in e2 +)  {{ com \textcolor{blue}{let~$[[x]]$~be~$[[e1]]$~in~$[[e2]]$} }}
-  | lam { t } ( x . e )       ::   :: abstraction (+ bind x in e +)   {{ com \textcolor{blue}{$\lambda([[x]]:[[t]])[[e]]$} }}
+  | let ( e1 ; x . e2 )       ::   :: definition  (+ bind x in e2 +)  %{{ com \textcolor{blue}{let~$[[x]]$~be~$[[e1]]$~in~$[[e2]]$} }}
+  | lam { t } ( x . e )       ::   :: abstraction (+ bind x in e +)   %{{ com \textcolor{blue}{$\lambda([[x]]:[[t]])[[e]]$} }}
   | ap ( e1 ; e2 )            ::   :: application                     {{ com \textcolor{blue}{$[[e1]]([[e2]])$} }}
   % TODO: unsure if the side conditions about length restrictions need to be mentioned here
   | arrlit { t } ( e1 ; e2 )  ::   :: arrayLiteral                    {{ com \textcolor{blue}{[$v_1, ..., v_n$]}, type $[[t]]$ \& $|[[e1]]|=n$ are implicit }}
@@ -38,16 +39,17 @@ Exp, e :: '' ::=  {{ com Expressions }}
   | ( e )                     :: M :: paren                           {{ com parentheses }}   {{ coq [[e]] }}
 
 Cmd, m :: '' ::= {{ com Commands }}
+  | a                         ::   :: mutableSymbol
   | ret ( e )                 ::   :: return                        {{ com \textcolor{blue}{ret $[[e]]$} }}
-  | bnd ( e ; x . m )         ::   :: sequence    (+ bind x in m +) {{ com \textcolor{blue}{bind $[[x]] \leftarrow [[e]] ; [[m]]$} }}
+  | bnd ( e ; x . m )         ::   :: sequence    (+ bind x in m +) %{{ com \textcolor{blue}{bind $[[x]] \leftarrow [[e]] ; [[m]]$} }}
   % NOTE: mutables in Q# are really different from ref types as they do not follow the reference semantics.
   % When we copy them, say `let b = a` for a mutable a, we don't get an alias (like for qubit references),
   % we get the value associated with a at that point in the program, we are doing an implicit get,
   % ie, `let b = get[a]`
-  | mut ( e ; a . m )         ::   :: assignable  (+ bind a in m +) {{ com \textcolor{blue}{mut $[[a]]$ := $[[e]]$ in $[[m]]$} }}
+  | mut ( e ; a . m )         ::   :: assignable  (+ bind a in m +) %{{ com \textcolor{blue}{mut $[[a]]$ := $[[e]]$ in $[[m]]$} }}
   | get [ a ]                 ::   :: get                           {{ com \textcolor{blue}{$@[[a]]$} }}
   | set [ a ] ( e )           ::   :: set                           {{ com \textcolor{blue}{$[[a]]:=[[e]]$} }}
-  | dcl ( q . m )             ::   :: newQubit    (+ bind q in m +) {{ com \textcolor{blue}{dcl $[[q]]$ in $[[m]]$}, new (opaque) qubit }}
+  | dcl ( q . m )             ::   :: newQubit    (+ bind q in m +) %{{ com \textcolor{blue}{dcl $[[q]]$ in $[[m]]$}, new (opaque) qubit }}
   | gateapr ( e ; U )         ::   :: gateAppRef                    {{ com \textcolor{blue}{$[[U]]$ $([[e]])$}, gate application }}
   | ctrlapr ( e1 ; e2 ; U )   ::   :: ctrlAppRef                    {{ com \textcolor{blue}{Controlled $[[U]]$ $([[e1]], [[e2]])$}, controlled gate application }}
   | gateap [ q ] ( U )        ::   :: gateApp                       {{ com gate application (opaque) }}
