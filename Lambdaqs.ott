@@ -18,8 +18,21 @@ Typ, t {{ tex \tau }} :: 'Typ_' ::= {{ com Types }}
   % | prod ( </ li c-> ti // i IN 1 .. n /> )     ::  :: product   {{ com \textcolor{blue}{$\bigtimes_{l \in L}\,\tau_l$} }}
   % | sum ( </ li c-> ti // , // i IN 1 .. n /> ) ::  :: sum       {{ com \textcolor{blue}{$\bigplus_{l \in L}\,\tau_l$} }}
 
+Assignable, asn :: 'A_' ::= {{ com Assignable }}
+  | a                         ::   :: mutableSymbol
+  | a . asn                   ::   :: bind  (+ bind a in asn +)
+    {{ com this is a fake production that will never be used. }}
+  | [ asn1 / a ] asn2         :: M :: substAsn
+    {{ com substitution }} {{ coq (open_Assignable_wrt_Assignable [[a asn2]] [[asn1]]) }}
+
+Qubit, qu :: 'Qu_' ::= {{ com Actual qubits }}
+  | q                         ::   :: var
+  | q . qu                    ::   :: bind (+ bind q in qu +)
+  | [ qu1 / q ] qu2           :: M :: subst
+     {{ com substitution }}  {{ coq (open_Qubit_wrt_Qubit [[q qu2]] [[qu1]]) }}
+
 Exp, e :: 'Exp_' ::=  {{ com Expressions }}
-  | q                         ::   :: qubitSymbol
+  | qu                        ::   :: qubitSymbol
   | x                         ::   :: variable                        {{ com variable }}
   | num [ n ]                 ::   :: numeral                         {{ com numeral }}
   | let ( e1 ; x . e2 )       ::   :: definition  (+ bind x in e2 +)  %{{ com \textcolor{blue}{let~$[[x]]$~be~$[[e1]]$~in~$[[e2]]$} }}
@@ -29,32 +42,34 @@ Exp, e :: 'Exp_' ::=  {{ com Expressions }}
   | arrlit { t } ( e1 ; e2 )  ::   :: arrayLiteral                    {{ com \textcolor{blue}{[$v_1, ..., v_n$]}, type $[[t]]$ \& $|[[e1]]|=n$ are implicit }}
   | arrget ( e1 ; e2 )        ::   :: arrayGet                        {{ com \textcolor{blue}{$[[e1]]$[$[[e2]]$]}, where $[[e2]] < |[[e1]]|$ }}
   | cmd ( m )                 ::   :: encapsulation                   {{ com \textcolor{blue}{cmd $[[m]]$}, encapsulation }}
-  | qloc [ q ]                ::   :: qubitLocation                   {{ com \textcolor{blue}{\&$[[q]]$}, qubit location }}
+  | qloc [ qu ]               ::   :: qubitLocation                   {{ com \textcolor{blue}{\&$[[qu]]$}, qubit location }}
   % | tpl ( </ li c-> ei // , // i IN 1 .. n /> )           ::  :: tuple        {{ com \textcolor{blue}{$\langle e_l \rangle_{l \in L}$} }}
   % | pr [ li ] ( e )                                       ::  :: projection   {{ com \textcolor{blue}{$[[e]] \cdot l$} }}
   % | in [ li ] { </ ti // , // i IN 1 .. n /> } ( e )      ::  :: injection    {{ com \textcolor{blue}{$l \cdot [[e]]$} }}
   % % TODO: here xi's may need to bound in ei's
   % | case ( e ; </ li c-> xi . ei // , // i IN 1 .. n /> ) ::  :: caseAnalysis {{ com \textcolor{blue}{$\texttt{case}\,e\,\{ l \cdot x_l \hookrightarrow e_l \}_{l \in L}$} }}
   | [ e1 / x ] e2             :: M :: subst                           {{ com substitution }}  {{ coq (open_Exp_wrt_Exp [[x e2]] [[e1]]) }}
+  | [ qu / q ] e2             :: M :: substQu                         {{ com substitution }}  {{ coq (open_Exp_wrt_Qubit [[q e2]] [[qu]]) }}
   | ( e )                     :: M :: paren                           {{ com parentheses }}   {{ coq [[e]] }}
 
 Cmd, m :: 'Cmd_' ::= {{ com Commands }}
-  | a                         ::   :: mutableSymbol
+  | asn                       ::   :: mutableSymbol
   | ret ( e )                 ::   :: return_                       {{ com \textcolor{blue}{ret $[[e]]$} }}
   | bnd ( e ; x . m )         ::   :: sequence    (+ bind x in m +) %{{ com \textcolor{blue}{bind $[[x]] \leftarrow [[e]] ; [[m]]$} }}
   % NOTE: mutables in Q# are really different from ref types as they do not follow the reference semantics.
   % When we copy them, say `let b = a` for a mutable a, we don't get an alias (like for qubit references),
   % we get the value associated with a at that point in the program, we are doing an implicit get,
   % ie, `let b = get[a]`
-  | mut ( e ; a . m )         ::   :: assignable  (+ bind a in m +) %{{ com \textcolor{blue}{mut $[[a]]$ := $[[e]]$ in $[[m]]$} }}
-  | get [ a ]                 ::   :: get                           {{ com \textcolor{blue}{$@[[a]]$} }}
-  | set [ a ] ( e )           ::   :: set                           {{ com \textcolor{blue}{$[[a]]:=[[e]]$} }}
-  | dcl ( q . m )             ::   :: newQubit    (+ bind q in m +) %{{ com \textcolor{blue}{dcl $[[q]]$ in $[[m]]$}, new (opaque) qubit }}
+  | mut ( e ; a . m )         ::   :: assignable  (+ bind a in m +) %{{ com \textcolor{blue}{mut $[[asn]]$ := $[[e]]$ in $[[m]]$} }}
+  | get [ asn ]               ::   :: get                           {{ com \textcolor{blue}{$@[[asn]]$} }}
+  | set [ asn ] ( e )         ::   :: set                           {{ com \textcolor{blue}{$[[asn]]:=[[e]]$} }}
+  | dcl ( q . m )             ::   :: newQubit    (+ bind q in m +) %{{ com \textcolor{blue}{dcl $[[qu]]$ in $[[m]]$}, new (opaque) qubit }}
   | gateapr ( e ; U )         ::   :: gateAppRef                    {{ com \textcolor{blue}{$[[U]]$ $([[e]])$}, gate application }}
   | ctrlapr ( e1 ; e2 ; U )   ::   :: ctrlAppRef                    {{ com \textcolor{blue}{Controlled $[[U]]$ $([[e1]], [[e2]])$}, controlled gate application }}
-  | gateap [ q ] ( U )        ::   :: gateApp                       {{ com gate application (opaque) }}
-  | ctrlap [ q1 , q2 ] ( U )  ::   :: ctrlApp                       {{ com controlled gate application  (opaque) }}
+  | gateap [ qu ] ( U )       ::   :: gateApp                       {{ com gate application (opaque) }}
+  | ctrlap [ qu1 , qu2 ] ( U ) ::   :: ctrlApp                      {{ com controlled gate application  (opaque) }}
   | [ e / x ] m               :: M :: substCmd                      {{ com substitution }} {{ coq (open_Cmd_wrt_Exp [[x m]] [[e]]) }}
+  | [ qu / q ] m              :: M :: substQu                       {{ com substitution }} {{ coq (open_Cmd_wrt_Qubit [[q m]] [[qu]]) }}
 
 Intr, U :: 'Intr_' ::= {{ com Intrinsics }}
   | I     ::  :: Identity
@@ -67,9 +82,23 @@ Intr, U :: 'Intr_' ::= {{ com Intrinsics }}
 
 substitutions
   single e x :: subst
+  single e a :: subst
+  single e q :: subst
+  single m x :: subst_Cmd
+  single m q :: subst_Cmd
+  single m a :: subst_Cmd
+  single qu q :: subst_Qubit
+  single asn a :: subst_Asn
 
 freevars
   e x :: fv
+  e a :: fv
+  e q :: fv
+  m x :: fv_Cmd
+  m a :: fv_Cmd
+  m q :: fv_Cmd
+  qu  q :: fv_Qubit
+  asn a :: fv_Assign
 
 parsing
   Typ_function right Typ_function
@@ -106,18 +135,18 @@ Memory, mu {{ tex \mu }} :: 'M_' ::= {{ com Memory map }}
   | mu , a c-> e        ::  :: assignable
   | mu , a c-> _        ::  :: dontcare
 
-Sugar, s :: '' ::= {{ com Derived forms }}
-  | unit                :: :: Unit
-  | triv                :: :: Trivial
-  | bool                :: :: Bool
-  | true                :: :: True
-  | false               :: :: False
-  | if ( e ; e1 ; e2 )  :: :: Conditional
-  | { x <- m1 ; m2 }    :: :: SeqComp
-  | do e                :: :: Do
-  | proc ( x : t ) m    :: :: Procedure
-  | call e1 ( e2 )      :: :: Call
-  | t1 => t2            :: :: Operation
+% Sugar, s :: 'S_' ::= {{ com Derived forms }}
+%  | unit                :: :: Unit
+%  | triv                :: :: Trivial
+%  | bool                :: :: Bool
+%  | true                :: :: True
+%  | false               :: :: False
+%  | if ( e ; e1 ; e2 )  :: :: Conditional
+%  | { x <- m1 ; m2 }    :: :: SeqComp
+%  | do e                :: :: Do
+%  | proc ( x : t ) m    :: :: Procedure
+%  | call e1 ( e2 )      :: :: Call
+%  | t1 => t2            :: :: Operation
 
 terminals :: 'terminals_' ::=
   | |-                  ::  :: turnstile  {{ tex \vdash }}            {{ com entails }}
