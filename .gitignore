@@ -47,3 +47,11 @@ time-of-build-before.log
 time-of-build-both.log
 time-of-build-pretty.log
 
+# Misc
+CoqSrc.mk*
+Lambdaqs.aux
+Lambdaqs.log
+Lambdaqs.pdf
+Lambdaqs.tex
+Lambdaqs_*.v
+
