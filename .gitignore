@@ -54,4 +54,5 @@ Lambdaqs.log
 Lambdaqs.pdf
 Lambdaqs.tex
 Lambdaqs_*.v
-
+Makefile.conf
+html/

@@ -1,11 +1,11 @@
-# STLC tutorial
+# STLC Tutorial using Locally Nameless representation
 
 An interactive tutorial on specifying and implementing the simply-typed
 lambda calculus in Coq.
 
 Copied from https://github.com/DeepSpec/dsss17/tree/master/Stlc
 
-## INSTALLATION
+## Installation
 
   This tutorial depends on the `Metalib.Metatheory` library, available from
   [https://github.com/plclub/metalib](https://github.com/plclub/metalib).
@@ -17,12 +17,11 @@ Copied from https://github.com/DeepSpec/dsss17/tree/master/Stlc
     `make`                  - Compile all Coq files
     `make html`             - Make documentation
 
-## CONTENTS
+## Contents
 
 Read through the tutorial files in this order.
 
-     Lec1.v            - First set of lecture notes, with exercises
-                         about LN
+     Lec1.v            - First set of lecture notes
      Definitions.v     - Specification of STLC using locally nameless
                          representation (LN)
      Lec2.v            - LN continued: type soundness for STLC
@@ -32,7 +31,7 @@ Read through the tutorial files in this order.
      Connect.v         - Proof that nominal abstract machine implements
                          LN substitution-based small-step semantics
 
-## EXTRA
+## Extra
 
 The `extra` directory includes files and recipes that were used to generate
 the some of the above definitions and lemmas, using
@@ -53,7 +52,7 @@ and [LNgen](https://github.com/plclub/lngen) tools.
     `make -f gen.mk Stlc.v`
     `make -f gen.mk Stlc_inf.v`
 
-## CREDITS
+## Credits
 
  Tutorial author: Stephanie Weirich, based on prior a tutorial by Brian
  Aydemir and Stephanie Weirich, with help from Aaron Bohannon, Nate Foster,
