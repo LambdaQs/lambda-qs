@@ -9,4 +9,4 @@ Use VSCode with VSCoq extension or any other Proof General based IDE for Coq. On
 Use the `vendor` directory for external libs.
 
 ## Misc
-[ProtoQuipperFormalization](ProtoQuipperFormalization/README.md) contains the "Formalization of Metatheory of the Quipper Quantum Programming Language" that we are using as a guide/framework for this work.
+[Stlc](Stlc/README.md) contains an STLC Tutorial using Locally Nameless representation by Stephanie Weirich that we are using as a reference for this work.
