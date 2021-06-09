@@ -1,7 +1,5 @@
 -R . Stlc
-Connect.v
 Definitions.v
 Lec1.v
 Lec2.v
 Lemmas.v
-Nominal.v
