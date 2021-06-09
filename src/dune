@@ -1,3 +1,4 @@
 (coq.theory
  (name LambdaQs)
+ (flags -w -variable-collision,-meta-collision,-require-in-module,-non-recursive,-fragile-hint-constr)
  (theories Metalib))

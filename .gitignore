@@ -48,11 +48,8 @@ time-of-build-both.log
 time-of-build-pretty.log
 
 # Misc
-CoqSrc.mk*
-Lambdaqs.aux
-Lambdaqs.log
-Lambdaqs.pdf
-Lambdaqs.tex
-Lambdaqs_*.v
-Makefile.conf
-html/
+LambdaQs.aux
+LambdaQs.log
+LambdaQs.pdf
+LambdaQs.tex
+LambdaQs_*.v
