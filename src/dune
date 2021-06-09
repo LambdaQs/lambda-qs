@@ -2,3 +2,9 @@
  (name LambdaQs)
  (flags -w -variable-collision,-meta-collision,-require-in-module,-non-recursive,-fragile-hint-constr)
  (theories Metalib))
+
+(rule (targets LambdaQs_ott.v LambdaQs_inf.v)
+ (action
+ (no-infer
+  (progn
+   (run make)))))

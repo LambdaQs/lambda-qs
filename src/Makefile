@@ -40,5 +40,5 @@ clean:
 	@rm -f *.pdf *.tex
 
 METALIB.FIX_%:
-	sed -i -e 's/Metalib.Metatheory./Metalib.Metatheory. Require Export Metalib.LibLNgen. /g' $*.v
+	sed -i -e 's/Metalib.Metatheory./Metalib.Metatheory. Require Export Metalib.LibLNgen. Global Set Warnings "-deprecated-hint-without-locality". /g' $*.v
 	sed '1d' $*.v > __TMP__; mv __TMP__ $*.v
