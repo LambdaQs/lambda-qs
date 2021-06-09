@@ -271,4 +271,5 @@ Inductive step : exp -> exp -> Prop :=
      step (app e1 e2) (app e1' e2).
 
 
+#[global]
 Hint Constructors typing step lc_exp : core.

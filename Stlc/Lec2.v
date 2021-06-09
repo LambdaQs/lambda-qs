@@ -160,6 +160,7 @@ Inductive typing_e : ctx -> exp -> typ -> Prop :=
       typing_e E e1 (typ_arrow T1 T2) ->
       typing_e E e2 T1 ->
       typing_e E (app e1 e2) T2.
+#[global]
 Hint Constructors typing_e : core.
 
 

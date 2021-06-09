@@ -1,2 +1,3 @@
 (coq.theory
- (name Stlc))
+ (name Stlc)
+ (theories Metalib))

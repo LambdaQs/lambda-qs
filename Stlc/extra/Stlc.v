@@ -109,4 +109,5 @@ Inductive step : exp -> exp -> Prop :=    (* defn step *)
 
 
 (** infrastructure *)
+#[global]
 Hint Constructors typing step lc_exp.
