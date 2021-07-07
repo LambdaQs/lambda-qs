@@ -1,0 +1,3 @@
+[submodule "vendor/lngen"]
+	path = vendor/lngen
+	url = https://github.com/k4rtik/lngen.git
