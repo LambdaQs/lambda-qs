@@ -10,7 +10,7 @@ grammar %% LNgen portion
 
 Typ, t {{ tex \tau }} :: 'Typ_' ::= {{ com Types }}
   | num                                         ::  :: number
-  | array                                       ::  :: array
+  % | array                                       ::  :: array
   | qbit                                        ::  :: qubit     {{ com \textcolor{blue}{qbit}, opaque qubit type }}
   | qref [ k ]                                  ::  :: qubitRef  {{ com \textcolor{blue}{qref}, qubit reference type }}
   | arr ( t1 ; t2 )                             ::  :: function  {{ com \textcolor{blue}{$[[t1]] \rightarrow [[t2]]$} }}
@@ -35,9 +35,9 @@ Exp, e :: 'Exp_' ::=  {{ com Expressions }}
   | let ( e1 ; x . e2 )       ::   :: definition  (+ bind x in e2 +)  %{{ com \textcolor{blue}{let~$[[x]]$~be~$[[e1]]$~in~$[[e2]]$} }}
   | lam { t } ( x . e )       ::   :: abstraction (+ bind x in e +)   %{{ com \textcolor{blue}{$\lambda([[x]]:[[t]])[[e]]$} }}
   | ap ( e1 ; e2 )            ::   :: application                     {{ com \textcolor{blue}{$[[e1]]([[e2]])$} }}
-  % TODO: unsure if the side conditions about length restrictions need to be mentioned here
-  | arrlit { t } ( e1 ; e2 )  ::   :: arrayLiteral                    {{ com \textcolor{blue}{[$v_1, ..., v_n$]}, type $[[t]]$ \& $|[[e1]]|=n$ are implicit }}
-  | arrget ( e1 ; e2 )        ::   :: arrayGet                        {{ com \textcolor{blue}{$[[e1]]$[$[[e2]]$]}, where $[[e2]] < |[[e1]]|$ }}
+  % % TODO: unsure if the side conditions about length restrictions need to be mentioned here
+  % | arrlit { t } ( e1 ; e2 )  ::   :: arrayLiteral                    {{ com \textcolor{blue}{[$v_1, ..., v_n$]}, type $[[t]]$ \& $|[[e1]]|=n$ are implicit }}
+  % | arrget ( e1 ; e2 )        ::   :: arrayGet                        {{ com \textcolor{blue}{$[[e1]]$[$[[e2]]$]}, where $[[e2]] < |[[e1]]|$ }}
   | cmd ( m )                 ::   :: encapsulation                   {{ com \textcolor{blue}{cmd $[[m]]$}, encapsulation }}
   | qloc [ qu ]               ::   :: qubitLocation                   {{ com \textcolor{blue}{\&$[[qu]]$}, qubit location }}
   % | tpl ( </ li c-> ei // , // i IN 1 .. n /> )           ::  :: tuple        {{ com \textcolor{blue}{$\langle e_l \rangle_{l \in L}$} }}
@@ -232,17 +232,17 @@ Jstatics :: '' ::=
     -------------------- :: Ap
     G |- ap(e1; e2) : t
 
-    % TODO: should type store the length of the array?
-    G |- e1 : num
-    G |- e2 : arr(num;t)
-    -----------------------------:: ArrLit
-    G |- arrlit{t}(e1;e2) : array
+    % % TODO: should type store the length of the array?
+    % G |- e1 : num
+    % G |- e2 : arr(num;t)
+    % -----------------------------:: ArrLit
+    % G |- arrlit{t}(e1;e2) : array
 
-    % TODO: should try to ensure that e2 doesn't exceeed the length
-    G |- e1 : array
-    G |- e2 : num
-    ----------------------:: ArrGet
-    G |- arrget(e1;e2) : t
+    % % TODO: should try to ensure that e2 doesn't exceeed the length
+    % G |- e1 : array
+    % G |- e2 : num
+    % ----------------------:: ArrGet
+    % G |- arrget(e1;e2) : t
 
     % </ G |- ei : ti // i IN 1..n />
     % --------------------------------------------------------------------------- :: Tpl
@@ -332,10 +332,10 @@ Jdynamics :: '' ::=
     --------------- :: Lam
     lam{t}(x.e) val
 
-    e1 val
-    e2 val
-    --------------------:: ArrLit
-    arrlit{t}(e1;e2) val
+    % e1 val
+    % e2 val
+    % --------------------:: ArrLit
+    % arrlit{t}(e1;e2) val
 
     % </ ei val // i IN 1..n />
     % ------------------------------------- :: Tpl
@@ -378,32 +378,32 @@ Jdynamics :: '' ::=
     ----------------------------------- :: ApInstr
     ap(lam{t2}(x.e1); e2) |--> [e2/x]e1
 
-    e1 |--> e1'
-    ---------------------------------------:: ArrLit1
-    arrlit{t}(e1;e2) |--> arrlit{t}(e1';e2)
+    % e1 |--> e1'
+    % ---------------------------------------:: ArrLit1
+    % arrlit{t}(e1;e2) |--> arrlit{t}(e1';e2)
 
-    e1 val
-    e2 |--> e2'
-    ---------------------------------------:: ArrLit2
-    arrlit{t}(e1;e2) |--> arrlit{t}(e1;e2')
+    % e1 val
+    % e2 |--> e2'
+    % ---------------------------------------:: ArrLit2
+    % arrlit{t}(e1;e2) |--> arrlit{t}(e1;e2')
 
-    e1 |--> e1'
-    ---------------------------------:: ArrGet1
-    arrget(e1;e2) |--> arrget(e1';e2)
+    % e1 |--> e1'
+    % ---------------------------------:: ArrGet1
+    % arrget(e1;e2) |--> arrget(e1';e2)
 
-    e1 val
-    e2 |--> e2'
-    ---------------------------------:: ArrGet2
-    arrget(e1;e2) |--> arrget(e1;e2')
+    % e1 val
+    % e2 |--> e2'
+    % ---------------------------------:: ArrGet2
+    % arrget(e1;e2) |--> arrget(e1;e2')
 
-    % TODO: come up with a better way to state this rule
-    % perhaps arrlit should be encoded as a product type?
-    e1 val
-    e2 val
-    % e1 = arrlit{t}(n,e)
-    % 0 <= e2 < n
-    ---------------------------:: ArrGetInstr
-    arrget(e1;e2) |--> ap(e;e2)
+    % % TODO: come up with a better way to state this rule
+    % % perhaps arrlit should be encoded as a product type?
+    % e1 val
+    % e2 val
+    % % e1 = arrlit{t}(n,e)
+    % % 0 <= e2 < n
+    % ---------------------------:: ArrGetInstr
+    % arrget(e1;e2) |--> ap(e;e2)
 
     % </ ei val // i IN 1..n_a />
     % e |--> e'
