@@ -20,7 +20,7 @@ Typ, t {{ tex \tau }} :: 'Typ_' ::= {{ com Types }}
 
 Assignable, asn :: 'A_' ::= {{ com Assignable }}
   | a                         ::   :: mutableSymbol
-  | a . asn                   ::   :: bind  (+ bind a in asn +) {{ com this is a fake production that will never be used. }}
+  | a . asn                   ::   :: bind  (+ bind a in asn +) {{ com a fake production that will never be used }}
   | [ asn1 / a ] asn2         :: M :: substAsn                  {{ com substitution }}  {{ coq (open_Assignable_wrt_Assignable [[a asn2]] [[asn1]]) }}
 
 Qubit, qu :: 'Qu_' ::= {{ com Actual qubits }}
@@ -62,7 +62,7 @@ Cmd, m :: 'Cmd_' ::= {{ com Commands }}
   | set [ asn ] ( e )           ::   :: set                           {{ com \textcolor{blue}{$[[asn]]:=[[e]]$} }}
   | dcl ( q . m )               ::   :: newQubit    (+ bind q in m +) %{{ com \textcolor{blue}{dcl $[[qu]]$ in $[[m]]$}, new (opaque) qubit }}
   | gateapr ( e ; U )           ::   :: gateAppRef                    {{ com \textcolor{blue}{$[[U]]$ $([[e]])$}, gate application }}
-  | ctrlapr ( e1 ; e2 ; U )     ::   :: ctrlAppRef                    {{ com \textcolor{blue}{Controlled $[[U]]$ $([[e1]], [[e2]])$}, controlled gate application }}
+  | ctrlapr ( e1 ; e2 ; U )     ::   :: ctrlAppRef                    {{ com \textcolor{blue}{Controlled $[[U]]$ $([[e1]], [[e2]])$}, controlled gate app }}
   | gateap [ qu ] ( U )         ::   :: gateApp                       {{ com gate application (opaque) }}
   | ctrlap [ qu1 , qu2 ] ( U )  ::   :: ctrlApp                       {{ com controlled gate application  (opaque) }}
   | [ e / x ] m                 :: M :: substCmd                      {{ com substitution }} {{ coq (open_Cmd_wrt_Exp [[x m]] [[e]]) }}
@@ -101,6 +101,7 @@ parsing
   Typ_function right Typ_function
 
 embed {{ tex-preamble
+  \usepackage[cm]{fullpage}
   \usepackage[mathx]{mathabx}
 
   \usepackage{stackengine}
