@@ -3,26 +3,12 @@
 An interactive tutorial on specifying and implementing the simply-typed
 lambda calculus in Coq.
 
-Copied from https://github.com/DeepSpec/dsss17/tree/master/Stlc
+_Copied from https://github.com/DeepSpec/dsss17/tree/master/Stlc_
 
 ## Installation
 
-  This tutorial depends on the `Metalib.Metatheory` library, available from
-  [https://github.com/plclub/metalib](https://github.com/plclub/metalib).
+  This tutorial depends on the `Metalib.Metatheory` library.
   Make sure that you compile and install this library _first_.
-
-  To install using opam:
-  ```
-  opam repo add coq-released https://coq.inria.fr/opam/released
-  opam repo add coq-extra-dev https://coq.inria.fr/opam/extra-dev
-  opam install coq-metalib
-  ```
-
-  After you have done that, you can use make to compile the tutorial material
-  and generate the documentation.
-
-    `make`                  - Compile all Coq files
-    `make html`             - Make documentation
 
 ## Contents
 
