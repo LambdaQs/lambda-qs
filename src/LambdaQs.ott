@@ -1,4 +1,5 @@
 metavar x ::=                   {{ com term variable }} {{ repr-locally-nameless }} {{ lex alphanum }}
+metavar tv {{ tex t }} ::=      {{ com type variable }} {{ repr-locally-nameless }} {{ lex alphanum }}
 metavar a ::=                   {{ com assignable }}    {{ repr-locally-nameless }} {{ lex alphanum }}
 metavar q ::=                   {{ com qubit }}         {{ repr-locally-nameless }} {{ lex alphanum }}
 metavar k {{ tex \kappa }} ::=  {{ com lifetime }}      {{ coq atom }}
@@ -9,14 +10,17 @@ metavar l ::=                   {{ com label }}         {{ coq atom }}
 grammar %% LNgen portion
 
 Typ, t {{ tex \tau }} :: 'Typ_' ::= {{ com Types }}
-  | num                                         ::  :: number
+  | tv                                          ::  :: typeVar   {{ com type variable }}
+  % | num                                         ::  :: number
   % | array                                       ::  :: array
   | qbit                                        ::  :: qubit     {{ com \textcolor{blue}{qbit}, opaque qubit type }}
   | qref [ k ]                                  ::  :: qubitRef  {{ com \textcolor{blue}{qref}, qubit reference type }}
   | arr ( t1 ; t2 )                             ::  :: function  {{ com \textcolor{blue}{$[[t1]] \rightarrow [[t2]]$} }}
+  | all ( tv . t )         ::  :: polymorphic (+ bind tv in t +) %{{ com \textcolor{blue}{$\forall([[tv]].[[t]])$}, polymorphic }}
   | cmd ( t )                                   ::  :: command   {{ com \textcolor{blue}{$[[t]]$ cmd} }}
   % | prod ( </ li c-> ti // i IN 1 .. n /> )     ::  :: product   {{ com \textcolor{blue}{$\bigtimes_{l \in L}\,\tau_l$} }}
   % | sum ( </ li c-> ti // , // i IN 1 .. n /> ) ::  :: sum       {{ com \textcolor{blue}{$\bigplus_{l \in L}\,\tau_l$} }}
+  | [ t1 / tv ] t2                              :: M:: tysubst   {{ coq (open_Typ_wrt_Typ [[tv t2]] [[t1]]) }}
 
 Assignable, asn :: 'A_' ::= {{ com Assignable }}
   | a                         ::   :: mutableSymbol
@@ -31,10 +35,12 @@ Qubit, qu :: 'Qu_' ::= {{ com Actual qubits }}
 Exp, e :: 'Exp_' ::=  {{ com Expressions }}
   | qu                        ::   :: qubitSymbol
   | x                         ::   :: variable                        {{ com variable }}
-  | num [ n ]                 ::   :: numeral                         {{ com numeral }}
+  % | num [ n ]                 ::   :: numeral                         {{ com numeral }}
   | let ( e1 ; x . e2 )       ::   :: definition  (+ bind x in e2 +)  %{{ com \textcolor{blue}{let~$[[x]]$~be~$[[e1]]$~in~$[[e2]]$} }}
   | lam { t } ( x . e )       ::   :: abstraction (+ bind x in e +)   %{{ com \textcolor{blue}{$\lambda([[x]]:[[t]])[[e]]$} }}
   | ap ( e1 ; e2 )            ::   :: application                     {{ com \textcolor{blue}{$[[e1]]([[e2]])$} }}
+  | Lam ( tv . e )            ::   :: tyabstr     (+ bind tv in e +)   %{{ com \textcolor{blue}{$\Lambda([[tv]])[[e]]$} }}
+  | App { t } ( e )           ::   :: tyapp                           {{ com \textcolor{blue}{$[[e]][ [[t]] ]$}, type application/instantiation }}
   % % TODO: unsure if the side conditions about length restrictions need to be mentioned here
   % | arrlit { t } ( e1 ; e2 )  ::   :: arrayLiteral                    {{ com \textcolor{blue}{[$v_1, ..., v_n$]}, type $[[t]]$ \& $|[[e1]]|=n$ are implicit }}
   % | arrget ( e1 ; e2 )        ::   :: arrayGet                        {{ com \textcolor{blue}{$[[e1]]$[$[[e2]]$]}, where $[[e2]] < |[[e1]]|$ }}
@@ -46,6 +52,7 @@ Exp, e :: 'Exp_' ::=  {{ com Expressions }}
   % % TODO: here xi's may need to bound in ei's
   % | case ( e ; </ li c-> xi . ei // , // i IN 1 .. n /> ) ::  :: caseAnalysis {{ com \textcolor{blue}{$\texttt{case}\,e\,\{ l \cdot x_l \hookrightarrow e_l \}_{l \in L}$} }}
   | [ e1 / x ] e2             :: M :: subst                           {{ com substitution }}  {{ coq (open_Exp_wrt_Exp [[x e2]] [[e1]]) }}
+  | [ t / tv ] e              :: M :: tysubst                         {{ com substitution }}  {{ coq (open_Exp_wrt_Typ [[tv e]] [[t]]) }}
   | [ qu / q ] e2             :: M :: substQu                         {{ com substitution }}  {{ coq (open_Exp_wrt_Qubit [[q e2]] [[qu]]) }}
   | ( e )                     :: M :: paren                           {{ com parentheses }}   {{ coq [[e]] }}
 
@@ -81,6 +88,7 @@ substitutions
   single e   x :: subst
   single e   a :: subst
   single e   q :: subst
+  single t  tv :: subst_Typ
   single m   x :: subst_Cmd
   single m   q :: subst_Cmd
   single m   a :: subst_Cmd
@@ -91,6 +99,7 @@ freevars
   e   x :: fv
   e   a :: fv
   e   q :: fv
+  t  tv :: fv_Typ
   m   x :: fv_Cmd
   m   a :: fv_Cmd
   m   q :: fv_Cmd
@@ -113,6 +122,10 @@ embed {{ tex-preamble
 }}
 
 grammar %% non LNgen portion
+
+D {{ tex \Delta }} :: 'D_' ::= {{ com Typing hypotheses }}  {{ coq list atom }}
+  | empty                 ::  :: empty                      {{ coq nil }}
+  | D , tv type           ::  :: type                       {{ coq ([[tv]] :: [[D]]) }}
 
 G {{ tex \Gamma }} :: 'G_' ::= {{ com Typing context }} {{ coq list (atom*Typ) }}
   | empty                 ::  :: empty                  {{ coq nil }}
@@ -160,6 +173,8 @@ terminals :: 'terminals_' ::=
   | <-                  ::  :: larrow     {{ tex \leftarrow }}
   | :=                  ::  :: define     {{ tex \triangleq }}        {{ com defined as }}
   | =>                  ::  :: darrow     {{ tex \Rightarrow }}       {{ com operation type }}
+  | lam                 ::  :: lambda     {{ tex \lambda }}
+  | Lam                 ::  :: Blambda    {{ tex \Lambda }}
 
 formula :: formula_ ::=
   | judgement            :: :: judgement
@@ -211,27 +226,52 @@ defns
 Jstatics :: '' ::=
 
   defn
-  G |- e : t :: :: etyping :: ty_ {{ com Expression Typing }} by
+  D |- t type :: :: tyformation :: tyf_ {{ com Type formation }} by
+
+    --------------------- :: TVar
+    D, tv type |- tv type
+
+    D |- t1 type
+    D |- t2 type
+    --------------------- :: TArr
+    D |- arr(t1; t2) type
+
+    D, tv type |- t type
+    -------------------- :: TAll
+    D |- all(tv.t) type
+
+  defn
+  D G |- e : t :: :: etyping :: ty_ {{ com Expression Typing }} by
 
     ----------------- :: Var
-    G, x : t |- x : t
+    D G, x : t |- x : t
 
-    -----------------:: Num
-    G |- num[n] : num
+    % -----------------:: Num
+    % G |- num[n] : num
 
-    G |- e1 : t1
-    G, x : t1 |- e2 : t2
+    D G |- e1 : t1
+    D G, x : t1 |- e2 : t2
     ---------------------- :: Let
-    G |- let(e1; x.e2) : t2
+    D G |- let(e1; x.e2) : t2
 
-    G, x : t1 |- e : t2
+    D |- t1 type
+    D G, x : t1 |- e : t2
     -------------------------------- :: Lam
-    G |- lam{t1}(x.e) : arr(t1; t2)
+    D G |- lam{t1}(x.e) : arr(t1; t2)
 
-    G |- e1 : arr(t2; t)
-    G |- e2 : t2
+    D G |- e1 : arr(t2; t)
+    D G |- e2 : t2
     -------------------- :: Ap
-    G |- ap(e1; e2) : t
+    D G |- ap(e1; e2) : t
+
+    D, tv type G |- e : t
+    ---------------------------- :: All
+    D G |- Lam(tv.e) : all(tv.t)
+
+    D G |- e : all(tv.t')
+    D |- t type
+    --------------------------- :: App
+    D G |- App{t}(e) : [t/tv]t'
 
     % % TODO: should type store the length of the array?
     % G |- e1 : num
@@ -327,11 +367,14 @@ Jdynamics :: '' ::=
   defn
   e val :: :: values :: v_ {{ com Values }} by
 
-    ----------:: Num
-    num[n] val
+    % ----------:: Num
+    % num[n] val
 
     --------------- :: Lam
     lam{t}(x.e) val
+
+    ------------- :: TLam
+    Lam(tv.e) val
 
     % e1 val
     % e2 val
@@ -378,6 +421,13 @@ Jdynamics :: '' ::=
     e2 val
     ----------------------------------- :: ApInstr
     ap(lam{t2}(x.e1); e2) |--> [e2/x]e1
+
+    e |--> e'
+    ------------------------- :: App
+    App{t}(e) |--> App{t}(e')
+
+    ------------------------------ :: AppInstr
+    App{t}(Lam(tv.e)) |--> [t/tv]e
 
     % e1 |--> e1'
     % ---------------------------------------:: ArrLit1
