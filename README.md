@@ -1,7 +1,10 @@
 # Formalization of the Lambda-Q# calculus
 
 ## Requirements
-Working OCaml and Haskell installations along with `dune`.
+Working installation of OCaml and Haskell.
+
+- We recommend installing [OCaml using OPAM](https://ocaml.org/docs/install.html#OPAM), then
+  issue `opam install dune ott` to get `dune` and `ott` installed.
 
 We need a modified version of `lngen` in the `vendor` directory. Either clone this repo recursively:
 
