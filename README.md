@@ -1,6 +1,8 @@
 # Formalization of the Lambda-Q# calculus
 
 ## Requirements
+Working OCaml and Haskell installations along with `dune`.
+
 We need a modified version of `lngen` in the `vendor` directory. Either clone this repo recursively:
 
 ```
