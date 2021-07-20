@@ -178,6 +178,7 @@ terminals :: 'terminals_' ::=
   | =>                  ::  :: darrow     {{ tex \Rightarrow }}       {{ com operation type }}
   | lam                 ::  :: lambda     {{ tex \lambda }}
   | Lam                 ::  :: Blambda    {{ tex \Lambda }}
+  | all                 ::  :: forall     {{ tex \forall }}
 
 formula :: formula_ ::=
   | judgement            :: :: judgement
