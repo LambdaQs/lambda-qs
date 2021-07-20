@@ -126,6 +126,9 @@ grammar %% non LNgen portion
 D {{ tex \Delta }} :: 'D_' ::= {{ com Typing hypotheses }}  {{ coq list atom }}
   | empty                 ::  :: empty                      {{ coq nil }}
   | D , tv type           ::  :: type                       {{ coq ([[tv]] :: [[D]]) }}
+%% NOTE: I am forced to use the cons operation instead of append here because this context is
+%% 	 not the same as the context provided by the metatheory library. Will need to be careful
+%%       while using this or revert to merging this context in gamma below.
 
 G {{ tex \Gamma }} :: 'G_' ::= {{ com Typing context }} {{ coq list (atom*Typ) }}
   | empty                 ::  :: empty                  {{ coq nil }}
