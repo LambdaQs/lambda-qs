@@ -1,7 +1,7 @@
 # Formalization of the Lambda-Q# calculus
 
 ## Requirements
-Working installation of OCaml and Haskell.
+Working installation of Coq and Haskell.
 
 - We recommend installing a recent version of [Coq Platform](https://github.com/coq/platform#usage-of-the-2021021-release), then
   issue `opam install dune ott` to get `dune` and `ott` installed.
