@@ -3,7 +3,7 @@
 ## Requirements
 Working installation of OCaml and Haskell.
 
-- We recommend installing [OCaml using OPAM](https://ocaml.org/docs/install.html#OPAM), then
+- We recommend installing a recent version of [Coq Platform](https://github.com/coq/platform#usage-of-the-2021021-release), then
   issue `opam install dune ott` to get `dune` and `ott` installed.
 
 We need a modified version of `lngen` in the `vendor` directory. Either clone this repo recursively:
