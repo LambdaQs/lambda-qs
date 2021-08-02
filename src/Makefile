@@ -1,10 +1,10 @@
-OTT_SOURCE = LambdaQs
+OTT_SOURCE = LangE
 OTT_LOC    = .
-FILES      = LambdaQs_ott LambdaQs_inf
-OTTFILES   = $(foreach i, LambdaQs, $(OTT_LOC)/$(i).ott)
-OTTIFLAGS  = $(foreach i, LambdaQs, -i $(OTT_LOC)/$(i).ott)
+FILES      = $(OTT_SOURCE)_ott $(OTT_SOURCE)_inf
+OTTFILES   = $(foreach i, $(OTT_SOURCE), $(OTT_LOC)/$(i).ott)
+OTTIFLAGS  = $(foreach i, $(OTT_SOURCE), -i $(OTT_LOC)/$(i).ott)
 
-LIBNAME=LambdaQs
+LIBNAME=$(OTT_SOURCE)
 LNGEN=../vendor/lngen/dist-newstyle/build/x86_64-*/ghc-*/lngen-0.3.1/x/lngen/build/lngen/lngen
 
 ## Include directories, one per line.

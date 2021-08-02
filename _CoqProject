@@ -1,2 +1,3 @@
--R _build/default/src LambdaQs
+-R _build/default/src LangE
+-R _build/default/Stlc Stlc
 -R _build/default/vendor/metalib/src Metalib

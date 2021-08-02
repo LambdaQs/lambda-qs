@@ -1,0 +1,90 @@
+metavar termvar, x ::= {{ repr-locally-nameless }} {{ lex alphanum }}
+
+grammar
+typ, T {{ tex \tau }} :: 'Ty_' ::=
+  | num :: :: numbers
+  | str :: :: strings
+
+exp, e :: 'e_' ::=
+  | x                     :: :: variable
+  | num [ n ]             :: :: numeral
+  | str [ s ]             :: :: literal
+  | plus  ( e1 ; e2 )     :: :: addition
+  | times ( e1 ; e2 )     :: :: multiplication
+  | cat   ( e1 ; e2 )     :: :: concatenation
+  | len   ( e )           :: :: length
+  | let   ( e1 ; x . e2 ) :: :: definition  (+ bind x in e2 +)
+  | [ e1 / x ] e2         :: M:: subst         {{ coq (open_exp_wrt_exp [[x e2]] [[e1]]) }}
+
+substitutions
+  single e   x :: subst
+
+freevars
+  e   x :: fv
+
+grammar
+ctx, G {{ tex \Gamma }} :: ''     ::= {{ com typing context }} {{ coq list ( atom * typ ) }}
+  | empty          ::   :: Empty {{ coq nil }}
+                                 {{ tex \bullet }}
+                                 {{ com empty context }}
+  | G , x : T      ::   :: Cons  {{ coq (([[x]]~[[T]])++[[G]]) }}
+                                 {{ com assumption }}
+
+terminals :: 'terminals_' ::=
+  | |-                  ::  :: turnstile  {{ tex \vdash }}
+  | in                  ::   :: in         {{ tex \in }}
+  | fv                  ::   :: fv         {{ tex \mathsf{fv}\! }}
+
+formula :: 'formula_' ::=
+  | judgement                ::   :: judgement
+  % | is_value v               ::   :: is_value
+  %   {{ coq is_value [[v]] }}
+  | uniq G                   ::   :: uniqG
+    {{ coq uniq [[G]] }}
+	  {{ tex \mathsf{uniq}[[G]] }}
+  | x : T in G               ::   :: inG
+    {{ coq binds [[x]][[T]][[G]] }}
+  | x notin fv e             ::   :: fresh
+    {{ coq [[x]] \notin fv[[e]] }}
+  | x notin dom G            ::   :: notInGx
+    {{ coq ~ AtomSetImpl.In [[x]] (dom [[G]]) }}
+
+defns
+Jstatics :: '' ::=
+
+ defn
+ G |- e : T :: ::typing::'T_' by
+
+    uniq G
+    ----------------- :: 41a
+    G, x : T |- x : T
+
+    ----------------- :: 41b
+    G |- str[s] : str
+
+    ----------------- :: 41c
+    G |- num[n] : num
+
+    G |- e1 : num
+    G |- e2 : num
+    ---------------------- :: 41d
+    G |- plus(e1;e2) : num
+
+    G |- e1 : num
+    G |- e2 : num
+    ---------------------- :: 41e
+    G |- times(e1;e2) : num
+
+    G |- e1 : str
+    G |- e2 : str
+    --------------------- :: 41f
+    G |- cat(e1;e2) : str
+
+    G |- e : str
+    ----------------- :: 41g
+    G |- len(e) : num
+
+    G |- e1 : T1
+    G, x : T1 |- e2 : T2
+    ----------------------- :: 41h
+    G |- let(e1; x.e2) : T2

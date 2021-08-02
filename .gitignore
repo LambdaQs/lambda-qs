@@ -48,8 +48,11 @@ time-of-build-both.log
 time-of-build-pretty.log
 
 # Misc
-LambdaQs.aux
-LambdaQs.log
+*.aux
+*.log
 LambdaQs.pdf
 LambdaQs.tex
 LambdaQs_*.v
+LangE.pdf
+LangE.tex
+LangE_*.v
