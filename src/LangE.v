@@ -4,23 +4,6 @@ Import StlcNotations.
 Require Import LangE_inf.
 
 (*
-  Lemma 4.3 (Weakening). If Γ ⊢ e′: τ′, then Γ, x : τ ⊢ e′: τ′
-  for any x `notin`dom(Γ) and any type τ.
-*)
-Lemma weakening :
-  forall G e' T' x T,
-    typing G e' T' ->
-    x `notin` dom G ->
-    typing (x ~ T ++ G) e' T'.
-Proof.
-  intros G e' T' x T H X.
-  (* generalize dependent G. *)
-  induction H; auto.
-  (* - apply binds_weaken. *)
-Abort.
-
-
-(*
   Lemma 4.1 (Unicity of Typing). For every typing context Γ and expression e,
   there exists at most one τ such that Γ ⊢ e : τ.
 *)
@@ -58,3 +41,21 @@ Proof.
   induction H; intros; inversion P.
   subst e3 e0; auto.
 Qed.
+
+(*
+  Lemma 4.3 (Weakening). If Γ ⊢ e′: τ′, then Γ, x : τ ⊢ e′: τ′
+  for any x `notin` dom(Γ) and any type τ.
+*)
+Lemma weakening :
+  forall G e' T' x T,
+    typing G e' T' ->
+    x `notin` dom G ->
+    typing (x ~ T ++ G) e' T'.
+Proof.
+  intros G e' T' x T H Fx.
+  (* generalize dependent T'. *)
+  induction H; auto.
+  (* var_f case *)
+  (* - apply (typing_var_f x0). *)
+  (* - apply binds_weaken. *)
+Abort.
