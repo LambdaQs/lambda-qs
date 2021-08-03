@@ -31,21 +31,14 @@ Lemma unicity :
    T = T'.
 Proof.
   intros.
-  (* generalize dependent T'. *)
+  generalize dependent T'.
   induction H;
-  (* intros T' J; *)
-  inversion H0; eauto; subst.
+  intros T' J;
+  inversion J; eauto; subst.
+  apply IHtyping in H5. subst.
   pick fresh x.
-  eapply H2; eauto.
-  rewrite (subst_exp_intro x); eauto.
-  rewrite subst_exp_open_exp_wrt_exp; auto.
-
-  specialize (H1 x).
-  (* pose (B := H1 Fr). *)
-  (* case let/definition *)
-  (* pose proof (H1 Fr). *)
-
-Abort.
+  eapply H1; eauto.
+Qed.
 
 (*
   Lemma 4.2 (Inversion for Typing). Suppose that Γ ⊢ e : τ. If e = plus(e1; e2),
