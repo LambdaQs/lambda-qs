@@ -4,6 +4,23 @@ Import StlcNotations.
 Require Import LangE_inf.
 
 (*
+  Lemma 4.3 (Weakening). If Γ ⊢ e′: τ′, then Γ, x : τ ⊢ e′: τ′
+  for any x `notin`dom(Γ) and any type τ.
+*)
+Lemma weakening :
+  forall G e' T' x T,
+    typing G e' T' ->
+    x `notin` dom G ->
+    typing (x ~ T ++ G) e' T'.
+Proof.
+  intros G e' T' x T H X.
+  (* generalize dependent G. *)
+  induction H; auto.
+  (* - apply binds_weaken. *)
+Abort.
+
+
+(*
   Lemma 4.1 (Unicity of Typing). For every typing context Γ and expression e,
   there exists at most one τ such that Γ ⊢ e : τ.
 *)
@@ -14,22 +31,20 @@ Lemma unicity :
    T = T'.
 Proof.
   intros.
-  generalize dependent T'.
-  induction H; intros T' J; inversion J; eauto; subst.
-  (* case let/definition *)
-  specialize (IHtyping T').
-  (* pick fresh x for (L \u L0). *)
-  (* eapply H1; eauto. *)
-  pick fresh x for L.
-  specialize (H0 x).
-  specialize (H1 x).
-  (* specialize (H7 x). *)
-  pose proof (H0 Fr).
-  pose proof (H1 Fr).
-  specialize (H3 T').
-  (* rewrite IHtyping in H2. *)
-  eapply H1; eauto.
+  (* generalize dependent T'. *)
+  induction H;
+  (* intros T' J; *)
+  inversion H0; eauto; subst.
+  pick fresh x.
+  eapply H2; eauto.
   rewrite (subst_exp_intro x); eauto.
+  rewrite subst_exp_open_exp_wrt_exp; auto.
+
+  specialize (H1 x).
+  (* pose (B := H1 Fr). *)
+  (* case let/definition *)
+  (* pose proof (H1 Fr). *)
+
 Abort.
 
 (*
