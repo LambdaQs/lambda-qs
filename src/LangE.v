@@ -1,5 +1,6 @@
 Require Import Metalib.Metatheory.
 Require Import LangE_ott.
+Import StlcNotations.
 Require Import LangE_inf.
 
 (*
@@ -13,9 +14,22 @@ Lemma unicity :
    T = T'.
 Proof.
   intros.
-  induction H; inversion H0; eauto.
+  generalize dependent T'.
+  induction H; intros T' J; inversion J; eauto; subst.
   (* case let/definition *)
-  subst.
+  specialize (IHtyping T').
+  (* pick fresh x for (L \u L0). *)
+  (* eapply H1; eauto. *)
+  pick fresh x for L.
+  specialize (H0 x).
+  specialize (H1 x).
+  (* specialize (H7 x). *)
+  pose proof (H0 Fr).
+  pose proof (H1 Fr).
+  specialize (H3 T').
+  (* rewrite IHtyping in H2. *)
+  eapply H1; eauto.
+  rewrite (subst_exp_intro x); eauto.
 Abort.
 
 (*
@@ -26,8 +40,8 @@ Abort.
 Lemma inversion :
   forall G e T e1 e2,
   typing G e T ->
-  e = e_addition e1 e2 ->
-  T = Ty_numbers -> typing G e1 Ty_numbers -> typing G e2 Ty_numbers.
+  e = plus e1 e2 ->
+  T = Ty_num -> typing G e1 Ty_num -> typing G e2 Ty_num.
 Proof.
   intros.
   generalize dependent G.

@@ -2,18 +2,18 @@ metavar termvar, x ::= {{ repr-locally-nameless }} {{ lex alphanum }}
 
 grammar
 typ, T {{ tex \tau }} :: 'Ty_' ::=
-  | num :: :: numbers
-  | str :: :: strings
+  | num :: :: num
+  | str :: :: str
 
-exp, e :: 'e_' ::=
-  | x                     :: :: variable
-  | num [ n ]             :: :: numeral
-  | str [ s ]             :: :: literal
-  | plus  ( e1 ; e2 )     :: :: addition
-  | times ( e1 ; e2 )     :: :: multiplication
-  | cat   ( e1 ; e2 )     :: :: concatenation
+exp, e :: '' ::=
+  | x                     :: :: var
+  | num [ n ]             :: :: num
+  | str [ s ]             :: :: str
+  | plus  ( e1 ; e2 )     :: :: plus
+  | times ( e1 ; e2 )     :: :: times
+  | cat   ( e1 ; e2 )     :: :: concat
   | len   ( e )           :: :: length
-  | let   ( e1 ; x . e2 ) :: :: definition  (+ bind x in e2 +)
+  | let   ( e1 ; x . e2 ) :: :: letdef  (+ bind x in e2 +)
   | [ e1 / x ] e2         :: M:: subst         {{ coq (open_exp_wrt_exp [[x e2]] [[e1]]) }}
 
 substitutions
@@ -48,6 +48,16 @@ formula :: 'formula_' ::=
     {{ coq [[x]] \notin fv[[e]] }}
   | x notin dom G            ::   :: notInGx
     {{ coq ~ AtomSetImpl.In [[x]] (dom [[G]]) }}
+
+embed
+{{ coq
+
+Module StlcNotations.
+Notation "[ z ~> u ] e" := (subst_exp u z e) (at level 0).
+Notation open e1 e2     := (open_exp_wrt_exp e1 e2).
+Notation "e ^ x"        := (open_exp_wrt_exp e (var_f x)).
+End StlcNotations.
+}}
 
 defns
 Jstatics :: '' ::=
