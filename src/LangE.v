@@ -32,9 +32,7 @@ Lemma unicity :
 Proof.
   intros.
   generalize dependent T'.
-  induction H;
-  intros T' J;
-  inversion J; eauto; subst.
+  induction H; intros T' J; inversion J; eauto; subst.
   apply IHtyping in H5. subst.
   pick fresh x.
   eapply H1; eauto.
@@ -44,17 +42,19 @@ Qed.
   Lemma 4.2 (Inversion for Typing). Suppose that Γ ⊢ e : τ. If e = plus(e1; e2),
   then τ = num, Γ ⊢ e1 : num, and Γ ⊢ e2 : num, and similarly for the other
   constructs of the language.
+
+  NOTE: only for `plus` here.
 *)
+(* TODO: is the statement correct? *)
 Lemma inversion :
   forall G e T e1 e2,
   typing G e T ->
   e = plus e1 e2 ->
   T = Ty_num -> typing G e1 Ty_num -> typing G e2 Ty_num.
 Proof.
-  intros.
-  generalize dependent G.
-  intros.
-   induction H.
-  -
-
-  Abort.
+  intros G e T e1 e2 H P.
+  generalize dependent e1.
+  generalize dependent e2.
+  induction H; intros; inversion P.
+  subst e3 e0; auto.
+Qed.
