@@ -66,3 +66,71 @@ Proof.
     apply H1; auto.
       simpl_env. apply uniq_push; auto.
 Qed.
+
+(* the following three lemmas used in substitution lemma below
+   are taken from Stlc tutorial. *)
+Lemma subst_neq_var : forall (x y : var) u,
+  y <> x -> [x ~> u](var_f y) = var_f y.
+Proof.
+  intros x y u.
+  simpl.
+  intro Neq.
+  destruct (y == x).
+  (* - Case "left". *)
+  - destruct Neq. auto.
+  (* - Case "right". *)
+  - auto.
+Qed.
+
+Lemma subst_var : forall (x y : var) u e,
+  y <> x ->
+  lc_exp u ->
+  ([x ~> u] e) ^ y = [x ~> u] (e ^ y).
+Proof.
+  intros x y u e Neq H.
+  rewrite subst_exp_open_exp_wrt_exp with (e2 := var_f y); auto.
+  rewrite subst_neq_var; auto.
+Qed.
+
+Lemma typing_to_lc_exp : forall E e T,
+  typing E e T -> lc_exp e.
+Proof.
+  intros E e T H. induction H; eauto.
+Qed.
+
+(*
+  Lemma 4.4 (Substitution). If Γ, x : τ ⊢ e′ : τ′ and Γ ⊢ e : τ,
+  then Γ ⊢ [e/x]e′ : τ′.
+*)
+Lemma substitution :
+  forall G E x T T' e e',
+    typing (G ++ x ~ T ++ E) e' T' ->
+    typing E e T ->
+    typing (G ++ E) ([x ~> e] e') T'.
+Proof.
+  intros G E x T T' e e' He' He.
+  remember (G ++ x ~ T ++ E) as E'.
+  generalize dependent G.
+  induction He'; intros G0 Eq; subst; simpl; auto.
+  - (* var case *)
+    simpl.
+    destruct (x0 == x); subst.
+    + (* case x0 = x *)
+      assert (T0 = T).
+      * eapply binds_mid_eq. apply H0. apply H.
+      * subst. apply weakening with (G := nil).
+          apply He. simpl_env.
+          eapply uniq_remove_mid. apply H.
+    + (* case x0 != x *)
+      eapply T_41a.
+        * eapply uniq_remove_mid. apply H.
+        * eapply binds_remove_mid. apply H0. auto.
+  - (* letdef case *)
+    apply (T_41h ({{x}} \u L) _ _ _ _ T1).
+      + apply IHHe'. auto.
+      + intros z Frz.
+        rewrite subst_var; auto.
+        * rewrite_env ((z ~ T1 ++ G0) ++ E).
+          apply H0; eauto.
+        * apply (typing_to_lc_exp E e T). auto.
+Qed.
