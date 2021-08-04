@@ -15,11 +15,14 @@ Lemma unicity :
 Proof.
   intros.
   generalize dependent T'.
-  induction H; intros T' J; inversion J; eauto; subst.
-  apply IHtyping in H5. subst.
-  pick fresh x.
-  eapply H1; eauto.
-Qed.
+  induction H; intros T' J; inversion J; subst; eauto.
+  2: {
+    apply IHtyping in H5. subst.
+    pick fresh x.
+    eapply H1; eauto.
+   }
+  -
+Abort.
 
 (*
   Lemma 4.2 (Inversion for Typing). Suppose that Γ ⊢ e : τ. If e = plus(e1; e2),
@@ -47,15 +50,19 @@ Qed.
   for any x `notin` dom(Γ) and any type τ.
 *)
 Lemma weakening :
-  forall G e' T' x T,
-    typing G e' T' ->
-    x `notin` dom G ->
-    typing (x ~ T ++ G) e' T'.
+  forall (E F G : ctx) e' T',
+    typing (G ++ E) e' T' ->
+    uniq (G ++ F ++ E) ->
+    typing (G ++ F ++ E) e' T'.
 Proof.
-  intros G e' T' x T H Fx.
-  (* generalize dependent T'. *)
-  induction H; auto.
-  (* var_f case *)
-  (* - apply (typing_var_f x0). *)
-  (* - apply binds_weaken. *)
-Abort.
+  intros E F G e' T' H.
+  remember (G ++ E) as E'.
+  generalize dependent G.
+  induction H; intros G0 Eq Uniq; subst; eauto.
+  (* letdef case  *)
+  - apply (T_41h (dom (G0 ++ F ++ E) \u L) _ _ _ _ T1); eauto.
+    intros.
+    rewrite_env (([(x, T1)] ++ G0) ++ F ++ E).
+    apply H1; auto.
+      simpl_env. apply uniq_push; auto.
+Qed.

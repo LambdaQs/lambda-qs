@@ -1,4 +1,4 @@
-metavar termvar, x ::= {{ repr-locally-nameless }} {{ lex alphanum }}
+metavar var, x ::= {{ repr-locally-nameless }} {{ lex alphanum }}
 
 grammar
 typ, T {{ tex \tau }} :: 'Ty_' ::=
@@ -66,8 +66,9 @@ Jstatics :: '' ::=
  G |- e : T :: ::typing::'T_' by
 
     uniq G
-    ----------------- :: 41a
-    G, x : T |- x : T
+    x : T in G
+    ---------- :: 41a
+    G |- x : T
 
     ----------------- :: 41b
     G |- str[s] : str
