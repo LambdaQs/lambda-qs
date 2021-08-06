@@ -16,13 +16,11 @@ Proof.
   intros.
   generalize dependent T'.
   induction H; intros T' J; inversion J; subst; eauto.
-  2: {
-    apply IHtyping in H5. subst.
+  - apply binds_unique with (E := G) (x := x); auto.
+  - apply IHtyping in H5. subst.
     pick fresh x.
     eapply H1; eauto.
-   }
-  -
-Abort.
+Qed.
 
 (*
   Lemma 4.2 (Inversion for Typing). Suppose that Γ ⊢ e : τ. If e = plus(e1; e2),
@@ -113,7 +111,6 @@ Proof.
   generalize dependent G.
   induction He'; intros G0 Eq; subst; simpl; auto.
   - (* var case *)
-    simpl.
     destruct (x0 == x); subst.
     + (* case x0 = x *)
       assert (T0 = T).
