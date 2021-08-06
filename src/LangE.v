@@ -131,3 +131,22 @@ Proof.
           apply H0; eauto.
         * apply (typing_to_lc_exp E e T). auto.
 Qed.
+
+(*
+  Lemma 4.5 (Decomposition). If Γ ⊢ [e/x]e′ : τ′,
+  then for every type τ such that Γ ⊢ e : τ,
+  we have Γ, x : τ ⊢ e′ : τ′.
+
+  Note: converse of substitution
+*)
+Lemma decomposition :
+  forall G E e e' x T T',
+  typing (G ++ E) ([x ~> e] e') T' ->
+  typing E e T ->
+  typing (G ++ x ~ T ++ E) e' T'.
+Proof.
+  intros G E e e' x T T' Hs He.
+  remember (G ++ x~T ++ E) as E'.
+  generalize dependent G.
+  induction He; intros G0 Hs Eq; subst.
+  - Abort.
