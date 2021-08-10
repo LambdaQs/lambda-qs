@@ -33,11 +33,47 @@ pdf: $(OTT_LOC)/$(OTT_SOURCE).ott
 	ott -show_sort true -show_defns true -i $(OTT_LOC)/$(OTT_SOURCE).ott -o $(OTT_LOC)/$(OTT_SOURCE).tex
 	texfot pdflatex $(OTT_LOC)/$(OTT_SOURCE).tex
 
+ROOT            := LangE
+
+OTT             := ott
+
+MENHIR          := menhir
+
+MENHIRFLAGS     := --infer
+
+OCAMLBUILD      := ocamlbuild -use-ocamlfind -use-menhir -menhir "$(MENHIR) $(MENHIRFLAGS)"
+
+MAIN            := main
+
+mall: $(ROOT)_ast.ml $(ROOT)_parser.mly $(ROOT)_parser_pp.ml $(ROOT)_lexer.mll main.ml
+	$(OCAMLBUILD) $(MAIN).byte
+
+
+mpdf: $(ROOT)_quotiented.pdf $(ROOT)_unquotiented.pdf
+
+# generate the ocaml AST type, ocamllex lexer, menhir parser, and ocaml pretty printers for the AST, all from the Ott soruce
+$(ROOT)_ast.ml  $(ROOT)_lexer.mll $(ROOT)_parser.mly $(ROOT)_parser_pp.ml $(ROOT)_ast.tex : $(ROOT).ott
+	$(OTT) -show_sort true -quotient_rules false -i $(ROOT).ott  -o $(ROOT)_parser.mly -o $(ROOT)_lexer.mll -o $(ROOT)_ast.ml -o $(ROOT).tex
+
+
+$(ROOT)_quotiented.pdf: $(ROOT).ott Makefile
+	$(OTT) -quotient_rules true -i $(ROOT).ott -o $(ROOT)_quotiented.tex
+	pdflatex $(ROOT)_quotiented.tex
+
+$(ROOT)_unquotiented.pdf: $(ROOT).ott Makefile
+	$(OTT) -quotient_rules false -i $(ROOT).ott -o $(ROOT)_unquotiented.tex
+	pdflatex $(ROOT)_unquotiented.tex
+
 clean:
 	@rm -f *~
 	@rm -f *.log *.aux *.fls *.fdb_latexmk
 	@rm -f $(VFILES)
 	@rm -f *.pdf *.tex
+	rm -rf _build
+	rm -rf $(ROOT)_ast.ml $(ROOT)_parser.mly $(ROOT)_lexer.mll $(ROOT)_parser_pp.ml
+	rm -rf *.aux *.log *.tex
+	rm -rf main.native main.byte
+	$(OCAMLBUILD) -clean
 
 METALIB.FIX_%:
 	sed -i -e 's/Metalib.Metatheory./Metalib.Metatheory. Require Export Metalib.LibLNgen. Global Set Warnings "-deprecated-hint-without-locality". /g' $*.v

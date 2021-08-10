@@ -1,16 +1,18 @@
-metavar naturals, n ::= {{ coq nat }}
-metavar var, x ::= {{ repr-locally-nameless }} {{ lex alphanum }}
+metavar naturals, n ::= {{ coq nat }} {{ ocaml string }}  {{ ocamllex ['0'-'9']+ }}
+metavar var, x ::= {{ lex alphanum }}
+                   {{ ocaml string}} {{ ocamllex ['a'-'z''A'-'Z']+ }}
 
 grammar
 typ, T {{ tex \tau }} :: 'Ty_' ::=
   | num :: :: num
 
-exp, e :: '' ::=
+exp, e :: '' ::= {{ menhir-start }}
   | x                     :: :: var
   | num [ n ]             :: :: num
   | plus  ( e1 ; e2 )     :: :: plus
   | let   ( e1 ; x . e2 ) :: :: letdef  (+ bind x in e2 +)
-  | [ e1 / x ] e2         :: M:: subst         {{ coq (open_exp_wrt_exp [[x e2]] [[e1]]) }}
+  | [ e1 / x ] e2         :: M:: subst        {{ coq (open_exp_wrt_exp [[x e2]] [[e1]]) }}
+                                              {{ ocaml (tsubst_term [[e1]] [[x]] [[e2]])}}
 
 substitutions
   single e   x :: subst
@@ -19,12 +21,12 @@ freevars
   e   x :: fv
 
 grammar
-ctx, G {{ tex \Gamma }} :: ''     ::= {{ com typing context }} {{ coq list ( atom * typ ) }}
-  | empty          ::   :: Empty {{ coq nil }}
-                                 {{ tex \bullet }}
-                                 {{ com empty context }}
-  | G , x : T      ::   :: Cons  {{ coq (([[x]]~[[T]])++[[G]]) }}
-                                 {{ com assumption }}
+% ctx, G {{ tex \Gamma }} :: ''     ::= {{ com typing context }} {{ coq list ( atom * typ ) }}
+%   | empty          ::   :: Empty {{ coq nil }}
+%                                  {{ tex \bullet }}
+%                                  {{ com empty context }}
+%   | G , x : T      ::   :: Cons  {{ coq (([[x]]~[[T]])++[[G]]) }}
+%                                  {{ com assumption }}
 
 terminals :: 'terminals_' ::=
   | |-                  ::   :: turnstile  {{ tex \vdash }}
@@ -58,59 +60,59 @@ Notation "e ^ x"        := (open_exp_wrt_exp e (var_f x)).
 End StlcNotations.
 }}
 
-defns
-Jstatics :: '' ::=
+% defns
+% Jstatics :: '' ::=
 
- defn
- G |- e : T :: ::typing::'T_' by
+%  defn
+%  G |- e : T :: ::typing::'T_' by
 
-    uniq G
-    x : T in G
-    ---------- :: 41a
-    G |- x : T
+%     uniq G
+%     x : T in G
+%     ---------- :: 41a
+%     G |- x : T
 
-    ----------------- :: 41c
-    G |- num[n] : num
+%     ----------------- :: 41c
+%     G |- num[n] : num
 
-    G |- e1 : num
-    G |- e2 : num
-    ---------------------- :: 41d
-    G |- plus(e1;e2) : num
+%     G |- e1 : num
+%     G |- e2 : num
+%     ---------------------- :: 41d
+%     G |- plus(e1;e2) : num
 
-    G |- e1 : T1
-    G, x : T1 |- e2 : T2
-    ----------------------- :: 41h
-    G |- let(e1; x.e2) : T2
+%     G |- e1 : T1
+%     G, x : T1 |- e2 : T2
+%     ----------------------- :: 41h
+%     G |- let(e1; x.e2) : T2
 
-defns
-Jop :: '' ::=
+% defns
+% Jop :: '' ::=
 
-  defn
-  e val :: :: values :: v_ {{ com Values }} by
+%   defn
+%   e val :: :: values :: v_ {{ com Values }} by
 
-    ---------- :: 53a
-    num[n] val
+%     ---------- :: 53a
+%     num[n] val
 
-  defn
-  e |--> e' :: :: trans :: tr_ {{ com Transitions }} by
+%   defn
+%   e |--> e' :: :: trans :: tr_ {{ com Transitions }} by
 
-    n1 + n2 = n
-    ---------------------------------- :: 54a
-    plus(num[n1]; num[n2]) |--> num[n]
+%     n1 + n2 = n
+%     ---------------------------------- :: 54a
+%     plus(num[n1]; num[n2]) |--> num[n]
 
-    e1 |--> e1'
-    ------------------------------- :: 54b
-    plus(e1; e2) |--> plus(e1'; e2)
+%     e1 |--> e1'
+%     ------------------------------- :: 54b
+%     plus(e1; e2) |--> plus(e1'; e2)
 
-    e1 val
-    e2 |--> e2'
-    ------------------------------- :: 54c
-    plus(e1; e2) |--> plus(e1; e2')
+%     e1 val
+%     e2 |--> e2'
+%     ------------------------------- :: 54c
+%     plus(e1; e2) |--> plus(e1; e2')
 
-    e1 |--> e1'
-    --------------------------------- :: 54g
-    let(e1; x.e2) |--> let(e1'; x.e2)
+%     e1 |--> e1'
+%     --------------------------------- :: 54g
+%     let(e1; x.e2) |--> let(e1'; x.e2)
 
-    e1 val
-    --------------------------- :: 54h
-    let(e1; x.e2) |--> [e1/x]e2
+%     e1 val
+%     --------------------------- :: 54h
+%     let(e1; x.e2) |--> [e1/x]e2
