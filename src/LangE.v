@@ -29,7 +29,7 @@ Qed.
 
   NOTE: only for `plus` here.
 *)
-Lemma inversion :
+Lemma inversion_plus :
   forall G e T e1 e2,
     typing G e T ->
     e = plus e1 e2 ->
@@ -39,7 +39,7 @@ Proof.
   generalize dependent e1.
   generalize dependent e2.
   induction H; intros; inversion P.
-  subst e3 e0; auto.
+  subst; auto.
 Qed.
 
 (*
@@ -154,11 +154,14 @@ Proof.
 
 (* Theorem 6.2 (Preservation). If e : τ and e |--> e′, then e′ : τ. *)
 Theorem preservation :
-  forall G e e' T,
-    typing G e T ->
+  forall e e' T,
+    typing nil e T ->
     trans e e' ->
-    typing G e' T.
+    typing nil e' T.
 Proof.
+  intros.
+  induction H; inversion H0; subst; auto.
+  -
 Abort.
 
 (*
@@ -166,8 +169,8 @@ Abort.
   or there exists e′ such that e |--> e′.
 *)
 Theorem progress :
-  forall G e T,
-    typing G e T ->
+  forall e T,
+    typing nil e T ->
     is_value e \/ (exists e', trans e e').
 Proof.
 Abort.
