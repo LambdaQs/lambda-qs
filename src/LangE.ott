@@ -86,7 +86,7 @@ defns
 Jop :: '' ::=
 
   defn
-  e val :: :: values :: v_ {{ com Values }} by
+  e val :: :: is_value :: v_ {{ com Values }} by
 
     ---------- :: 53a
     num[n] val

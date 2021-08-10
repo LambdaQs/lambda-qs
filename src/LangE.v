@@ -31,9 +31,9 @@ Qed.
 *)
 Lemma inversion :
   forall G e T e1 e2,
-  typing G e T ->
-  e = plus e1 e2 ->
-  T = Ty_num -> typing G e1 Ty_num -> typing G e2 Ty_num.
+    typing G e T ->
+    e = plus e1 e2 ->
+    T = Ty_num -> typing G e1 Ty_num -> typing G e2 Ty_num.
 Proof.
   intros G e T e1 e2 H P.
   generalize dependent e1.
@@ -144,18 +144,30 @@ Qed.
 *)
 Lemma decomposition :
   forall E e e' x T T',
-  typing E ([x ~> e] e') T' ->
-  typing E e T ->
-  typing (x ~ T ++ E) e' T'.
+    typing E ([x ~> e] e') T' ->
+    typing E e T ->
+    typing (x ~ T ++ E) e' T'.
 Proof.
   intros E e e' x T T' Hs He.
   induction Hs; auto.
   Abort.
 
 (* Theorem 6.2 (Preservation). If e : τ and e |--> e′, then e′ : τ. *)
-
+Theorem preservation :
+  forall G e e' T,
+    typing G e T ->
+    trans e e' ->
+    typing G e' T.
+Proof.
+Abort.
 
 (*
   Theorem 6.4 (Progress). If e : τ, then either e val,
   or there exists e′ such that e |--> e′.
 *)
+Theorem progress :
+  forall G e T,
+    typing G e T ->
+    is_value e \/ (exists e', trans e e').
+Proof.
+Abort.
