@@ -151,3 +151,11 @@ Proof.
   intros E e e' x T T' Hs He.
   induction Hs; auto.
   Abort.
+
+(* Theorem 6.2 (Preservation). If e : τ and e |--> e′, then e′ : τ. *)
+
+
+(*
+  Theorem 6.4 (Progress). If e : τ, then either e val,
+  or there exists e′ such that e |--> e′.
+*)

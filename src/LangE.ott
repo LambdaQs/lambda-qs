@@ -4,16 +4,11 @@ metavar var, x ::= {{ repr-locally-nameless }} {{ lex alphanum }}
 grammar
 typ, T {{ tex \tau }} :: 'Ty_' ::=
   | num :: :: num
-  % | str :: :: str
 
 exp, e :: '' ::=
   | x                     :: :: var
   | num [ n ]             :: :: num
-  % | str [ s ]             :: :: str
   | plus  ( e1 ; e2 )     :: :: plus
-  % | times ( e1 ; e2 )     :: :: times
-  % | cat   ( e1 ; e2 )     :: :: concat
-  % | len   ( e )           :: :: length
   | let   ( e1 ; x . e2 ) :: :: letdef  (+ bind x in e2 +)
   | [ e1 / x ] e2         :: M:: subst         {{ coq (open_exp_wrt_exp [[x e2]] [[e1]]) }}
 
@@ -74,9 +69,6 @@ Jstatics :: '' ::=
     ---------- :: 41a
     G |- x : T
 
-    % ----------------- :: 41b
-    % G |- str[s] : str
-
     ----------------- :: 41c
     G |- num[n] : num
 
@@ -84,20 +76,6 @@ Jstatics :: '' ::=
     G |- e2 : num
     ---------------------- :: 41d
     G |- plus(e1;e2) : num
-
-    % G |- e1 : num
-    % G |- e2 : num
-    % ---------------------- :: 41e
-    % G |- times(e1;e2) : num
-
-    % G |- e1 : str
-    % G |- e2 : str
-    % --------------------- :: 41f
-    % G |- cat(e1;e2) : str
-
-    % G |- e : str
-    % ----------------- :: 41g
-    % G |- len(e) : num
 
     G |- e1 : T1
     G, x : T1 |- e2 : T2
@@ -112,9 +90,6 @@ Jop :: '' ::=
 
     ---------- :: 53a
     num[n] val
-
-    % ---------- :: 53b
-    % str[s] val
 
   defn
   e |--> e' :: :: trans :: tr_ {{ com Transitions }} by
