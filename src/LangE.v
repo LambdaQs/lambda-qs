@@ -29,7 +29,6 @@ Qed.
 
   NOTE: only for `plus` here.
 *)
-(* TODO: is the statement correct? *)
 Lemma inversion :
   forall G e T e1 e2,
   typing G e T ->
@@ -113,23 +112,27 @@ Proof.
   - (* var case *)
     destruct (x0 == x); subst.
     + (* case x0 = x *)
-      assert (T0 = T).
-      * eapply binds_mid_eq. apply H0. apply H.
-      * subst. apply weakening with (G := nil).
-          apply He. simpl_env.
-          eapply uniq_remove_mid. apply H.
+      assert (T0 = T); subst.
+      * eapply binds_mid_eq.
+        apply H0.
+        auto.
+      * apply weakening with (G := nil).
+          apply He.
+          simpl_env. eapply uniq_remove_mid. apply H.
     + (* case x0 != x *)
       eapply T_41a.
         * eapply uniq_remove_mid. apply H.
-        * eapply binds_remove_mid. apply H0. auto.
+        * eapply binds_remove_mid.
+            apply H0.
+            auto.
   - (* letdef case *)
     apply (T_41h ({{x}} \u L) _ _ _ _ T1).
-      + apply IHHe'. auto.
+      + apply IHHe'; auto.
       + intros z Frz.
         rewrite subst_var; auto.
         * rewrite_env ((z ~ T1 ++ G0) ++ E).
           apply H0; eauto.
-        * apply (typing_to_lc_exp E e T). auto.
+        * apply (typing_to_lc_exp E e T); auto.
 Qed.
 
 (*
@@ -140,13 +143,11 @@ Qed.
   Note: converse of substitution
 *)
 Lemma decomposition :
-  forall G E e e' x T T',
-  typing (G ++ E) ([x ~> e] e') T' ->
+  forall E e e' x T T',
+  typing E ([x ~> e] e') T' ->
   typing E e T ->
-  typing (G ++ x ~ T ++ E) e' T'.
+  typing (x ~ T ++ E) e' T'.
 Proof.
-  intros G E e e' x T T' Hs He.
-  remember (G ++ x~T ++ E) as E'.
-  generalize dependent G.
-  induction He; intros G0 Hs Eq; subst.
-  - Abort.
+  intros E e e' x T T' Hs He.
+  induction Hs; auto.
+  Abort.

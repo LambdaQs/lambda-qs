@@ -1,18 +1,19 @@
+metavar naturals, n ::= {{ coq nat }}
 metavar var, x ::= {{ repr-locally-nameless }} {{ lex alphanum }}
 
 grammar
 typ, T {{ tex \tau }} :: 'Ty_' ::=
   | num :: :: num
-  | str :: :: str
+  % | str :: :: str
 
 exp, e :: '' ::=
   | x                     :: :: var
   | num [ n ]             :: :: num
-  | str [ s ]             :: :: str
+  % | str [ s ]             :: :: str
   | plus  ( e1 ; e2 )     :: :: plus
-  | times ( e1 ; e2 )     :: :: times
-  | cat   ( e1 ; e2 )     :: :: concat
-  | len   ( e )           :: :: length
+  % | times ( e1 ; e2 )     :: :: times
+  % | cat   ( e1 ; e2 )     :: :: concat
+  % | len   ( e )           :: :: length
   | let   ( e1 ; x . e2 ) :: :: letdef  (+ bind x in e2 +)
   | [ e1 / x ] e2         :: M:: subst         {{ coq (open_exp_wrt_exp [[x e2]] [[e1]]) }}
 
@@ -31,7 +32,8 @@ ctx, G {{ tex \Gamma }} :: ''     ::= {{ com typing context }} {{ coq list ( ato
                                  {{ com assumption }}
 
 terminals :: 'terminals_' ::=
-  | |-                  ::  :: turnstile  {{ tex \vdash }}
+  | |-                  ::   :: turnstile  {{ tex \vdash }}
+  | |-->                ::   :: transition {{ tex \longmapsto }}
   | in                  ::   :: in         {{ tex \in }}
   | fv                  ::   :: fv         {{ tex \mathsf{fv}\! }}
 
@@ -48,6 +50,8 @@ formula :: 'formula_' ::=
     {{ coq [[x]] \notin fv[[e]] }}
   | x notin dom G            ::   :: notInGx
     {{ coq ~ AtomSetImpl.In [[x]] (dom [[G]]) }}
+  | n1 + n2 = n3           :: :: sum
+    {{ coq Nat.add [[n1]] [[n2]] = [[n3]] }}
 
 embed
 {{ coq
@@ -70,8 +74,8 @@ Jstatics :: '' ::=
     ---------- :: 41a
     G |- x : T
 
-    ----------------- :: 41b
-    G |- str[s] : str
+    % ----------------- :: 41b
+    % G |- str[s] : str
 
     ----------------- :: 41c
     G |- num[n] : num
@@ -81,21 +85,57 @@ Jstatics :: '' ::=
     ---------------------- :: 41d
     G |- plus(e1;e2) : num
 
-    G |- e1 : num
-    G |- e2 : num
-    ---------------------- :: 41e
-    G |- times(e1;e2) : num
+    % G |- e1 : num
+    % G |- e2 : num
+    % ---------------------- :: 41e
+    % G |- times(e1;e2) : num
 
-    G |- e1 : str
-    G |- e2 : str
-    --------------------- :: 41f
-    G |- cat(e1;e2) : str
+    % G |- e1 : str
+    % G |- e2 : str
+    % --------------------- :: 41f
+    % G |- cat(e1;e2) : str
 
-    G |- e : str
-    ----------------- :: 41g
-    G |- len(e) : num
+    % G |- e : str
+    % ----------------- :: 41g
+    % G |- len(e) : num
 
     G |- e1 : T1
     G, x : T1 |- e2 : T2
     ----------------------- :: 41h
     G |- let(e1; x.e2) : T2
+
+defns
+Jop :: '' ::=
+
+  defn
+  e val :: :: values :: v_ {{ com Values }} by
+
+    ---------- :: 53a
+    num[n] val
+
+    % ---------- :: 53b
+    % str[s] val
+
+  defn
+  e |--> e' :: :: trans :: tr_ {{ com Transitions }} by
+
+    n1 + n2 = n
+    ---------------------------------- :: 54a
+    plus(num[n1]; num[n2]) |--> num[n]
+
+    e1 |--> e1'
+    ------------------------------- :: 54b
+    plus(e1; e2) |--> plus(e1'; e2)
+
+    e1 val
+    e2 |--> e2'
+    ------------------------------- :: 54c
+    plus(e1; e2) |--> plus(e1; e2')
+
+    e1 |--> e1'
+    --------------------------------- :: 54g
+    let(e1; x.e2) |--> let(e1'; x.e2)
+
+    e1 val
+    --------------------------- :: 54h
+    let(e1; x.e2) |--> [e1/x]e2
