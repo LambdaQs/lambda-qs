@@ -1,0 +1,36 @@
+embed {{ tex-preamble
+  \usepackage[cm]{fullpage}
+  \usepackage[mathx]{mathabx}
+
+  \usepackage{stackengine}
+  \usepackage{scalerel}
+  \stackMath
+  \def\ccdot{\scalebox{1.15}{$\SavedStyle\cdot$} }
+  \def\altdiv{\mathbin{\ThisStyle{%
+    \stackunder[-.25\LMex]{\stackon[-.15\LMex]{\SavedStyle\sim}{\ccdot} }{\ccdot} } } }
+}}
+
+grammar
+Exp, e :: 'Exp_' ::=  {{ com Expressions }}
+  | ( e ) :: M :: paren {{ coq [[e]] }}
+
+terminals :: 'terminals_' ::=
+  | |-                  ::  :: turnstile  {{ tex \vdash }}            {{ com entails }}
+  | |-->                ::  :: transition {{ tex \longmapsto }}       {{ com transition }}
+  | c->                 ::  :: hrarrow    {{ tex \hookrightarrow }}   {{ com mapping }}
+  | c.                  ::  :: cdot       {{ tex \cdot }}             {{ com projection }}
+  | ~                   ::  :: sim        {{ tex \sim }}              {{ com tilde }}
+  | ~.                  ::  :: dottilde   {{ tex \altdiv }}           {{ com dotted tilde }}
+  | empty               ::  :: empty      {{ tex \varnothing }}       {{ com empty context }}
+  | [=                  ::  :: inclusion  {{ tex \sqsubseteq }}       {{ com lifetime inclusion }}
+  | <=                  ::  :: leq        {{ tex \leq }}              {{ com less than or equal }}
+  | !                   ::  :: blocked    {{ tex \dagger }}           {{ com blocked type }}
+  | <-                  ::  :: larrow     {{ tex \leftarrow }}
+  | :=                  ::  :: define     {{ tex \triangleq }}        {{ com defined as }}
+  | =>                  ::  :: darrow     {{ tex \Rightarrow }}       {{ com operation type }}
+  | lam                 ::  :: lambda     {{ tex \lambda }}
+  | Lam                 ::  :: Blambda    {{ tex \Lambda }}
+  | all                 ::  :: forall     {{ tex \forall }}
+
+formula :: formula_ ::=
+  | judgement            :: :: judgement

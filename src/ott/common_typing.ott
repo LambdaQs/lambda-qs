@@ -1,0 +1,11 @@
+grammar %% non LNgen portion
+
+G {{ tex \Gamma }} :: 'G_' ::= {{ com Typing context }} {{ coq list (atom*Typ) }}
+  | empty                 ::  :: empty                  {{ coq nil }}
+  | G , x : t             ::  :: term                   {{ coq ([[x]]~[[t]] ++ [[G]]) }}
+  | G , x ! k' qref [ k ] ::  :: blocking {{ tex [[G]], [[x]] :^{\dagger[[k']]} \mathbf{qref}[ [[k]]]  }}
+
+% formula :: 'formula_' ::=
+%   | x : T in G          ::   :: xTG
+%         {{ tex [[x]]:[[T]] \in [[G]] }}
+%         {{ coq (bound [[x]] [[T]] [[G]])  }}

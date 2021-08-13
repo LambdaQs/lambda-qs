@@ -1,0 +1,61 @@
+metavar x ::= {{ com term variable }} {{ repr-locally-nameless }} {{ lex alphanum }}
+
+grammar %% LNgen portion
+
+Typ, t {{ tex \tau }} :: 'Typ_' ::= {{ com Types }}
+  | arr ( t1 ; t2 )                             ::  :: function  {{ com \textcolor{blue}{$[[t1]] \rightarrow [[t2]]$} }}
+
+Exp, e :: 'Exp_' ::=  {{ com Expressions }}
+  | x                         ::   :: variable                        {{ com variable }}
+  | lam { t } ( x . e )       ::   :: abstraction (+ bind x in e +)   %{{ com \textcolor{blue}{$\lambda([[x]]:[[t]])[[e]]$} }}
+  | ap ( e1 ; e2 )            ::   :: application                     {{ com \textcolor{blue}{$[[e1]]([[e2]])$} }}
+  | [ e1 / x ] e2             :: M :: subst                           {{ com substitution }}  {{ coq (open_Exp_wrt_Exp [[x e2]] [[e1]]) }}
+
+substitutions
+  single e   x :: subst
+
+freevars
+  e   x :: fv
+
+defns
+Jstatics :: '' ::=
+
+defn
+  G |- e : t :: :: etyping :: ty_ {{ com Expression Typing }} by
+
+    ----------------- :: Var
+    G, x : t |- x : t
+
+    G, x : t1 |- e : t2
+    ------------------------------- :: Lam
+    G |- lam{t1}(x.e) : arr(t1; t2)
+
+    G |- e1 : arr(t2; t)
+    G |- e2 : t2
+    -------------------- :: Ap
+    G |- ap(e1; e2) : t
+
+defns
+Jdynamics :: '' ::=
+
+  defn
+  e val :: :: values :: v_ {{ com Values }} by
+
+    --------------- :: Lam
+    lam{t}(x.e) val
+
+  defn
+  e |--> e' :: :: trans :: tr_ {{ com Transition }} by
+
+    e1 |--> e1'
+    --------------------------- :: Ap1
+    ap(e1; e2) |--> ap(e1'; e2)
+
+    e1 val
+    e2 |--> e2'
+    --------------------------- :: Ap2
+    ap(e1; e2) |--> ap(e1; e2')
+
+    e2 val
+    ----------------------------------- :: ApInstr
+    ap(lam{t2}(x.e1); e2) |--> [e2/x]e1
