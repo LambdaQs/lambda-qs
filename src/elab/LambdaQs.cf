@@ -1,13 +1,4 @@
--- Expressions (need to be first to mark entrypoint)
-EVar.  Exp ::= Var;
-ENat.  Exp ::= Integer;
-EPlus. Exp ::= Exp "+" Integer;
-ETriv. Exp ::= "()";
-EQloc. Exp ::= "&" Sym;
-ELet.  Exp ::= "let" Var "be" Exp "in" Exp;
-ELam.  Exp ::= "\\" "(" Var ":" Typ ")" Exp;
-EAp.   Exp ::= Exp "(" Exp ")";
-ECmd.  Exp ::= "cmd" Cmd;
+entrypoints Exp;
 
 -- Metavariables
 MVar. Var ::= Ident;
@@ -22,6 +13,17 @@ TParr. Typ ::= "parr" "(" Typ "->" Typ ")";
 TCmd.  Typ ::= "cmd";
 TNat.  Typ ::= "nat";
 TUnit. Typ ::= "unit";
+
+-- Expressions
+EVar.  Exp ::= Var;
+ENat.  Exp ::= Integer;
+EPlus. Exp ::= Exp "+" Integer;
+ETriv. Exp ::= "()";
+EQloc. Exp ::= "&" Sym;
+ELet.  Exp ::= "let" Var "be" Exp "in" Exp;
+ELam.  Exp ::= "\\" "(" Var ":" Typ ")" Exp;
+EAp.   Exp ::= Exp "(" Exp ")";
+ECmd.  Exp ::= "cmd" Cmd;
 
 -- Commands
 CRet. Cmd ::= "ret" Exp;
@@ -86,7 +88,7 @@ Output for last one:
 
 ECmd (CDcl (MSym (Ident "q")) (CRet (ELet (MVar (Ident "q1")) (EQloc (MSym (Ident "q"))) (ELet (MVar (Ident "q2")) (EVar (MVar (Ident "q1"))) (ECmd (CCap (MUni (Ident "X")) (EVar (MVar (Ident "q1"))) (EVar (MVar (Ident "q2")))))))))
 
-    ## Core Syntax
+    ## Core Syntax (won't work with this version of grammar)
 
 let(q1;q2.cmd(ctrlapr(q1;q2;X)))
 
