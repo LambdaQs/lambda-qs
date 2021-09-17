@@ -1,0 +1,55 @@
+-- Expressions (need to be first to mark entrypoint)
+EVar.  Exp ::= Var;
+ENat.  Exp ::= Integer;
+EPlus. Exp ::= Exp "+" Integer;
+ETriv. Exp ::= "triv";
+EQloc. Exp ::= "qloc" "[" Sym "]";
+ELet.  Exp ::= "let" "(" Exp ";" Var "." Exp ")";
+ELam.  Exp ::= "lam" "{" Typ "}" "(" Var "." Exp ")";
+EAp.   Exp ::= "ap" "(" Exp ";" Exp ")";
+ECmd.  Exp ::= "cmd" "(" Cmd ")";
+
+-- Metavariables
+MVar. Var ::= Ident;
+MSym. Sym ::= Ident;
+MUni. Uni ::= Ident;
+MKey. Key ::= Ident;
+
+-- Types
+TQbit. Typ ::= "qbit";
+TQref. Typ ::= "qref" "[" Key "]";
+TParr. Typ ::= "parr" "(" Typ ";" Typ ")";
+TCmd.  Typ ::= "cmd";
+TNat.  Typ ::= "nat";
+TUnit. Typ ::= "unit";
+
+-- Commands
+CRet. Cmd ::= "ret" "(" Exp ")";
+CBnd. Cmd ::= "bnd" "(" Exp ";" Var "." Cmd ")";
+CDcl. Cmd ::= "dcl" "(" Sym "." Cmd ")";
+CGap. Cmd ::= "gateapr" "(" Exp ";" Uni ")";
+CCap. Cmd ::= "ctrlapr" "(" Exp ";" Exp ";" Uni ")";
+CGet. Cmd ::= "get" "[" Sym "]";
+CSet. Cmd ::= "set" "[" Sym "]" "(" Exp ")";
+
+
+internal EVarT. Exp ::= "(" Var ":" Typ ")";
+
+{-
+
+  Build and run using:
+
+      ```
+      bnfc -d -m LambdaQs.cf  &&  make
+      ./LambdaQs/Test
+      ```
+
+  Examples:
+
+      let(q1;q2.cmd(ctrlapr(q1;q2;X)))
+
+      let(qloc[q];q1.let(q1;q2.cmd(ctrlapr(q1;q2;X))))
+
+      cmd(dcl(q.ret(let(qloc[q];q1.let(q1;q2.cmd(ctrlapr(q1;q2;X)))))))
+
+-}
