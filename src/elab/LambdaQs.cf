@@ -32,6 +32,26 @@ CCap. Cmd ::= "Controlled" Uni "(" Exp "," Exp ")";
 CGet. Cmd ::= "get" "[" Sym "]";
 CSet. Cmd ::= "set" "[" Sym "]" "(" Exp ")";
 
+-- Programming idioms
+
+-- sequential composition of commands
+seq. Cmd ::= "{" Var "<-" Cmd ";" Cmd "}";
+define seq x m1 m2 = CBnd x (ECmd m1) m2;
+
+-- `do e` executes an encapsulated command and returns its result
+-- This encoding requires an explicit variable argument
+-- Example: do 1 x
+do. Exp ::= "do" Exp Var;
+define do e x = ECmd (CBnd x e (CRet (EVar x)));
+
+-- procedure
+proc. Exp ::= "proc" "(" Var ":" Typ ")" Cmd;
+define proc x t m = ELam x t (ECmd m);
+
+-- procedure call
+-- This encoding also requires an explicit variable argument
+pcall. Exp ::= "call" Exp "(" Exp ")" Var;
+define pcall e1 e2 x = ECmd (CBnd x (EAp e1 e2) (CRet (EVar x)));;
 
 internal EVarT. Exp ::= "(" Var ":" Typ ")";
 
