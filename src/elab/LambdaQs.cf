@@ -62,8 +62,13 @@ internal EVarT. Exp ::= "(" Var ":" Typ ")";
   # Build and run using:
 
       ```
+      ## for Haskell
       bnfc -d -m LambdaQs.cf  &&  make
       ./LambdaQs/Test
+
+      ## for OCaml with Menhir
+      bnfc -m --ocaml-menhir LambdaQs.cf  &&  make
+      ./TestLambdaQs
       ```
 
   # Examples:
