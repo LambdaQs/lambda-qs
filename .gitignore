@@ -53,3 +53,9 @@ LambdaQs.log
 LambdaQs.pdf
 LambdaQs.tex
 LambdaQs_*.v
+
+## elab
+*LambdaQs.ml*
+BNFC_Util.ml
+src/elab/Makefile
+TestLambdaQs
