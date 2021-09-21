@@ -5,7 +5,7 @@
 # Build and run using:
 
 ```
-bnfc -m --ocaml-menhir LambdaQs.cf  &&  make
+make
 ./TestLambdaQs
 ```
 
@@ -21,6 +21,9 @@ ECmd (CCap (MUni (Ident "X"), EVar (MVar (Ident "q1")), EVar (MVar (Ident "q2"))
 
 cmd Controlled X (q1, q2)
 ```
+
+# Extending the source
+`make genclean` will clean up most of the auto-generated files except those by `bnfc`. Write modules assuming existence of the remaining source files which include those for the AST, the lexer and the parser specs, the print and show infrastructure, etc.
 
 # Example from PLanQC:
 
