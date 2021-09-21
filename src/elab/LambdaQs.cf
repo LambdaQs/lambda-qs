@@ -4,7 +4,7 @@ entrypoints Exp;
 MVar. Var ::= Ident;
 MSym. Sym ::= Ident;
 MUni. Uni ::= Ident;
-MKey. Key ::= Ident;
+MKey. Key ::= Integer;
 
 -- Types
 TQbit. Typ ::= "qbit";
