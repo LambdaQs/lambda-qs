@@ -17,7 +17,7 @@ TUnit. Typ ::= "unit";
 -- Expressions
 EVar.  Exp ::= Var;
 ENat.  Exp ::= Integer;
-EPlus. Exp ::= Exp "+" Integer;
+EPlus. Exp ::= Exp "+" Exp;
 ETriv. Exp ::= "()";
 EQloc. Exp ::= "&" Sym;
 ELet.  Exp ::= "let" Var "be" Exp "in" Exp;
