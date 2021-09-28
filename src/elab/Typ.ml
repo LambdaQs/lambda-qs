@@ -14,7 +14,7 @@ let plus_err = "Operator and operand type mismatch"
 
 let type_err = "Types do not match"
 
-let cloning_err = "Cannot pass the same qubit to a controlled op"
+let cloning_err = "Control and target qubits are not distinct"
 
 (** A [Context] is a mapping from variable names to
     types, aka a symbol table, aka a typing environment. *)
