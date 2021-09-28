@@ -40,7 +40,7 @@ cmd Controlled X (q1, q2)
 
 Output AST:
 
-`ECmd (CDcl (MSym (Ident "q"), CRet (ELet (MVar (Ident "q1"), EQloc (MSym (Ident "q")), ELet (MVar (Ident "q2"), EVar (MVar (Ident "q1")), ECmd (CCap (MUni (Ident "X"), EVar (MVar (Ident "q1")), EVar (MVar (Ident "q2")))))))))`
+`ECmd (CDcl (MQey (Ident "q"), CRet (ELet (MVar (Ident "q1"), EQloc (MQey (Ident "q")), ELet (MVar (Ident "q2"), EVar (MVar (Ident "q1")), ECmd (CCap (MUni (Ident "X"), EVar (MVar (Ident "q1")), EVar (MVar (Ident "q2")))))))))`
 
 ## Core Syntax
 
