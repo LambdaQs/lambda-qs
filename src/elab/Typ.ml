@@ -95,7 +95,7 @@ let rec typeof ctx = function
   | ENat  _           -> TNat
   | ETriv             -> TUnit
   | EQloc q           -> TQref q
-  | ECmd  m           -> typeof_cmd ctx emptyS m
+  | ECmd  m           -> TCmd (typeof_cmd ctx emptyS m)
   | EVar  x           -> lookup ctx x
   | EVarT (x, t)      -> if (lookup ctx x = t) then t
                          else failwith type_err
@@ -128,14 +128,14 @@ and typeof_ap ctx e1 e2 =
 
 and typeof_cmd ctx sgn m =
   match m with
-  | CRet e -> TCmd (typeof ctx e)
+  | CRet e -> typeof ctx e
   | CBnd (x, e, m) -> let te = (match typeof ctx e with
                                 | TCmd t -> t
                                 | _ -> failwith type_err) in
                       typeof_cmd (extend ctx x te) sgn m
   | CDcl (q, m) -> typeof_cmd ctx (extendS sgn q TQbit) m
   | CGap (u, e) -> (match typeof ctx e with
-                   | TQref _ -> TCmd TUnit
+                   | TQref _ -> TUnit
                    | _ -> failwith type_err)
   | CCap (u, e1, e2) -> let q1 = (match typeof ctx e1 with
                                   | TQref q -> q
@@ -144,8 +144,8 @@ and typeof_cmd ctx sgn m =
                                   | TQref q -> q
                                   | _ -> failwith type_err) in
                         if q1 = q2 then failwith cloning_err
-                        else TCmd TUnit
-  | _ -> TCmd TUnit
+                        else TUnit
+  | _ -> TUnit
 
 (** [typecheck e] checks whether [e] is well typed in
     the empty context. Raises: [Failure] if not. *)
