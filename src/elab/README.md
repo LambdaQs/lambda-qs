@@ -1,5 +1,5 @@
 # Requirements
-- [BNF Converter](https://github.com/BNFC/bnfc): I am using the development version, [install instructions here](https://github.com/BNFC/bnfc#installing-the-development-version).
+- [BNF Converter](https://github.com/BNFC/bnfc): `cabal install BNFC` (I am using BNFC v2.9.3).
 - `opam install menhir`
 
 # Build and run using:
