@@ -9,11 +9,6 @@ NDec . Nmspace ::= "namespace" QName "{" [NSElmnt] "}";
 terminator Nmspace "";
 terminator NSElmnt "";
 
-
-QNam . QName ::= [Ident];
-
-separator nonempty Ident ".";
-
 NSOp   . NSElmnt ::= "open" QName ";";
 NSOpAs . NSElmnt ::= "open" QName "as" QName ";";
 NSTy   . NSElmnt ::= "newtype" Ident "=" UType ";" ;
@@ -146,3 +141,4 @@ PliY  . PliL ::= "PauliY";
 PliZ  . PliL ::= "PauliZ";
 
 token TIndent '\'' letter (letter | digit | '_' | '\'')*;
+token QName letter (letter | digit | '_' | '\'')* ('.' letter (letter | digit | '_' | '\'')*)*;
