@@ -1,4 +1,4 @@
-SRC:=LambdaQs
+SRC:=QSharp
 
 gen: $(SRC).cf
 	bnfc -mbnfc.mk --ocaml-menhir $(SRC).cf && make all

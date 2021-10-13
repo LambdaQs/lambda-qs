@@ -55,7 +55,10 @@ LambdaQs.tex
 LambdaQs_*.v
 
 ## elab
-*LambdaQs.ml*
+*.bak
 BNFC_Util.ml
 src/elab/bnfc.mk
+*LambdaQs.ml*
 TestLambdaQs
+*QSharp.ml*
+TestQSharp

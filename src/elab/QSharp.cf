@@ -1,0 +1,148 @@
+entrypoints Doc;
+
+Prog. Doc ::= [Nmspace];
+
+-- Namespace
+
+NDec . Nmspace ::= "namespace" QName "{" [NSElmnt] "}";
+
+terminator Nmspace "";
+terminator NSElmnt "";
+
+
+QNam . QName ::= [Ident];
+
+separator nonempty Ident ".";
+
+NSOp   . NSElmnt ::= "open" QName ";";
+NSOpAs . NSElmnt ::= "open" QName "as" QName ";";
+NSTy   . NSElmnt ::= "newtype" Ident "=" UType ";" ;
+NSCall . NSElmnt ::= CallDec;
+
+-- Type Declaration
+-- - Skipping "declarationPrefix" here
+
+UTTpl  . UType ::= "(" [TyTplItem] ")";
+UTETyp . UType ::= Typ;
+
+separator TyTplItem ",";
+
+TTIName. TyTplItem ::= NamedItem;
+TTIUTyp. TyTplItem ::= UType;
+
+NItem . NamedItem ::= Ident ":" Typ;
+
+-- Callable Declaration
+-- - Skipping "declarationPrefix" here as well
+-- - Also skipping "characteristics"
+
+CDFun  . CallDec ::= "function"  Ident       ParamTpl ":" Typ Body;
+CDOp   . CallDec ::= "operation" Ident       ParamTpl ":" Typ Body;
+CDFunP . CallDec ::= "function"  Ident TyArg ParamTpl ":" Typ Body;
+CDOpP  . CallDec ::= "operation" Ident TyArg ParamTpl ":" Typ Body;
+
+TArg . TyArg ::= "<" [TIndent] ">";
+
+separator TIndent ",";
+
+ParTpl . ParamTpl ::= "(" [Param] ")";
+
+separator Param ",";
+
+ParNI  . Param ::= NamedItem;
+ParNIA . Param ::= ParamTpl ;
+
+-- Skipping "specialization" for now
+Bod . Body ::= Scope;
+-- BodSpec . Body ::= ;
+
+Scp . Scope ::= "{" [Stm] "}";
+
+separator Stm "";
+
+-- Types
+-- - Skipping Array types for now
+TEmp  . Typ ::= "_";
+TPar  . Typ ::= TIndent;
+TQNm  . Typ ::= QName;
+TTpl  . Typ ::= "(" [Typ] ")";
+TFun  . Typ ::= Typ "->" Typ;
+TOp   . Typ ::= Typ "=>" Typ;
+TBInt . Typ ::= "BigInt";
+TBool . Typ ::= "Bool"  ;
+TDbl  . Typ ::= "Double";
+TInt  . Typ ::= "Int"   ;
+TPli  . Typ ::= "Pauli" ;
+TQbit . Typ ::= "Qubit" ;
+TRng  . Typ ::= "Range" ;
+TRes  . Typ ::= "Result";
+TStr  . Typ ::= "String";
+TUnit . Typ ::= "Unit"  ;
+
+separator Typ ",";
+
+-- Statement
+-- - Skipping variations of "set", for, while, repeat, until, borrow, within
+SExp   . Stm ::= Exp ";";
+SRet   . Stm ::= "return" Exp";";
+SFail  . Stm ::= "fail"   Exp";";
+SLet   . Stm ::= "let"     Bnd "=" Exp ";";
+SMut   . Stm ::= "mutable" Bnd "=" Exp ";";
+SSet   . Stm ::= "set"     Bnd "=" Exp ";";
+SIf    . Stm ::= "if"   Exp Scope;
+SEIf   . Stm ::= "elif" Exp Scope;
+SElse  . Stm ::= "else"     Scope;
+SUse   . Stm ::= "use"     QbitBnd ";";
+SUseS  . Stm ::= "use"     QbitBnd Scope;
+SUseP  . Stm ::= "use" "(" QbitBnd ")" ";";
+SUsePS . Stm ::= "use" "(" QbitBnd ")" Scope;
+
+BndWild . Bnd ::= "_";
+BndName . Bnd ::= Ident;
+BndTplA . Bnd ::= "(" [Bnd] ")";
+
+separator Bnd ",";
+
+QBnd. QbitBnd ::= Bnd "=" QbitInit;
+
+-- Skipping array of qubits for now
+QInitS. QbitInit ::= "Qubit" "(" ")";
+QInitT. QbitInit ::= "(" [QbitInit] ")";
+
+separator QbitInit ",";
+
+-- Expressions
+-- - Skipping many uninteresting ones
+EEmp  . Exp ::= "_"    ;
+EName . Exp ::= QName  ;
+EInt  . Exp ::= Integer;
+EDbl  . Exp ::= Double ;
+EStr  . Exp ::= String ;
+EBool . Exp ::= BoolL  ;
+ERes  . Exp ::= ResL   ;
+EPli  . Exp ::= PliL   ;
+ETp   . Exp ::= "(" [Exp] ")";
+ECtrl . Exp ::= "Controlled" Exp;
+EAdj  . Exp ::= "Adjoint" Exp;
+EPlus . Exp ::= Exp "+" Exp;
+ECall . Exp ::= Exp "(" [Exp] ")";
+ECond . Exp ::= Exp "?" Exp "|" Exp;
+EEll  . Exp ::= Exp ".." Exp;
+EElro . Exp ::= Exp "...";
+EEllo . Exp ::= "..." Exp;
+EElo  . Exp ::= "...";
+
+separator Exp ",";
+
+BTru . BoolL ::= "true";
+BFls . BoolL ::= "false";
+
+ROne  . ResL ::= "One";
+RZero . ResL ::= "Zero";
+
+PliI  . PliL ::= "PauliI";
+PliX  . PliL ::= "PauliX";
+PliY  . PliL ::= "PauliY";
+PliZ  . PliL ::= "PauliZ";
+
+token TIndent '\'' letter (letter | digit | '_' | '\'')*;
