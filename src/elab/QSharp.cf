@@ -15,11 +15,19 @@ separator nonempty Ident ".";
 
 NSOp   . NSElmnt ::= "open" QName ";";
 NSOpAs . NSElmnt ::= "open" QName "as" QName ";";
-NSTy   . NSElmnt ::= "newtype" Ident "=" UType ";" ;
-NSCall . NSElmnt ::= CallDec;
+NSTy   . NSElmnt ::= DeclPrefix "newtype" Ident "=" UType ";" ;
+NSCall . NSElmnt ::= DeclPrefix CallDec;
+
+DPrefix. DeclPrefix ::= [Attr] Access;
+
+AAttr. Attr ::= "@" Exp;
+
+terminator Attr "";
+
+AEmpty    . Access ::= ;
+AInternal . Access ::= "internal";
 
 -- Type Declaration
--- - Skipping "declarationPrefix" here
 
 UTTpl  . UType ::= "(" [TyTplItem] ")";
 UTETyp . UType ::= Typ;
@@ -32,8 +40,7 @@ TTIUTyp. TyTplItem ::= UType;
 NItem . NamedItem ::= Ident ":" Typ;
 
 -- Callable Declaration
--- - Skipping "declarationPrefix" here as well
--- - Also skipping "characteristics"
+-- - Skipping "characteristics"
 
 CDFun . CallDec ::= "function"  Ident TyArg ParamTpl ":" Typ Body;
 CDOp  . CallDec ::= "operation" Ident TyArg ParamTpl ":" Typ Body;
