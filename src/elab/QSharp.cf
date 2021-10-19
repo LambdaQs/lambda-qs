@@ -9,6 +9,10 @@ NDec . Nmspace ::= "namespace" QName "{" [NSElmnt] "}";
 terminator Nmspace "";
 terminator NSElmnt "";
 
+QNam . QName ::= [Ident];
+
+separator nonempty Ident ".";
+
 NSOp   . NSElmnt ::= "open" QName ";";
 NSOpAs . NSElmnt ::= "open" QName "as" QName ";";
 NSTy   . NSElmnt ::= "newtype" Ident "=" UType ";" ;
@@ -31,14 +35,13 @@ NItem . NamedItem ::= Ident ":" Typ;
 -- - Skipping "declarationPrefix" here as well
 -- - Also skipping "characteristics"
 
-CDFun  . CallDec ::= "function"  Ident       ParamTpl ":" Typ Body;
-CDOp   . CallDec ::= "operation" Ident       ParamTpl ":" Typ Body;
-CDFunP . CallDec ::= "function"  Ident TyArg ParamTpl ":" Typ Body;
-CDOpP  . CallDec ::= "operation" Ident TyArg ParamTpl ":" Typ Body;
+CDFun . CallDec ::= "function"  Ident TyArg ParamTpl ":" Typ Body;
+CDOp  . CallDec ::= "operation" Ident TyArg ParamTpl ":" Typ Body;
 
-TArg . TyArg ::= "<" [TIndent] ">";
+TAEmpty . TyArg ::= ;
+TAList  . TyArg ::= "<" [TIdent] ">";
 
-separator TIndent ",";
+separator TIdent ",";
 
 ParTpl . ParamTpl ::= "(" [Param] ")";
 
@@ -58,7 +61,7 @@ separator Stm "";
 -- Types
 -- - Skipping Array types for now
 TEmp  . Typ ::= "_";
-TPar  . Typ ::= TIndent;
+TPar  . Typ ::= TIdent;
 TQNm  . Typ ::= QName;
 TTpl  . Typ ::= "(" [Typ] ")";
 TFun  . Typ ::= Typ "->" Typ;
@@ -140,5 +143,4 @@ PliX  . PliL ::= "PauliX";
 PliY  . PliL ::= "PauliY";
 PliZ  . PliL ::= "PauliZ";
 
-token TIndent '\'' letter (letter | digit | '_' | '\'')*;
-token QName letter (letter | digit | '_' | '\'')* ('.' letter (letter | digit | '_' | '\'')*)*;
+token TIdent '\'' letter (letter | digit | '_' | '\'')*;
