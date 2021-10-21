@@ -94,13 +94,13 @@ Scp . Scope ::= "{" [Stm] "}";
 separator Stm "";
 
 -- Types
--- - Skipping Array types for now
 TEmp  . Typ ::= "_";
 TPar  . Typ ::= TIdent;
 TQNm  . Typ ::= QName;
 TTpl  . Typ ::= "(" [Typ] ")";
 TFun  . Typ ::= Typ "->" Typ;
 TOp   . Typ ::= Typ "=>" Typ Chars;
+TArr  . Typ ::= Typ "[" "]";
 TBInt . Typ ::= "BigInt";
 TBool . Typ ::= "Bool"  ;
 TDbl  . Typ ::= "Double";
