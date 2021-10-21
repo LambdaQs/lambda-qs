@@ -41,10 +41,9 @@ TTIUTyp. TyTplItem ::= UType;
 NItem . NamedItem ::= Ident ":" Typ;
 
 -- Callable Declaration
--- - Skipping "characteristics"
 
 CDFun . CallDec ::= "function"  Ident TyArg ParamTpl ":" Typ Body;
-CDOp  . CallDec ::= "operation" Ident TyArg ParamTpl ":" Typ Body;
+CDOp  . CallDec ::= "operation" Ident TyArg ParamTpl ":" Typ Chars Body;
 
 TAEmpty . TyArg ::= ;
 TAList  . TyArg ::= "<" [TIdent] ">";
@@ -57,6 +56,15 @@ separator Param ",";
 
 ParNI  . Param ::= NamedItem;
 ParNIA . Param ::= ParamTpl ;
+
+CEmpty. Chars ::= ;
+CIs.    Chars ::= "is" CharsExp;
+
+CEAdj.   CharsExp ::= "Adj";
+CECtl.   CharsExp ::= "Ctl";
+CEParen. CharsExp ::= "(" CharsExp ")";
+CETimes. CharsExp ::= CharsExp "*" CharsExp;
+CEPlus.  CharsExp ::= CharsExp "+" CharsExp;
 
 -- Skipping "specialization" for now
 Bod . Body ::= Scope;
@@ -73,7 +81,7 @@ TPar  . Typ ::= TIdent;
 TQNm  . Typ ::= QName;
 TTpl  . Typ ::= "(" [Typ] ")";
 TFun  . Typ ::= Typ "->" Typ;
-TOp   . Typ ::= Typ "=>" Typ;
+TOp   . Typ ::= Typ "=>" Typ Chars;
 TBInt . Typ ::= "BigInt";
 TBool . Typ ::= "Bool"  ;
 TDbl  . Typ ::= "Double";
