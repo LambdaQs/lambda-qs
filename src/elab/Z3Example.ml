@@ -2,7 +2,7 @@
 
    Assuming Z3 is installed, compile with:
 
-   ocamlfind ocamlc -o z3example.byte -thread -package z3 -linkpkg Z3Example.ml
+   ocamlfind ocamlc -o Z3example.byte -thread -package z3 -linkpkg Z3Example.ml
 
    Then run with './z3example.byte'
 *)
@@ -20,7 +20,7 @@ let constraint2 = Z3.Arithmetic.mk_lt ctx (Z3.Arithmetic.mk_add ctx [x ; y]) (Z3
 let () = Z3.Solver.add solver [constraint1 ; constraint2]
 
 (* Check if the system is satisfiable *)
-let main () = 
+let main () =
    match Z3.Solver.check solver [] with
    | UNSATISFIABLE -> Printf.printf "unsatisfiable\n"
    | UNKNOWN -> Printf.printf "unknown\n"
