@@ -4,7 +4,7 @@
 
    ocamlfind ocamlc -o Z3example.byte -thread -package z3 -linkpkg Z3Example.ml
 
-   Then run with './z3example.byte'
+   Then run with './Z3example.byte'
 *)
 
 let ctx = Z3.mk_context []
