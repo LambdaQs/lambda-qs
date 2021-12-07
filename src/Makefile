@@ -5,7 +5,7 @@ OTTFILES   = $(foreach i, LambdaQs, $(OTT_LOC)/$(i).ott)
 OTTIFLAGS  = $(foreach i, LambdaQs, -i $(OTT_LOC)/$(i).ott)
 
 LIBNAME=LambdaQs
-LNGEN=../vendor/lngen/dist-newstyle/build/x86_64-*/ghc-*/lngen-0.3.1/x/lngen/build/lngen/lngen
+LNGEN=../vendor/lngen/dist-newstyle/build/*64-*/ghc-*/lngen-0.3.1/x/lngen/build/lngen/lngen
 
 ## Include directories, one per line.
 
