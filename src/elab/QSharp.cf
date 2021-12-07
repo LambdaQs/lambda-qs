@@ -172,6 +172,7 @@ ENameT.   Exp21 ::= QName "<" [Typ] ">";
 EInt.     Exp21 ::= Integer;
 EDbl.     Exp21 ::= Double;
 EStr.     Exp21 ::= String;
+EStrI.    Exp21 ::= "$" String;
 EBool.    Exp21 ::= BoolL;
 ERes.     Exp21 ::= ResL;
 EPli.     Exp21 ::= PliL;
