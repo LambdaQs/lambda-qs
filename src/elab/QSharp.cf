@@ -115,20 +115,40 @@ TUnit . Typ ::= "Unit"  ;
 separator Typ ",";
 
 -- Statement
--- - Skipping variations of "set", for, while, repeat, until, borrow, within
-SExp   . Stm ::= Exp ";";
-SRet   . Stm ::= "return" Exp";";
-SFail  . Stm ::= "fail"   Exp";";
-SLet   . Stm ::= "let"     Bnd "=" Exp ";";
-SMut   . Stm ::= "mutable" Bnd "=" Exp ";";
-SSet   . Stm ::= "set"     Bnd "=" Exp ";";
-SIf    . Stm ::= "if"   Exp Scope;
-SEIf   . Stm ::= "elif" Exp Scope;
-SElse  . Stm ::= "else"     Scope;
-SUse   . Stm ::= "use"     QbitBnd ";";
-SUseS  . Stm ::= "use"     QbitBnd Scope;
-SUseP  . Stm ::= "use" "(" QbitBnd ")" ";";
-SUsePS . Stm ::= "use" "(" QbitBnd ")" Scope;
+SExp.    Stm ::= Exp ";";
+SRet.    Stm ::= "return" Exp";";
+SFail.   Stm ::= "fail" Exp";";
+SLet.    Stm ::= "let" Bnd "=" Exp ";";
+SMut.    Stm ::= "mutable" Bnd "=" Exp ";";
+SSet.    Stm ::= "set" Bnd "=" Exp ";";
+SSetOp.  Stm ::= "set" Ident SetOp Exp ";";
+SSetW.   Stm ::= "set" Ident "w/=" Exp "<-" Exp ";";
+SIf.     Stm ::= "if" Exp Scope;
+SEIf.    Stm ::= "elif" Exp Scope;
+SElse.   Stm ::= "else" Scope;
+SFor.    Stm ::= "for" Bnd "in" Exp Scope;
+SWhile.  Stm ::= "while" Exp Scope;
+SRep.    Stm ::= "repeat" Scope;
+SUntil.  Stm ::= "until" Exp ";";
+SUntilF. Stm ::= "until" Exp "fixup" Scope;
+SWithin. Stm ::= "within" Scope;
+SApply.  Stm ::= "apply" Scope;
+SUse.    Stm ::= "use" QbitBnd ";";
+SUseS.   Stm ::= "use" QbitBnd Scope;
+
+SoPow.    SetOp ::= "^=";
+SoMul.    SetOp ::= "*=";
+SoDiv.    SetOp ::= "/=";
+SoMod.    SetOp ::= "%=";
+SoAdd.    SetOp ::= "+=";
+SoSub.    SetOp ::= "-=";
+SoShiftR. SetOp ::= ">>>=";
+SoShiftL. SetOp ::= "<<<=";
+SoBAnd.   SetOp ::= "&&&";
+SoBXor.   SetOp ::= "^^^=";
+SoBOr.    SetOp ::= "|||=";
+SoLAnd.   SetOp ::= "and=";
+SoLOr.    SetOp ::= "or=";
 
 BndWild . Bnd ::= "_";
 BndName . Bnd ::= Ident;
@@ -138,8 +158,8 @@ separator Bnd ",";
 
 QBnd. QbitBnd ::= Bnd "=" QbitInit;
 
--- Skipping array of qubits for now
 QInitS. QbitInit ::= "Qubit" "(" ")";
+QInitA. QbitInit ::= "Qubit" "[" Exp "]";
 QInitT. QbitInit ::= "(" [QbitInit] ")";
 
 separator QbitInit ",";
