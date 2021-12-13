@@ -67,8 +67,12 @@ CEParen. CharsExp ::= "(" CharsExp ")";
 CETimes. CharsExp ::= CharsExp "*" CharsExp;
 CEPlus.  CharsExp ::= CharsExp "+" CharsExp;
 
-BSpec.  Body ::= "{" SpecName SpecGen "}";
+separator Spec ";";
+
+BSpec.  Body ::= "{" [Spec] "}";
 BScope. Body ::= Scope;
+
+Spec. Spec ::= SpecName SpecGen;
 
 SNBody.   SpecName ::= "body";
 SNAdj.    SpecName ::= "adjoint";
@@ -76,11 +80,11 @@ SNCtl.    SpecName ::= "controlled";
 SNCtlAdj. SpecName ::= "controlled" "adjoint";
 
 SGImpl.   SpecGen ::= SpecParamTpl Scope;
-SGAuto.   SpecGen ::= "auto" ";";
-SGSelf.   SpecGen ::= "self" ";";
-SGInvert. SpecGen ::= "invert" ";";
-SGDist.   SpecGen ::= "distribute" ";";
-SGIntr.   SpecGen ::= "intrinsic" ";";
+SGAuto.   SpecGen ::= "auto";
+SGSelf.   SpecGen ::= "self";
+SGInvert. SpecGen ::= "invert";
+SGDist.   SpecGen ::= "distribute";
+SGIntr.   SpecGen ::= "intrinsic";
 
 SpecParTpl. SpecParamTpl ::= "(" [SpecParam] ")";
 
