@@ -5,7 +5,7 @@
 namespace Microsoft.Quantum.Testing.Optimization.NoOp {
     operation Test (x : Int) : Unit {
         mutable y = 0;
-        for (i in 0..x) {
+        for i in 0..x {
             f(y + i);
             set y += 1;
         }

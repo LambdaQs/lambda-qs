@@ -7,7 +7,7 @@ namespace Microsoft.Quantum.Testing.AttributeGeneration {
 
     function DefaultArray<'A>(size : Int) : 'A[] {
         mutable arr = new 'A[size];
-        for (i in IndexRange(arr)) {
+        for i in IndexRange(arr) {
             set arr w/= i <- Default<'A>();
         }
         return arr;
