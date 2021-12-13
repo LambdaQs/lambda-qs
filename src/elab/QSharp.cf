@@ -72,7 +72,7 @@ separator Spec ";";
 BSpec.  Body ::= "{" [Spec] "}";
 BScope. Body ::= Scope;
 
-Spec. Spec ::= SpecName SpecGen;
+SSpec. Spec ::= SpecName SpecGen;
 
 SNBody.   SpecName ::= "body";
 SNAdj.    SpecName ::= "adjoint";
