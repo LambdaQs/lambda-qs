@@ -1,12 +1,16 @@
-SRC:=QSharp
+genqsharp: QSharp.cf
+	bnfc -mbnfc.mk --ocaml-menhir QSharp.cf && make all
 
-gen: $(SRC).cf
-	bnfc -mbnfc.mk --ocaml-menhir $(SRC).cf && make all
+genlambda: LambdaQs.cf
+	bnfc -mbnfc.mk --ocaml-menhir LambdaQs.cf && make all
 
 genclean: clean
-	rm -f Par$(SRC).ml Par$(SRC).mli Lex$(SRC).ml Test$(SRC) *.bak
+	rm -f Par*.ml Par*.mli Lex*.ml Test* *.bak
 
 typing: Typ.ml
 	utop -init Typ.ml
+
+elab: Elab.ml genqsharp genlambda
+	utop -init Elab.ml
 
 sinclude bnfc.mk
