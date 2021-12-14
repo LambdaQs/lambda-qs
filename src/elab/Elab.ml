@@ -1,14 +1,15 @@
 open AbsLambdaQs
 open AbsQSharp
+open Printf
 
 let unimplemented_error s = "Not yet implemented: " ^ s
 
-let rec elab (prog : AbsQSharp.doc) =
+let rec elab (prog : AbsQSharp.doc) : AbsLambdaQs.cmd =
   match prog with 
   | Prog ([ns]) -> elab_nmspace ns
   | _ -> failwith (unimplemented_error "Multiple namespaces")
 
-and elab_nmspace (ns : AbsQSharp.nmspace) =
+and elab_nmspace (ns : AbsQSharp.nmspace) : AbsLambdaQs.cmd =
   match ns with
   (* TODO: do something with the namespace's name *)
   | NDec (_, elmts) -> elab_nselmts elmts
@@ -60,3 +61,18 @@ and elab_exp (exp : AbsQSharp.exp) : AbsLambdaQs.exp =
   | ECall (e1, [e2]) -> AbsLambdaQs.EAp(elab_exp e1, elab_exp e2)
   | _ -> failwith (unimplemented_error "Most expressions")
 
+(* Example: *)
+let parse (c : in_channel) : AbsQSharp.doc =
+    ParQSharp.pDoc LexQSharp.token (Lexing.from_channel c)
+
+let elab_example () =
+    let channel = open_in "qs-samples/TinyExample.qs" in
+    let in_prog = parse channel in
+    let out_prog = elab in_prog in
+    print_string ("[Input abstract syntax]\n\n"^
+                  (fun x -> ShowQSharp.show (ShowQSharp.showDoc x)) in_prog ^ "\n\n");
+    print_string ("[Output abstract syntax]\n\n"^
+                  (fun x -> ShowLambdaQs.show (ShowLambdaQs.showCmd x)) out_prog ^ "\n\n")
+;;
+
+elab_example ();;
