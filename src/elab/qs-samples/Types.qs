@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-// This file contains test cases related to user defined types
+// This file contains test cases related to user defined types 
 // and test cases such that verifications accross different namespaces can be tested
 
 
@@ -50,12 +50,12 @@ namespace Microsoft.Quantum.Testing.TypeChecking {
     newtype NamedItems13 = (Int, (Name : Int, Double), Name : Int);
     newtype NamedItems14 = (Int, (Name : Int, Double), (Double, Name : Int));
 
-    newtype TupleType1 = Int;
-    newtype TupleType2 = (Int, Int);
-    newtype TupleType3 = ();
-    newtype TupleType4 = (Int, (Int,));
-    newtype TupleType5 = ((Int, Int excess), Int);
-    newtype TupleType6 = ((Int, Int), Int) excess;
+    newtype TupleType1 = Int; 
+    newtype TupleType2 = (Int, Int); 
+    newtype TupleType3 = (); 
+    newtype TupleType4 = (Int, (Int,)); 
+    newtype TupleType5 = ((Int, Int excess), Int); 
+    newtype TupleType6 = ((Int, Int), Int) excess; 
 
     newtype OpType1 = (Unit => Unit);
     newtype OpType2 = ((Unit => Unit), Int);
@@ -122,9 +122,9 @@ namespace Microsoft.Quantum.Testing.GlobalVerification {
     newtype TypeB3 = (TypeB2, ((TypeB2, TypeB1), Int));
 
     newtype TypeC1 = (TypeC3);
-    newtype TypeC2 = (TypeC1, TypeC1);
+    newtype TypeC2 = (TypeC1, TypeC1); 
     newtype TypeC3 = (TypeC2, ((TypeC2, TypeC2), Int));
-
+            
     newtype TypeD1 = (TypeD3 => TypeD2);
     newtype TypeD2 = (Int => Int);
     newtype TypeD3 = (TypeD2, ((TypeD2, TypeD2), Int));
@@ -134,11 +134,11 @@ namespace Microsoft.Quantum.Testing.GlobalVerification {
     newtype TypeE3 = (TypeE3[] => TypeD2);
 
 
-    newtype ValidType1 = IntType;
-    newtype ValidType2 = (Microsoft.Quantum.Testing.GlobalVerification.N2.CustomType, Microsoft.Quantum.Testing.GlobalVerification.N3.CustomType);
+    newtype ValidType1 = IntType; 
+    newtype ValidType2 = (Microsoft.Quantum.Testing.GlobalVerification.N2.CustomType, Microsoft.Quantum.Testing.GlobalVerification.N3.CustomType); 
 
-    newtype InvalidType1 = CustomType;
-    newtype InvalidType2 = Type2Wrapper;
+    newtype InvalidType1 = CustomType; 
+    newtype InvalidType2 = Type2Wrapper; 
     newtype InvalidType3 = (Unit, (Unit, N3type3Wrapper[]));
 }
 
@@ -154,7 +154,7 @@ namespace Microsoft.Quantum.Testing.GlobalVerification.N2 {
 
 namespace Microsoft.Quantum.Testing.GlobalVerification.N3 {
 
-    newtype UnitType = Unit;
+    newtype UnitType = Unit; 
     newtype IntType = Int;
     newtype CustomType = Int;
     newtype N3type3 = ((Microsoft.Quantum.Testing.GlobalVerification.InvalidType3 -> Unit), Int);
