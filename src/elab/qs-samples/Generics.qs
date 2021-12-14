@@ -23,7 +23,7 @@ namespace Microsoft.Quantum.Testing.Generics {
     }
 
     operation Test2Main () : Unit {
-        using (q = Qubit()) {
+        use q = Qubit() {
             GenericCallsGeneric(q, 12);
             let temp = ArrayGeneric(q, ArrayGeneric(q, "twelve"));
             let temp2 = ArrayGeneric(q, 12);
@@ -33,7 +33,7 @@ namespace Microsoft.Quantum.Testing.Generics {
     operation Test3Main () : Unit {
         GenericCallsSpecializations("First", 12, ());
         Adjoint GenericCallsSpecializations(12.0, "Second", 4.0);
-        using (q = Qubit[4]) {
+        use q = Qubit[4] {
             Controlled GenericCallsSpecializations(q[0..1], (12.0, "Third", q[2..3]));
         }
     }
@@ -45,7 +45,7 @@ namespace Microsoft.Quantum.Testing.Generics {
 
     // Tests that unused generics are removed
     operation NotUsed<'A, 'B>(a: 'A, b: 'B) : Int {
-        using (q = Qubit()) {
+        use q = Qubit() {
             let temp = a;
             let temp2 = b;
         }
@@ -54,7 +54,7 @@ namespace Microsoft.Quantum.Testing.Generics {
 
     operation BasicGeneric<'A, 'B>(a: 'A, b: 'B) : Unit {
         let temp = a;
-        using (q = Qubit()) {
+        use q = Qubit() {
             let temp2 = b;
         }
     }
@@ -66,7 +66,7 @@ namespace Microsoft.Quantum.Testing.Generics {
 
     operation ReturnGeneric<'A,'B,'C>(a: 'A, b: 'B, c: 'C) : 'C {
         let temp = c;
-        using (q = Qubit()) {
+        use q = Qubit() {
             let temp2 = b;
             let temp3 = a;
         }
@@ -93,7 +93,7 @@ namespace Microsoft.Quantum.Testing.Generics {
         }
 
         adjoint (...) {
-            using (q = Qubit()) {
+            use q = Qubit() {
                 let temp = ArrayGeneric(q, c);
             }
         }
