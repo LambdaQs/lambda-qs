@@ -27,8 +27,9 @@ cmd Controlled X (q1, q2)
 Build and run elaboration example with
 ```
 make elab
-./TestElab
+./TestElab TinyExample.qs
 ```
+TinyExample.qs is my test file -- I'll delete it once I have enough done to get elaboration working on the files in qs-katas. -Kesha
 
 # Extending the source
 `make genclean` will clean up most of the auto-generated files except those by `bnfc`. Write modules assuming existence of the remaining source files which include those for the AST, the lexer and the parser specs, the print and show infrastructure, etc.
