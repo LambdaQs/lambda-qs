@@ -30,7 +30,7 @@ CBnd.   Cmd ::= "bnd" Var "<-" Exp ";" Cmd;
 CDcl.   Cmd ::= "dcl" Qey "in" Cmd;
 CGatap. Cmd ::= Uni "(" Exp ")";
 CCtlap. Cmd ::= "Controlled" Uni "(" Exp "," Exp ")";
-CMeas.  Cmd ::= "meas" Exp;
+CMeas.  Cmd ::= "meas" "(" Exp ")";;
 -- CGet.   Cmd ::= "get" "[" Qey "]";
 -- CSet.   Cmd ::= "set" "[" Qey "]" "(" Exp ")";
 

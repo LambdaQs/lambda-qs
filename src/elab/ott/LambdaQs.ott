@@ -1,0 +1,457 @@
+% Lambda Q# grammar without polymorphism or arrays,
+% but along with measurement command
+% The LambdaQs.cf grammar should correspond to this file on completion.
+
+% Written by Kartik Singhal and Sarah Marshall following Bob Harper's PFPL
+
+metavar x ::= {{ com term variable }}
+metavar a ::= {{ com assignable }}
+metavar q ::= {{ com qubit symbol }}
+metavar l ::= {{ com label }}
+
+indexvar i, j, n, n_a {{ tex n_a }}, n_b {{ tex n_b }} ::= {{ com indices }}
+
+embed {{ tex-preamble
+  \usepackage[mathx]{mathabx}
+
+  \usepackage{stackengine}
+  \usepackage{scalerel}
+  \stackMath
+  \def\ccdot{\scalebox{1.15}{$\SavedStyle\cdot$} }
+  \def\altdiv{\mathbin{\ThisStyle{%
+    \stackunder[-.25\LMex]{\stackon[-.15\LMex]{\SavedStyle\sim}{\ccdot} }{\ccdot} } } }
+}}
+
+grammar
+
+Typ, t {{ tex \tau }} :: '' ::= {{ com Types }}
+  | qbit                                        ::   :: qubit
+    {{ com \textcolor{blue}{qbit}, opaque qubit type }}
+  | qref [ q ]                                  ::   :: qubitRef
+    {{ com \textcolor{blue}{qref}, qubit reference type }}
+  | arr ( t1 ; t2 )                             ::   :: function
+    {{ com \textcolor{blue}{$[[t1]] \rightarrow [[t2]]$} }}
+  | cmd ( t )                                   ::   :: command
+    {{ com \textcolor{blue}{$[[t]]$ cmd} }}
+  | prod ( </ li c-> ti // i IN 1 .. n /> )     ::   :: product
+    {{ com \textcolor{blue}{$\bigtimes_{l \in L}\,\tau_l$} }}
+  | sum ( </ li c-> ti // , // i IN 1 .. n /> ) ::   :: sum
+    {{ com \textcolor{blue}{$\bigplus_{l \in L}\,\tau_l$} }}
+
+Exp, e :: '' ::=  {{ com Expressions }}
+  | x                                                      ::   :: variable
+    {{ com variable }}
+  | let ( e1 ; x . e2 )                                    ::   :: definition
+    (+ bind x in e2 +)
+    {{ com \textcolor{blue}{let~$[[x]]$~be~$[[e1]]$~in~$[[e2]]$} }}
+  | lam { t } ( x .  e )                                   ::   :: abstraction
+    (+ bind x in e +)
+    {{ com \textcolor{blue}{$\lambda([[x]]:[[t]])[[e]]$} }}
+  | ap ( e1 ; e2 )                                         ::   :: application
+    {{ com \textcolor{blue}{$[[e1]]([[e2]])$} }}
+  | cmd ( m )                                              ::   :: encapsulation
+    {{ com \textcolor{blue}{cmd $[[m]]$}, encapsulation }}
+  | qloc [ q ]                                             ::   :: qubitLocation
+    {{ com \textcolor{blue}{\&$[[q]]$}, qubit location }}
+  | tpl ( </ li c-> ei // , // i IN 1 .. n /> )            ::   :: tuple
+    {{ com \textcolor{blue}{$\langle e_l \rangle_{l \in L}$} }}
+  | pr [ li ] ( e )                                        ::   :: projection
+    {{ com \textcolor{blue}{$[[e]] \cdot l$} }}
+  | in [ li ] { </ ti // , // i IN 1 .. n /> } ( e )       ::   :: injection
+    {{ com \textcolor{blue}{$l \cdot [[e]]$} }}
+  % TODO: here xi's may need to bound in ei's
+  | case ( e ; </ li c-> xi . ei // , // i IN 1 .. n /> )  ::   :: caseAnalysis
+    {{ com \textcolor{blue}{$\texttt{case}\,e\,\{ l \cdot x_l \hookrightarrow e_l \}_{l \in L}$} }}
+  | [ e1 / x ] e2                                          :: M :: subst
+    {{ com substitution }}
+  | ( e )                                                  :: M :: paren
+    {{ com parentheses }}
+
+Cmd, m :: '' ::= {{ com Commands }}
+  | ret ( e )                 ::   :: return                             {{ com \textcolor{blue}{ret $[[e]]$} }}
+  | bnd ( e ; x . m )         ::   :: sequence       (+ bind x in m +)   {{ com \textcolor{blue}{bind $[[x]] \leftarrow [[e]] ; [[m]]$} }}
+  % NOTE: mutables in Q# are really different from ref types as they do not follow the reference semantics.
+  % When we copy them, say `let b = a` for a mutable a, we don't get an alias (like for qubit references),
+  % we get the value associated with a at that point in the program, we are doing an implicit get,
+  % ie, `let b = get[a]`
+  | mut ( e ; a . m )         ::   :: assignable     (+ bind a in m +)   {{ com \textcolor{blue}{mut $[[a]]$ := $[[e]]$ in $[[m]]$} }}
+  | get [ a ]                 ::   :: get                                {{ com \textcolor{blue}{$@[[a]]$} }}
+  | set [ a ] ( e )           ::   :: set                                {{ com \textcolor{blue}{$[[a]]:=[[e]]$} }}
+  | dcl ( q . m )             ::   :: newQubit       (+ bind q in m +)   {{ com \textcolor{blue}{dcl $[[q]]$ in $[[m]]$}, new (opaque) qubit }}
+  | gateapr ( e ; U )         ::   :: gateAppRef                         {{ com \textcolor{blue}{$[[U]]$$([[e]])$}, gate application }}
+  | ctrlapr ( e1 ; e2 ; U )   ::   :: ctrlAppRef                         {{ com \textcolor{blue}{Controlled$[[U]]$$([[e1]], [[e2]])$}, ctrl gate app }}
+  | measr ( e )               ::   :: measRef                            {{ com \textcolor{blue}{meas$([[e]])$}, measure qbit }}
+  | gateap [ q ] ( U )        ::   :: gateApp                            {{ com gate application (opaque) }}
+  | ctrlap [ q1 , q2 ] ( U )  ::   :: ctrlApp                            {{ com ctrl gate app  (opaque) }}
+  | meas [ q ]                ::   :: meas                               {{ com measure qbit (opaque) }}
+  | [ e / x ] m               :: M :: substCmd                           {{ com substitution }}
+  % | getref ( e )              ::  :: getref                             {{ com @$[[q]]$, contents }}
+  % | set [ a ] ( e )       ::  :: assign                             {{ com $[[a]] := [[e]]$ }}
+  % | newqbit ( e ; q . m ) ::  :: newQubit       (+ bind q in m +)   {{ com qubit creation }}
+  % | OpAp ( u ; e )        ::  :: % define capabilities of gate application and measurement
+
+Intr, U :: '' ::= {{ com Intrinsics }}
+  | I     ::  :: Identity
+  | X     ::  :: NOT
+  | Y     ::  :: Y
+  | Z     ::  :: Z
+  | H     ::  :: H
+  | S     ::  :: S
+  | T     ::  :: T
+
+Sugar, s :: '' ::= {{ com Derived forms }}
+  | unit                :: :: Unit
+  | triv                :: :: Trivial
+  | bool                :: :: Bool
+  | true                :: :: True
+  | false               :: :: False
+  | if ( e ; e1 ; e2 )  :: :: Conditional
+  | { x <- m1 ; m2 }    :: :: SeqComp
+  | do e                :: :: Do
+  | proc ( x : t ) m    :: :: Procedure
+  | call e1 ( e2 )      :: :: Call
+  | t1 => t2            :: :: Operation
+
+G {{ tex \Gamma }} :: 'G_' ::= {{ com Typing context }}
+  | empty                 ::  :: empty
+  | G , x : t             ::  :: term
+
+Sigma, sig {{ tex \Sigma }} :: 'S_' ::= {{ com Signature }}
+  | empty               ::  :: empty
+  | sig , q ~ t         ::  :: qbitsymbol
+  | sig , a ~ t         ::  :: assignable
+
+Memory, mu {{ tex \mu }} :: 'M_' ::= {{ com Memory map }}
+  | empty               ::  :: empty
+  | mu , a c-> e        ::  :: assignable
+  | mu , a c-> _        ::  :: dontcare
+
+terminals :: 'terminals_' ::=
+  | |-                  ::  :: turnstile  {{ tex \vdash }}            {{ com entails }}
+  | |-->                ::  :: transition {{ tex \longmapsto }}       {{ com transition }}
+  | c->                 ::  :: hrarrow    {{ tex \hookrightarrow }}   {{ com mapping }}
+  | c.                  ::  :: cdot       {{ tex \cdot }}             {{ com projection }}
+  | ~                   ::  :: sim        {{ tex \sim }}              {{ com tilde }}
+  | ~.                  ::  :: dottilde   {{ tex \altdiv }}           {{ com dotted tilde }}
+  | empty               ::  :: empty      {{ tex \varnothing }}       {{ com empty context }}
+  | [=                  ::  :: inclusion  {{ tex \sqsubseteq }}       {{ com lifetime inclusion }}
+  | <=                  ::  :: leq        {{ tex \leq }}              {{ com less than or equal }}
+  | !                   ::  :: blocked    {{ tex \dagger }}           {{ com blocked type }}
+  | <-                  ::  :: larrow     {{ tex \leftarrow }}
+  | :=                  ::  :: define     {{ tex \triangleq }}        {{ com defined as }}
+  | =>                  ::  :: darrow     {{ tex \Rightarrow }}       {{ com operation type }}
+
+grammar
+formula :: formula_ ::=
+  | judgement            :: :: judgement
+  | formula1 .. formulan :: :: dots
+  | 1 <= i <= n          :: :: bounds
+  % | t mobile                :: :: mobility
+
+defns
+Jdefined :: '' ::=
+  defn
+  s := user_syntax               :: :: deftypes :: '' {{ com Derived forms / syntactic sugar }} by
+
+    --------------:: Unit
+    unit := prod()
+
+    -------------:: Triv
+    triv := tpl()
+
+    -----------------------------------------:: Bool
+    bool := sum(l0 c-> prod(), l1 c-> prod())
+
+    -------------------------------------:: True
+    true := in[l0]{prod(), prod()}(tpl())
+
+    --------------------------------------:: False
+    false := in[l1]{prod(), prod()}(tpl())
+
+    --------------------------------------------------:: Conditional
+    if(e;e1;e2) := case(e; l0 c-> x0.e1, l1 c-> x1.e2)
+
+    ---------------------------------:: SeqComp
+    {x<-m1; m2} := bnd(cmd(m1); x.m2)
+
+    ------------------------:: Do
+    do e := bnd(e; x.ret(x))
+
+    --------------------------------:: Procedure
+    proc (x:t) m := lam{t}(x.cmd(m))
+
+    -----------------------------:: Call
+    call e1(e1) := do (ap(e1;e2))
+
+    ----------------------------:: OperationType
+    t1 => t2 := arr(t1; cmd(t2))
+
+defns
+Jstatics :: '' ::=
+
+  defn
+  G |- e : t :: :: etyping :: ty_ {{ com Expression Typing }} by
+
+    ----------------- :: Var
+    G, x : t |- x : t
+
+    G |- e1 : t1
+    G, x : t1 |- e2 : t2
+    ---------------------- :: Let
+    G |- let(e1; x.e2) : t2
+
+    G, x : t1 |- e : t2
+    -------------------------------- :: Lam
+    G |- lam{t1}(x.e) : arr(t1; t2)
+
+    G |- e1 : arr(t2; t)
+    G |- e2 : t2
+    -------------------- :: Ap
+    G |- ap(e1; e2) : t
+
+    </ G |- ei : ti // i IN 1..n />
+    --------------------------------------------------------------------------- :: Tpl
+    G |- tpl(</ li c-> ei // i IN 1..n />) : prod(</ li c-> ti // i IN 1..n />)
+
+    G |- e : prod(</ li c-> ti // i IN 1..n />)
+    1 <= i <= n
+    ------------------------------------------- :: Pr
+    G |- pr[li](e) : ti
+
+    G |- e : ti
+    1 <= i <= n
+    ------------------------------------------------------------------------- :: Inj
+    G |- in[li]{</ ti // i IN 1..n />}(e) : sum(</ li c-> ti // i IN 1..n />)
+
+    G |- e : sum(</ li c-> ti // i IN 1..n />)
+    </ G, xi : ti |- ei : t // i IN 1..n />
+    --------------------------------------------------- :: Case
+    G |- case(e; </ li c-> xi . ei // i IN 1..n />) : t
+
+  defn
+  G |- sig e : t :: :: estyping :: tyS_ {{ com Expression Typing wrt Signature }} {{ tex [[G]] \vdash_{[[sig]]} [[e]] : [[t]] }} by
+
+    G |- sig m ~. t
+    ------------------------ :: Cmd
+    G |- sig cmd(m) : cmd(t)
+
+    --------------------------------- :: QLoc
+    G |- sig,q~qbit qloc[q] : qref[q]
+
+    % G |- sig e:qref
+    % --------------------
+
+  defn
+  G |- sig m ~. t :: :: cmdFormation :: cmd_ {{ com Well formed command w/ return type $[[t]]$ }} {{ tex [[G]] \vdash_{[[sig]]} [[m]]\ \altdiv\ [[t]] }} by
+
+    G |- sig e : t
+    -------------------- :: Ret
+    G |- sig ret(e) ~. t
+
+    G |- sig e : cmd(t)
+    G, x:t |- sig m ~. t'
+    ------------------------- :: Bnd
+    G |- sig bnd(e;x.m) ~. t'
+
+    % TODO: Figure out whether mobility conditions are important
+    G |- sig e : t
+    G |- sig,a~t m ~. t'
+    ------------------------- :: Mut
+    G |- sig mut(e;a.m) ~. t'
+
+    ------------------------:: Get
+    G |- sig,a~t get[a] ~. t
+
+    G |- sig,a~t e : t
+    ---------------------------:: Set
+    G |- sig,a~t set[a](e) ~. t
+
+    G |- sig,q~t m ~. t'
+    ----------------------- :: Dcl
+    G |- sig dcl(q.m) ~. t'
+
+    -------------------------------------- :: GateAp
+    G |- sig,q~qbit gateap[q](U) ~. prod()
+
+    --------------------------------------------------- :: CtrlAp
+    G |- sig,q1~qbit,q2~qbit ctrlap[q1,q2](U) ~. prod()
+
+    G |- sig e:qref[q]
+    ------------------------------- :: GateApRef
+    G |- sig gateapr(e;U) ~. prod()
+
+    G |- sig e1:qref[q1]
+    G |- sig e2:qref[q2]
+    ----------------------------------- :: CtrlApRef
+    G |- sig ctrlapr(e1;e2;U) ~. prod()
+
+    % the result of meas command is our encoding of bool
+
+    ------------------------------------------------------------ :: Meas
+    G |- sig,q~qbit meas[q] ~. sum(l0 c-> prod(), l1 c-> prod())
+
+    G |- sig e:qref[q]
+    ------------------------------------------------------ :: MeasRef
+    G |- sig measr(e) ~. sum(l0 c-> prod(), l1 c-> prod())
+
+defns
+Jdynamics :: '' ::=
+
+  defn
+  e val :: :: values :: v_ {{ com Values }} by
+
+    --------------- :: Lam
+    lam{t}(x.e) val
+
+    </ ei val // i IN 1..n />
+    ------------------------------------- :: Tpl
+    tpl(</ li c-> ei // i IN 1..n />) val
+
+    e val
+    -------------------------------------- :: Inj
+    in[li]{</ ti // i IN 1 .. n />}(e) val
+
+  defn
+  e val sig :: :: svalues :: vS_ {{ com Values wrt Signature }} {{ tex [[e]]\ \textbf{val}_{[[sig]]} }} by
+
+    -------------- :: Cmd
+    cmd(m) val sig
+
+    ---------------------- :: Qloc
+    qloc[q] val sig,q~qbit
+
+  defn
+  e |--> e' :: :: trans :: tr {{ com Transition }} by
+
+    e1 |--> e1'
+    --------------------------------- :: Let1
+    let(e1; x.e2) |--> let(e1'; x.e2)
+
+    e1 val
+    --------------------------- :: LetInstr
+    let(e1; x.e2) |--> [e1/x]e2
+
+    e1 |--> e1'
+    --------------------------- :: Ap1
+    ap(e1; e2) |--> ap(e1'; e2)
+
+    e1 val
+    e2 |--> e2'
+    --------------------------- :: Ap2
+    ap(e1; e2) |--> ap(e1; e2')
+
+    e2 val
+    ----------------------------------- :: ApInstr
+    ap(lam{t2}(x.e1); e2) |--> [e2/x]e1
+
+    </ ei val // i IN 1..n_a />
+    e |--> e'
+    ------------------------------------------------------------------------------------------------------------------------------------------------------------------- :: Tpl
+    tpl(</ li c-> ei // i IN 1..n_a />, l c-> e, </ lj' c-> ej' // j IN 1..n_b />) |--> tpl(</ li c-> ei // i IN 1..n_a />, l c-> e', </ lj' c-> ej' // j IN 1..n_b />)
+
+    e |--> e'
+    ------------------------- :: Pr
+    pr[li](e) |--> pr[li](e')
+
+    tpl(</ li c-> ei // i IN 1..n />) val
+    1 <= j <= n
+    ------------------------------------------------- :: PrInstr
+    pr[lj](tpl(</ li c-> ei // i IN 1..n />)) |--> ej
+
+    e |--> e'
+    ----------------------------------------------------------------------- :: Inj
+    in[li]{</ ti // i IN 1..n />}(e) |--> in[li]{</ ti // i IN 1..n />}(e')
+
+    e |--> e'
+    --------------------------------------------------------------------------------------- :: Case
+    case(e; </ li c-> xi.ei // i IN 1..n />) |--> case(e'; </ li c-> xi.ei // i IN 1..n />)
+
+    in[lj]{</ ti // i IN 1..n />}(e) val
+    1 <= j <= n
+    ------------------------------------------------------------------------------------- :: CaseInstr
+    case(in[lj]{</ ti // i IN 1..n />}(e); </ li c-> xi.ei // i IN 1..n />) |--> [e/xj]ej
+
+  defn
+  e |--> sig e' :: :: Strans :: trS_ {{ com Transition wrt Signature }} {{ tex [[e]] \underset{[[sig]]}{\longmapsto} [[e']] }} by
+
+  defn
+  mu || m final sig :: :: final :: fn_ {{ com State $[[mu]] \parallel [[m]]$ is complete }} {{ tex [[mu]] \parallel [[m]]\ \textbf{final}_{[[sig]]} }} by
+
+    e val sig
+    ---------------------- :: Ret
+    mu || ret(e) final sig
+
+  defn
+  mu || m |--> sig mu' || m' :: :: Stransmu :: st {{ com State transition }} {{ tex [[mu]] \parallel [[m]] \underset{[[sig]]}{\longmapsto} [[mu']] \parallel [[m']] }} by
+
+    e |--> sig e'
+    ----------------------------------- :: Ret1
+    mu || ret(e) |--> sig mu || ret(e')
+
+    e |--> sig e'
+    ------------------------------------------- :: Bnd1
+    mu || bnd(e;x.m) |--> sig mu || bnd(e';x.m)
+
+    e val sig
+    ------------------------------------------------ :: BndInstr
+    mu || bnd(cmd(ret(e));x.m) |--> sig mu || [e/x]m
+
+    mu || m1 |--> sig mu' || m1'
+    ---------------------------------------------------------- :: Bnd2
+    mu || bnd(cmd(m1);x.m2) |--> sig mu' || bnd(cmd(m1');x.m2)
+
+    --------------------------------------------------------:: Get
+    mu, a c-> e || get[a] |--> sig,a~t mu, a c-> e || ret(e)
+
+    e |--> sig,a~t e'
+    ---------------------------------------------:: Set1
+    mu || set[a](e) |--> sig,a~t mu || set[a](e')
+
+    e val sig,a~t
+    -----------------------------------------------------------:: SetInstr
+    mu, a c-> _ || set[a](e) |--> sig,a~t mu, a c-> e || ret(e)
+
+    e |--> sig e'
+    ------------------------------------------- :: Mut1
+    mu || mut(e;a.m) |--> sig mu || mut(e';a.m)
+
+    e val sig
+    mu, a c-> e || m |--> sig,a~t mu', a c-> e' || m'
+    ------------------------------------------------- :: Mut2
+    mu || mut(e;a.m) |--> sig mu' || mut(e';a.m')
+
+    e val sig
+    e' val sig,a~t
+    --------------------------------------------- :: MutInstr
+    mu || mut(e;a.ret(e')) |--> sig mu || ret(e')
+
+    % TODO: these rules for qubits are incomplete/imprecise
+    % perhaps mu needs to be treated as just classical store
+    e val sig,q~qbit
+    ----------------------------------------- :: Dcl
+    mu || dcl(q.ret(e)) |--> sig mu || ret(e)
+
+    e |--> sig e'
+    ----------------------------------------------- :: GateApRef1
+    mu || gateapr(e;U) |--> sig mu || gateapr(e';U)
+
+    ----------------------------------------------------------- :: GateApRefInstr
+    mu || gateapr(qloc[q];U) |--> sig,q~qbit mu || gateap[q](U)
+
+    e1 |--> sig e1'
+    ------------------------------------------------------- :: CtrlApRef1
+    mu || ctrlapr(e1;e2;U) |--> sig mu || ctrlapr(e1';e2;U)
+
+    e2 |--> sig e2'
+    ------------------------------------------------------------------- :: CtrlApRef2
+    mu || ctrlapr(qloc[q1];e2;U) |--> sig mu || ctrlapr(qloc[q1];e2';U)
+
+    ---------------------------------------------------------------------------------- :: CtrlApRefInstr
+    mu || ctrlapr(qloc[q1];qloc[q2];U) |--> sig,q1~qbit,q2~qbit mu || ctrlap[q1,q2](U)
+
+    e |--> sig e'
+    --------------------------------------- :: MeasRef1
+    mu || measr(e) |--> sig mu || measr(e')
+
+    -------------------------------------------------- :: MeasInstr
+    mu || measr(qloc[q]) |--> sig,q~qbit mu || meas[q]
