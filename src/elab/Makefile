@@ -12,6 +12,9 @@ genhaskell: QSharp.cf
 genclean:
 	rm -f Par*.ml Par*.mli Lex*.ml Test* *.bak
 
+cleanall: genclean
+	rm -f *.mll *.mly *QSharp.ml *LambdaQs.ml
+
 typing: Typ.ml
 	utop -init Typ.ml
 
