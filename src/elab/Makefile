@@ -9,7 +9,7 @@ genlambda: LambdaQs.cf
 genhaskell: QSharp.cf
 	bnfc -mbnfc.mk QSharp.cf && make all
 
-genclean:
+genclean: clean
 	rm -f Par*.ml Par*.mli Lex*.ml Test* *.bak
 
 cleanall: genclean

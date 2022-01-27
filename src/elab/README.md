@@ -1,6 +1,6 @@
 # Requirements
-- [BNF Converter](https://github.com/BNFC/bnfc): `cabal install BNFC` (I am using BNFC v2.9.3).
-- `opam install menhir`
+- [BNF Converter](https://github.com/BNFC/bnfc): `cabal install BNFC` (I am using BNFC v2.9.4).
+- `opam install menhir utop`
 
 # Build and run using:
 
