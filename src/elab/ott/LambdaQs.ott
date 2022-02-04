@@ -4,9 +4,9 @@
 
 % Written by Kartik Singhal and Sarah Marshall following Bob Harper's PFPL
 
-metavar x ::= {{ com term variable }}
-metavar a ::= {{ com assignable }}
-metavar q ::= {{ com qubit symbol }}
+metavar x ::= {{ tex \textcolor{black}{x} }} {{ com term variable }}
+metavar q ::= {{ tex \textcolor{YellowOrange}{q} }} {{ com qubit symbol }}
+metavar U ::= {{ tex \textcolor{CarnationPink}{U} }} {{ com unitary symbol }}
 metavar l ::= {{ com label }}
 
 indexvar i, j, n, n_a {{ tex n_a }}, n_b {{ tex n_b }} ::= {{ com indices }}
@@ -14,98 +14,87 @@ indexvar i, j, n, n_a {{ tex n_a }}, n_b {{ tex n_b }} ::= {{ com indices }}
 embed {{ tex-preamble
   \usepackage[mathx]{mathabx}
 
+  \usepackage[dvipsnames]{xcolor}
+
   \usepackage{stackengine}
   \usepackage{scalerel}
   \stackMath
-  \def\ccdot{\scalebox{1.15}{$\SavedStyle\cdot$} }
-  \def\altdiv{\mathbin{\ThisStyle{%
+  \newcommand{\ccdot}{\scalebox{1.15}{$\SavedStyle\cdot$} }
+  \newcommand{\altdiv}{\mathbin{\ThisStyle{%
     \stackunder[-.25\LMex]{\stackon[-.15\LMex]{\SavedStyle\sim}{\ccdot} }{\ccdot} } } }
 }}
 
 grammar
 
-Typ, t {{ tex \tau }} :: '' ::= {{ com Types }}
-  | qbit                                        ::   :: qubit
-    {{ com \textcolor{blue}{qbit}, opaque qubit type }}
+Typ, t {{ tex \textcolor{black}{\tau} }} :: '' ::= {{ com Types }}
+  | qbit                                        :: M :: qubit
+    {{ com \textcolor{RoyalBlue}{qbit}, opaque qubit type }}
   | qref [ q ]                                  ::   :: qubitRef
-    {{ com \textcolor{blue}{qref}, qubit reference type }}
+    {{ com \textcolor{RoyalBlue}{qref}, qubit reference type }}
   | arr ( t1 ; t2 )                             ::   :: function
-    {{ com \textcolor{blue}{$[[t1]] \rightarrow [[t2]]$} }}
+    {{ com $[[t1]]~\textcolor{RoyalBlue}{\rightarrow}~[[t2]]$ }}
   | cmd ( t )                                   ::   :: command
-    {{ com \textcolor{blue}{$[[t]]$ cmd} }}
+    {{ com \textcolor{RoyalBlue}{$[[t]]$ cmd} }}
   | prod ( </ li c-> ti // i IN 1 .. n /> )     ::   :: product
-    {{ com \textcolor{blue}{$\bigtimes_{l \in L}\,\tau_l$} }}
-  | sum ( </ li c-> ti // , // i IN 1 .. n /> ) ::   :: sum
-    {{ com \textcolor{blue}{$\bigplus_{l \in L}\,\tau_l$} }}
+    {{ com \textcolor{RoyalBlue}{$\bigtimes_{l \in L}\,\tau_l$} }}
+  | sum ( </ li c-> ti // , // i IN 1 .. n /> ) :: M :: sum
+    {{ com \textcolor{RoyalBlue}{$\bigplus_{l \in L}\,\tau_l$} }}
+  | bool                                        ::   :: bool
+    {{ com \textcolor{RoyalBlue}{bool} }}
+  | unit                                        ::   :: unit
+    {{ com \textcolor{RoyalBlue}{unit} }}
 
-Exp, e :: '' ::=  {{ com Expressions }}
+Exp, e {{ tex \textcolor{black}{e} }} :: '' ::=  {{ com Expressions }}
   | x                                                      ::   :: variable
-    {{ com variable }}
+    {{ com \textcolor{RoyalBlue}{$[[x]]$} }}
   | let ( e1 ; x . e2 )                                    ::   :: definition
     (+ bind x in e2 +)
-    {{ com \textcolor{blue}{let~$[[x]]$~be~$[[e1]]$~in~$[[e2]]$} }}
+    {{ com \textcolor{RoyalBlue}{let}~$[[x]]$~\textcolor{RoyalBlue}{be}~$[[e1]]$~\textcolor{RoyalBlue}{in}~$[[e2]]$ }}
   | lam { t } ( x .  e )                                   ::   :: abstraction
     (+ bind x in e +)
-    {{ com \textcolor{blue}{$\lambda([[x]]:[[t]])[[e]]$} }}
+    {{ com \textcolor{RoyalBlue}{$\lambda([[x]]:[[t]])[[e]]$} }}
   | ap ( e1 ; e2 )                                         ::   :: application
-    {{ com \textcolor{blue}{$[[e1]]([[e2]])$} }}
+    {{ com $[[e1]]\textcolor{RoyalBlue}{(}[[e2]]\textcolor{RoyalBlue}{)}$ }}
   | cmd ( m )                                              ::   :: encapsulation
-    {{ com \textcolor{blue}{cmd $[[m]]$}, encapsulation }}
+    {{ com \textcolor{RoyalBlue}{cmd $[[m]]$}, encapsulation }}
   | qloc [ q ]                                             ::   :: qubitLocation
-    {{ com \textcolor{blue}{\&$[[q]]$}, qubit location }}
+    {{ com \textcolor{RoyalBlue}{\&$[[q]]$}, qubit location }}
   | tpl ( </ li c-> ei // , // i IN 1 .. n /> )            ::   :: tuple
-    {{ com \textcolor{blue}{$\langle e_l \rangle_{l \in L}$} }}
+    {{ com \textcolor{RoyalBlue}{$\langle e_l \rangle_{l \in L}$} }}
   | pr [ li ] ( e )                                        ::   :: projection
-    {{ com \textcolor{blue}{$[[e]] \cdot l$} }}
-  | in [ li ] { </ ti // , // i IN 1 .. n /> } ( e )       ::   :: injection
-    {{ com \textcolor{blue}{$l \cdot [[e]]$} }}
+    {{ com \textcolor{RoyalBlue}{$[[e]] \cdot l$} }}
+  | in [ li ] { </ ti // , // i IN 1 .. n /> } ( e )       :: M :: injection
+    {{ com \textcolor{RoyalBlue}{$l \cdot [[e]]$} }}
   % TODO: here xi's may need to bound in ei's
-  | case ( e ; </ li c-> xi . ei // , // i IN 1 .. n /> )  ::   :: caseAnalysis
-    {{ com \textcolor{blue}{$\texttt{case}\,e\,\{ l \cdot x_l \hookrightarrow e_l \}_{l \in L}$} }}
+  | case ( e ; </ li c-> xi . ei // , // i IN 1 .. n /> )  :: M :: caseAnalysis
+    {{ com \textcolor{RoyalBlue}{case $e\,\{ l \cdot x_l \hookrightarrow e_l \}_{l \in L}$} }}
+  | true                                                   ::   :: true
+    {{ com \textcolor{RoyalBlue}{true} }}
+  | false                                                  ::   :: false
+    {{ com \textcolor{RoyalBlue}{false} }}
+  | if ( e ; e1 ; e2 )                                     ::   :: ite
+    {{ com \textcolor{RoyalBlue}{if}~$[[e]]$~\textcolor{RoyalBlue}{then}~$[[e1]]$~\textcolor{RoyalBlue}{else}~$[[e2]]$ }}
+  | not e                                                  ::   :: negation
+    {{ com \textcolor{RoyalBlue}{$\neg~[[e]]$} }}
+  | triv                                                   ::   :: trivial
+    {{ com \textcolor{RoyalBlue}{$\langle \rangle$} }}
   | [ e1 / x ] e2                                          :: M :: subst
     {{ com substitution }}
   | ( e )                                                  :: M :: paren
     {{ com parentheses }}
 
-Cmd, m :: '' ::= {{ com Commands }}
-  | ret ( e )                 ::   :: return                             {{ com \textcolor{blue}{ret $[[e]]$} }}
-  | bnd ( e ; x . m )         ::   :: sequence       (+ bind x in m +)   {{ com \textcolor{blue}{bind $[[x]] \leftarrow [[e]] ; [[m]]$} }}
-  % NOTE: mutables in Q# are really different from ref types as they do not follow the reference semantics.
-  % When we copy them, say `let b = a` for a mutable a, we don't get an alias (like for qubit references),
-  % we get the value associated with a at that point in the program, we are doing an implicit get,
-  % ie, `let b = get[a]`
-  | mut ( e ; a . m )         ::   :: assignable     (+ bind a in m +)   {{ com \textcolor{blue}{mut $[[a]]$ := $[[e]]$ in $[[m]]$} }}
-  | get [ a ]                 ::   :: get                                {{ com \textcolor{blue}{$@[[a]]$} }}
-  | set [ a ] ( e )           ::   :: set                                {{ com \textcolor{blue}{$[[a]]:=[[e]]$} }}
-  | dcl ( q . m )             ::   :: newQubit       (+ bind q in m +)   {{ com \textcolor{blue}{dcl $[[q]]$ in $[[m]]$}, new (opaque) qubit }}
-  | gateapr ( e ; U )         ::   :: gateAppRef                         {{ com \textcolor{blue}{$[[U]]$$([[e]])$}, gate application }}
-  | ctrlapr ( e1 ; e2 ; U )   ::   :: ctrlAppRef                         {{ com \textcolor{blue}{Controlled$[[U]]$$([[e1]], [[e2]])$}, ctrl gate app }}
-  | measr ( e )               ::   :: measRef                            {{ com \textcolor{blue}{meas$([[e]])$}, measure qbit }}
-  | gateap [ q ] ( U )        ::   :: gateApp                            {{ com gate application (opaque) }}
-  | ctrlap [ q1 , q2 ] ( U )  ::   :: ctrlApp                            {{ com ctrl gate app  (opaque) }}
-  | meas [ q ]                ::   :: meas                               {{ com measure qbit (opaque) }}
+Cmd, m {{ tex \textcolor{black}{m} }} :: '' ::= {{ com Commands }}
+  | ret ( e )                 ::   :: return                             {{ com \textcolor{RoyalBlue}{ret $[[e]]$} }}
+  | bnd ( e ; x . m )         ::   :: sequence       (+ bind x in m +)   {{ com \textcolor{RoyalBlue}{bnd $[[x]] \leftarrow [[e]] ; [[m]]$} }}
+  | newqref [ q ]             ::   :: newqref                            {{ com \textcolor{RoyalBlue}{new()} }}
+  | gateapr [ U ] ( e )       ::   :: gateAppRef                         {{ com \textcolor{RoyalBlue}{$[[U]]$$([[e]])$}, gate application }}
+  | measr ( e )               ::   :: measRef                            {{ com \textcolor{RoyalBlue}{meas$([[e]])$}, measure qbit }}
+  | dcl ( q . m )             :: M :: newQubit                           {{ com \textcolor{RoyalBlue}{dcl $[[q]]$ in $[[m]]$}, new (opaque) qubit }} % (+ bind q in m +)
+  | gateap [ U , q ]          :: M :: gateApp                            {{ com gate application (opaque) }}
+  | meas [ q ]                :: M :: meas                               {{ com measure qbit (opaque) }}
   | [ e / x ] m               :: M :: substCmd                           {{ com substitution }}
-  % | getref ( e )              ::  :: getref                             {{ com @$[[q]]$, contents }}
-  % | set [ a ] ( e )       ::  :: assign                             {{ com $[[a]] := [[e]]$ }}
-  % | newqbit ( e ; q . m ) ::  :: newQubit       (+ bind q in m +)   {{ com qubit creation }}
-  % | OpAp ( u ; e )        ::  :: % define capabilities of gate application and measurement
-
-Intr, U :: '' ::= {{ com Intrinsics }}
-  | I     ::  :: Identity
-  | X     ::  :: NOT
-  | Y     ::  :: Y
-  | Z     ::  :: Z
-  | H     ::  :: H
-  | S     ::  :: S
-  | T     ::  :: T
 
 Sugar, s :: '' ::= {{ com Derived forms }}
-  | unit                :: :: Unit
-  | triv                :: :: Trivial
-  | bool                :: :: Bool
-  | true                :: :: True
-  | false               :: :: False
-  | if ( e ; e1 ; e2 )  :: :: Conditional
   | { x <- m1 ; m2 }    :: :: SeqComp
   | do e                :: :: Do
   | proc ( x : t ) m    :: :: Procedure
@@ -118,13 +107,7 @@ G {{ tex \Gamma }} :: 'G_' ::= {{ com Typing context }}
 
 Sigma, sig {{ tex \Sigma }} :: 'S_' ::= {{ com Signature }}
   | empty               ::  :: empty
-  | sig , q ~ t         ::  :: qbitsymbol
-  | sig , a ~ t         ::  :: assignable
-
-Memory, mu {{ tex \mu }} :: 'M_' ::= {{ com Memory map }}
-  | empty               ::  :: empty
-  | mu , a c-> e        ::  :: assignable
-  | mu , a c-> _        ::  :: dontcare
+  | sig , q ~ qbit      ::  :: qbitsymbol
 
 terminals :: 'terminals_' ::=
   | |-                  ::  :: turnstile  {{ tex \vdash }}            {{ com entails }}
@@ -134,9 +117,7 @@ terminals :: 'terminals_' ::=
   | ~                   ::  :: sim        {{ tex \sim }}              {{ com tilde }}
   | ~.                  ::  :: dottilde   {{ tex \altdiv }}           {{ com dotted tilde }}
   | empty               ::  :: empty      {{ tex \varnothing }}       {{ com empty context }}
-  | [=                  ::  :: inclusion  {{ tex \sqsubseteq }}       {{ com lifetime inclusion }}
   | <=                  ::  :: leq        {{ tex \leq }}              {{ com less than or equal }}
-  | !                   ::  :: blocked    {{ tex \dagger }}           {{ com blocked type }}
   | <-                  ::  :: larrow     {{ tex \leftarrow }}
   | :=                  ::  :: define     {{ tex \triangleq }}        {{ com defined as }}
   | =>                  ::  :: darrow     {{ tex \Rightarrow }}       {{ com operation type }}
@@ -146,30 +127,11 @@ formula :: formula_ ::=
   | judgement            :: :: judgement
   | formula1 .. formulan :: :: dots
   | 1 <= i <= n          :: :: bounds
-  % | t mobile                :: :: mobility
 
 defns
 Jdefined :: '' ::=
   defn
   s := user_syntax               :: :: deftypes :: '' {{ com Derived forms / syntactic sugar }} by
-
-    --------------:: Unit
-    unit := prod()
-
-    -------------:: Triv
-    triv := tpl()
-
-    -----------------------------------------:: Bool
-    bool := sum(l0 c-> prod(), l1 c-> prod())
-
-    -------------------------------------:: True
-    true := in[l0]{prod(), prod()}(tpl())
-
-    --------------------------------------:: False
-    false := in[l1]{prod(), prod()}(tpl())
-
-    --------------------------------------------------:: Conditional
-    if(e;e1;e2) := case(e; l0 c-> x0.e1, l1 c-> x1.e2)
 
     ---------------------------------:: SeqComp
     {x<-m1; m2} := bnd(cmd(m1); x.m2)
@@ -181,7 +143,7 @@ Jdefined :: '' ::=
     proc (x:t) m := lam{t}(x.cmd(m))
 
     -----------------------------:: Call
-    call e1(e1) := do (ap(e1;e2))
+    call e1(e2) := do (ap(e1;e2))
 
     ----------------------------:: OperationType
     t1 => t2 := arr(t1; cmd(t2))
@@ -238,9 +200,6 @@ Jstatics :: '' ::=
     --------------------------------- :: QLoc
     G |- sig,q~qbit qloc[q] : qref[q]
 
-    % G |- sig e:qref
-    % --------------------
-
   defn
   G |- sig m ~. t :: :: cmdFormation :: cmd_ {{ com Well formed command w/ return type $[[t]]$ }} {{ tex [[G]] \vdash_{[[sig]]} [[m]]\ \altdiv\ [[t]] }} by
 
@@ -253,46 +212,27 @@ Jstatics :: '' ::=
     ------------------------- :: Bnd
     G |- sig bnd(e;x.m) ~. t'
 
-    % TODO: Figure out whether mobility conditions are important
-    G |- sig e : t
-    G |- sig,a~t m ~. t'
-    ------------------------- :: Mut
-    G |- sig mut(e;a.m) ~. t'
-
-    ------------------------:: Get
-    G |- sig,a~t get[a] ~. t
-
-    G |- sig,a~t e : t
-    ---------------------------:: Set
-    G |- sig,a~t set[a](e) ~. t
-
-    G |- sig,q~t m ~. t'
+    G |- sig,q~qbit m ~. t
     ----------------------- :: Dcl
-    G |- sig dcl(q.m) ~. t'
+    G |- sig dcl(q.m) ~. t
 
-    -------------------------------------- :: GateAp
-    G |- sig,q~qbit gateap[q](U) ~. prod()
+    G |- sig,q~qbit m ~. t
+    -------------------------------------- :: NewQRef
+    G |- sig bnd(cmd(newqref[q]);x.m) ~. t
 
-    --------------------------------------------------- :: CtrlAp
-    G |- sig,q1~qbit,q2~qbit ctrlap[q1,q2](U) ~. prod()
-
-    G |- sig e:qref[q]
-    ------------------------------- :: GateApRef
-    G |- sig gateapr(e;U) ~. prod()
-
-    G |- sig e1:qref[q1]
-    G |- sig e2:qref[q2]
-    ----------------------------------- :: CtrlApRef
-    G |- sig ctrlapr(e1;e2;U) ~. prod()
-
-    % the result of meas command is our encoding of bool
-
-    ------------------------------------------------------------ :: Meas
-    G |- sig,q~qbit meas[q] ~. sum(l0 c-> prod(), l1 c-> prod())
+    ----------------------------------- :: GateAp
+    G |- sig,q~qbit gateap[U,q] ~. unit
 
     G |- sig e:qref[q]
-    ------------------------------------------------------ :: MeasRef
-    G |- sig measr(e) ~. sum(l0 c-> prod(), l1 c-> prod())
+    ------------------------------ :: GateApRef
+    G |- sig gateapr[U](e) ~. unit
+
+    ------------------------------- :: Meas
+    G |- sig,q~qbit meas[q] ~. bool
+
+    G |- sig e:qref[q]
+    ------------------------- :: MeasRef
+    G |- sig measr(e) ~. bool
 
 defns
 Jdynamics :: '' ::=
@@ -317,7 +257,7 @@ Jdynamics :: '' ::=
     -------------- :: Cmd
     cmd(m) val sig
 
-    ---------------------- :: Qloc
+    ---------------------- :: QLoc
     qloc[q] val sig,q~qbit
 
   defn
@@ -375,83 +315,46 @@ Jdynamics :: '' ::=
   e |--> sig e' :: :: Strans :: trS_ {{ com Transition wrt Signature }} {{ tex [[e]] \underset{[[sig]]}{\longmapsto} [[e']] }} by
 
   defn
-  mu || m final sig :: :: final :: fn_ {{ com State $[[mu]] \parallel [[m]]$ is complete }} {{ tex [[mu]] \parallel [[m]]\ \textbf{final}_{[[sig]]} }} by
+  m final sig :: :: final :: fn_ {{ com State $[[m]]$ is complete }} {{ tex [[m]]\ \textbf{final}_{[[sig]]} }} by
 
     e val sig
-    ---------------------- :: Ret
-    mu || ret(e) final sig
+    ---------------- :: Ret
+    ret(e) final sig
 
   defn
-  mu || m |--> sig mu' || m' :: :: Stransmu :: st {{ com State transition }} {{ tex [[mu]] \parallel [[m]] \underset{[[sig]]}{\longmapsto} [[mu']] \parallel [[m']] }} by
+  m |--> sig m' :: :: Stransmu :: st {{ com State transition }} {{ tex [[m]] \underset{[[sig]]}{\longmapsto} [[m']] }} by
 
     e |--> sig e'
-    ----------------------------------- :: Ret1
-    mu || ret(e) |--> sig mu || ret(e')
+    ----------------------- :: Ret1
+    ret(e) |--> sig ret(e')
 
     e |--> sig e'
-    ------------------------------------------- :: Bnd1
-    mu || bnd(e;x.m) |--> sig mu || bnd(e';x.m)
+    ------------------------------- :: Bnd1
+    bnd(e;x.m) |--> sig bnd(e';x.m)
 
     e val sig
-    ------------------------------------------------ :: BndInstr
-    mu || bnd(cmd(ret(e));x.m) |--> sig mu || [e/x]m
+    ------------------------------------ :: BndInstr
+    bnd(cmd(ret(e));x.m) |--> sig [e/x]m
 
-    mu || m1 |--> sig mu' || m1'
-    ---------------------------------------------------------- :: Bnd2
-    mu || bnd(cmd(m1);x.m2) |--> sig mu' || bnd(cmd(m1');x.m2)
+    m1 |--> sig m1'
+    --------------------------------------------- :: Bnd2
+    bnd(cmd(m1);x.m2) |--> sig bnd(cmd(m1');x.m2)
 
-    --------------------------------------------------------:: Get
-    mu, a c-> e || get[a] |--> sig,a~t mu, a c-> e || ret(e)
-
-    e |--> sig,a~t e'
-    ---------------------------------------------:: Set1
-    mu || set[a](e) |--> sig,a~t mu || set[a](e')
-
-    e val sig,a~t
-    -----------------------------------------------------------:: SetInstr
-    mu, a c-> _ || set[a](e) |--> sig,a~t mu, a c-> e || ret(e)
-
-    e |--> sig e'
-    ------------------------------------------- :: Mut1
-    mu || mut(e;a.m) |--> sig mu || mut(e';a.m)
-
-    e val sig
-    mu, a c-> e || m |--> sig,a~t mu', a c-> e' || m'
-    ------------------------------------------------- :: Mut2
-    mu || mut(e;a.m) |--> sig mu' || mut(e';a.m')
-
-    e val sig
-    e' val sig,a~t
-    --------------------------------------------- :: MutInstr
-    mu || mut(e;a.ret(e')) |--> sig mu || ret(e')
-
-    % TODO: these rules for qubits are incomplete/imprecise
-    % perhaps mu needs to be treated as just classical store
+    % TODO: consider newqref as sugar for dcl or provide an explicit rule
     e val sig,q~qbit
-    ----------------------------------------- :: Dcl
-    mu || dcl(q.ret(e)) |--> sig mu || ret(e)
+    ----------------------------- :: Dcl
+    dcl(q.ret(e)) |--> sig ret(e)
 
     e |--> sig e'
-    ----------------------------------------------- :: GateApRef1
-    mu || gateapr(e;U) |--> sig mu || gateapr(e';U)
+    ------------------------------------- :: GateApRef1
+    gateapr[U](e) |--> sig gateapr[U](e')
 
-    ----------------------------------------------------------- :: GateApRefInstr
-    mu || gateapr(qloc[q];U) |--> sig,q~qbit mu || gateap[q](U)
-
-    e1 |--> sig e1'
-    ------------------------------------------------------- :: CtrlApRef1
-    mu || ctrlapr(e1;e2;U) |--> sig mu || ctrlapr(e1';e2;U)
-
-    e2 |--> sig e2'
-    ------------------------------------------------------------------- :: CtrlApRef2
-    mu || ctrlapr(qloc[q1];e2;U) |--> sig mu || ctrlapr(qloc[q1];e2';U)
-
-    ---------------------------------------------------------------------------------- :: CtrlApRefInstr
-    mu || ctrlapr(qloc[q1];qloc[q2];U) |--> sig,q1~qbit,q2~qbit mu || ctrlap[q1,q2](U)
+    ----------------------------------------------- :: GateApRefInstr
+    gateapr[U](qloc[q]) |--> sig,q~qbit gateap[U,q]
 
     e |--> sig e'
-    --------------------------------------- :: MeasRef1
-    mu || measr(e) |--> sig mu || measr(e')
+    --------------------------- :: MeasRef1
+    measr(e) |--> sig measr(e')
 
-    -------------------------------------------------- :: MeasInstr
-    mu || measr(qloc[q]) |--> sig,q~qbit mu || meas[q]
+    -------------------------------------- :: MeasInstr
+    measr(qloc[q]) |--> sig,q~qbit meas[q]
