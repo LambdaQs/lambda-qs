@@ -13,9 +13,9 @@ genclean: clean
 	rm -f Par*.ml Par*.mli Lex*.ml Test* *.bak
 
 cleanall: genclean
-	rm -f *.mll *.mly *QSharp.ml *LambdaQs.ml
+	rm -f *.mll *.mly *QSharp.ml *LambdaQs.ml bnfc.mk BNFC_Util.ml
 
-typing: Typ.ml
+typing: Typ.ml genlambda
 	utop -init Typ.ml
 
 sinclude bnfc.mk

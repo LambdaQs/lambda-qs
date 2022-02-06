@@ -134,10 +134,10 @@ and typeof_cmd ctx sgn m =
                                 | _ -> failwith type_err) in
                       typeof_cmd (extend ctx x te) sgn m
   | CDcl (q, m) -> typeof_cmd ctx (extendS sgn q TQbit) m
-  | CGap (u, e) -> (match typeof ctx e with
+  | CGatap (u, e) -> (match typeof ctx e with
                    | TQref _ -> TUnit
                    | _ -> failwith type_err)
-  | CCap (u, e1, e2) -> let q1 = (match typeof ctx e1 with
+  | CCtlap (u, e1, e2) -> let q1 = (match typeof ctx e1 with
                                   | TQref q -> q
                                   | _ -> failwith type_err) in
                         let q2 = (match typeof ctx e2 with
