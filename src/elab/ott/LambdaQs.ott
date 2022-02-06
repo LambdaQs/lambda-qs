@@ -4,10 +4,10 @@
 
 % Written by Kartik Singhal and Sarah Marshall following Bob Harper's PFPL
 
-metavar x ::= {{ tex \textcolor{black}{x} }} {{ com term variable }}
-metavar q ::= {{ tex \textcolor{YellowOrange}{q} }} {{ com qubit symbol }}
-metavar U ::= {{ tex \textcolor{CarnationPink}{U} }} {{ com unitary symbol }}
-metavar l ::= {{ com label }}
+metavar x {{ tex \textcolor{black}{x} }}                                                    ::= {{ com term variable }}
+metavar q {{ tex \textcolor{YellowOrange}{q} }}, r {{ tex \textcolor{YellowOrange}{r} }}    ::= {{ com qubit symbols }}
+metavar U {{ tex \textcolor{CarnationPink}{U} }}, V {{ tex \textcolor{CarnationPink}{V} }}  ::= {{ com unitary symbols }}
+metavar l                                                                                   ::= {{ com label }}
 
 indexvar i, j, n, n_a {{ tex n_a }}, n_b {{ tex n_b }} ::= {{ com indices }}
 
@@ -67,7 +67,7 @@ Exp, e {{ tex \textcolor{black}{e} }} :: '' ::=  {{ com Expressions }}
     {{ com \textcolor{RoyalBlue}{$l \cdot [[e]]$} }}
   % TODO: here xi's may need to bound in ei's
   | case ( e ; </ li c-> xi . ei // , // i IN 1 .. n /> )  :: M :: caseAnalysis
-    {{ com \textcolor{RoyalBlue}{case $e\,\{ l \cdot x_l \hookrightarrow e_l \}_{l \in L}$} }}
+    {{ com \textcolor{RoyalBlue}{case $[[e]]\,\{ l \cdot x_l \hookrightarrow e_l \}_{l \in L}$} }}
   | true                                                   ::   :: true
     {{ com \textcolor{RoyalBlue}{true} }}
   | false                                                  ::   :: false
@@ -76,6 +76,8 @@ Exp, e {{ tex \textcolor{black}{e} }} :: '' ::=  {{ com Expressions }}
     {{ com \textcolor{RoyalBlue}{if}~$[[e]]$~\textcolor{RoyalBlue}{then}~$[[e1]]$~\textcolor{RoyalBlue}{else}~$[[e2]]$ }}
   | not e                                                  ::   :: negation
     {{ com \textcolor{RoyalBlue}{$\neg~[[e]]$} }}
+  | eq ( e1 ; e2 )                                         ::   :: equaltest
+    {{ com $[[e1]]$ \textcolor{RoyalBlue}{=} $[[e2]]$ }}
   | triv                                                   ::   :: trivial
     {{ com \textcolor{RoyalBlue}{$\langle \rangle$} }}
   | [ e1 / x ] e2                                          :: M :: subst
@@ -88,6 +90,8 @@ Cmd, m {{ tex \textcolor{black}{m} }} :: '' ::= {{ com Commands }}
   | bnd ( e ; x . m )         ::   :: sequence       (+ bind x in m +)   {{ com \textcolor{RoyalBlue}{bnd $[[x]] \leftarrow [[e]] ; [[m]]$} }}
   | newqref [ q ]             ::   :: newqref                            {{ com \textcolor{RoyalBlue}{new()} }}
   | gateapr [ U ] ( e )       ::   :: gateAppRef                         {{ com \textcolor{RoyalBlue}{$[[U]]$$([[e]])$}, gate application }}
+  | diagapr [ U , V ] ( e1 ; e2 )   ::   :: diagAppRef
+    {{ com \textcolor{RoyalBlue}{D($[[U]],[[V]]$)}\textcolor{RoyalBlue}{(}$[[e1]]$\textcolor{RoyalBlue}{,} $[[e2]]$\textcolor{RoyalBlue}{)}, block diagonal }}
   | measr ( e )               ::   :: measRef                            {{ com \textcolor{RoyalBlue}{meas$([[e]])$}, measure qbit }}
   | dcl ( q . m )             :: M :: newQubit                           {{ com \textcolor{RoyalBlue}{dcl $[[q]]$ in $[[m]]$}, new (opaque) qubit }} % (+ bind q in m +)
   | gateap [ U , q ]          :: M :: gateApp                            {{ com gate application (opaque) }}
@@ -226,6 +230,11 @@ Jstatics :: '' ::=
     G |- sig e:qref[q]
     ------------------------------ :: GateApRef
     G |- sig gateapr[U](e) ~. unit
+
+    G |- sig e1:qref[q]
+    G |- sig e2:qref[r]
+    ------------------------------------ :: DiagApRef
+    G |- sig diagapr[U,V](e1;e2) ~. unit
 
     ------------------------------- :: Meas
     G |- sig,q~qbit meas[q] ~. bool
