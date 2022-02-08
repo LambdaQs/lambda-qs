@@ -1,15 +1,15 @@
 entrypoints Exp;
 
 -- Metavariables
-MVar. Var ::= Ident;
-MUni. Uni ::= Ident;
-MQey. Qey ::= Ident;
+MVar. Var ::= Ident; -- variables
+MUni. Uni ::= Ident; -- unitaries
+MQey. Qey ::= Ident; -- qubit symbols
 
 -- Types
-TQbit. Typ ::= "qbit";
-TQref. Typ ::= "qref" "[" Qey "]";
-TParr. Typ ::= "parr" "(" Typ "->" Typ ")";
-TCmd.  Typ ::= "cmd" "(" Typ ")";
+TQbit. Typ ::= "qbit";                      -- opaque qubit type
+TQref. Typ ::= "qref" "[" Qey "]";          -- qubit reference
+TParr. Typ ::= "parr" "(" Typ "->" Typ ")"; -- partial function
+TCmd.  Typ ::= "cmd" "(" Typ ")";           -- command
 TNat.  Typ ::= "nat";
 TUnit. Typ ::= "unit";
 
@@ -18,19 +18,19 @@ EVar.  Exp ::= Var;
 ENat.  Exp ::= Integer;
 EPlus. Exp ::= Exp "+" Exp;
 ETriv. Exp ::= "()";
-EQloc. Exp ::= "&" Qey;
-ELet.  Exp ::= "let" Var "be" Exp "in" Exp;
-ELam.  Exp ::= "\\" "(" Var ":" Typ ")" Exp;
-EAp.   Exp ::= Exp "(" Exp ")";
-ECmd.  Exp ::= "cmd" Cmd;
+EQloc. Exp ::= "&" Qey;                       -- qubit locations
+ELet.  Exp ::= "let" Var "be" Exp "in" Exp;   -- let expression
+ELam.  Exp ::= "\\" "(" Var ":" Typ ")" Exp;  -- lambda abstraction
+EAp.   Exp ::= Exp "(" Exp ")";               -- application
+ECmd.  Exp ::= "cmd" Cmd;                     -- encapsulation
 
 -- Commands
-CRet.   Cmd ::= "ret" Exp;
-CBnd.   Cmd ::= "bnd" Var "<-" Exp ";" Cmd;
-CDcl.   Cmd ::= "dcl" Qey "in" Cmd;
-CGap.   Cmd ::= Uni "(" Exp ")";
-CCap.   Cmd ::= "Controlled" Uni "(" Exp "," Exp ")";
-CMeas.  Cmd ::= "meas" "(" Exp ")";;
+CRet.   Cmd ::= "ret" Exp;                            -- return
+CBnd.   Cmd ::= "bnd" Var "<-" Exp ";" Cmd;           -- sequence
+CDcl.   Cmd ::= "dcl" Qey "in" Cmd;                   -- qubit symbol creation
+CGap.   Cmd ::= Uni "(" Exp ")";                      -- unitary gate application
+CCap.   Cmd ::= "Controlled" Uni "(" Exp "," Exp ")"; -- TODO: convert to block diagonals
+CMeas.  Cmd ::= "meas" "(" Exp ")";;                  -- measurement
 -- CGet.   Cmd ::= "get" "[" Qey "]";
 -- CSet.   Cmd ::= "set" "[" Qey "]" "(" Exp ")";
 
