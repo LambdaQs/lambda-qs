@@ -76,8 +76,6 @@ Exp, e {{ tex \textcolor{black}{e} }} :: '' ::=  {{ com Expressions }}
     {{ com \textcolor{RoyalBlue}{if}~$[[e]]$~\textcolor{RoyalBlue}{then}~$[[e1]]$~\textcolor{RoyalBlue}{else}~$[[e2]]$ }}
   | not e                                                  ::   :: negation
     {{ com \textcolor{RoyalBlue}{$\neg~[[e]]$} }}
-  | eq ( e1 ; e2 )                                         ::   :: equaltest
-    {{ com $[[e1]]$ \textcolor{RoyalBlue}{=} $[[e2]]$ }}
   | triv                                                   ::   :: trivial
     {{ com \textcolor{RoyalBlue}{$\langle \rangle$} }}
   | [ e1 / x ] e2                                          :: M :: subst
