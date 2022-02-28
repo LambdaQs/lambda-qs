@@ -4,10 +4,10 @@
 
 % Written by Kartik Singhal and Sarah Marshall following Bob Harper's PFPL
 
-metavar x {{ tex \textcolor{black}{x} }}                                                    ::= {{ com term variable }}
-metavar q {{ tex \textcolor{YellowOrange}{q} }}, r {{ tex \textcolor{YellowOrange}{r} }}    ::= {{ com qubit symbols }}
-metavar U {{ tex \textcolor{CarnationPink}{U} }}, V {{ tex \textcolor{CarnationPink}{V} }}  ::= {{ com unitary symbols }}
-metavar l                                                                                   ::= {{ com label }}
+metavar x {{ tex \textcolor{black}{x} }}, _                                                             ::= {{ com term variable }}
+metavar q {{ tex \textcolor{YellowOrange}{q} }}, r {{ tex \textcolor{YellowOrange}{r} }}                ::= {{ com qubit symbols }}
+metavar U {{ tex \textcolor{CarnationPink}{U}_{2^n} }}, V {{ tex \textcolor{CarnationPink}{V}_{2^n} }}  ::= {{ com unitary symbols }}
+metavar l                                                                                               ::= {{ com label }}
 
 indexvar i, j, n, n_a {{ tex n_a }}, n_b {{ tex n_b }} ::= {{ com indices }}
 
@@ -22,6 +22,8 @@ embed {{ tex-preamble
   \newcommand{\ccdot}{\scalebox{1.15}{$\SavedStyle\cdot$} }
   \newcommand{\altdiv}{\mathbin{\ThisStyle{%
     \stackunder[-.25\LMex]{\stackon[-.15\LMex]{\SavedStyle\sim}{\ccdot} }{\ccdot} } } }
+
+  \newcommand{\igate}[1]{\ensuremath{\textcolor{CarnationPink}{\mathit{#1} } } }
 }}
 
 grammar
@@ -30,13 +32,13 @@ Typ, t {{ tex \textcolor{black}{\tau} }} :: '' ::= {{ com Types }}
   | qbit                                        :: M :: qubit
     {{ com \textcolor{RoyalBlue}{qbit}, opaque qubit type }}
   | qref [ q ]                                  ::   :: qubitRef
-    {{ com \textcolor{RoyalBlue}{qref}, qubit reference type }}
+    {{ com \textcolor{RoyalBlue}{qref $[[q]]$}, qubit reference type }}
   | arr ( t1 ; t2 )                             ::   :: function
     {{ com $[[t1]]~\textcolor{RoyalBlue}{\rightarrow}~[[t2]]$ }}
   | cmd ( t )                                   ::   :: command
     {{ com \textcolor{RoyalBlue}{$[[t]]$ cmd} }}
   | prod ( </ li c-> ti // i IN 1 .. n /> )     ::   :: product
-    {{ com \textcolor{RoyalBlue}{$\bigtimes_{l \in L}\,\tau_l$} }}
+    {{ com \textcolor{RoyalBlue}{$\bigtimes_{l \in L}^n\,\tau_l$} }}
   | sum ( </ li c-> ti // , // i IN 1 .. n /> ) :: M :: sum
     {{ com \textcolor{RoyalBlue}{$\bigplus_{l \in L}\,\tau_l$} }}
   | bool                                        ::   :: bool
@@ -60,9 +62,9 @@ Exp, e {{ tex \textcolor{black}{e} }} :: '' ::=  {{ com Expressions }}
   | qloc [ q ]                                             ::   :: qubitLocation
     {{ com \textcolor{RoyalBlue}{\&$[[q]]$}, qubit location }}
   | tpl ( </ li c-> ei // , // i IN 1 .. n /> )            ::   :: tuple
-    {{ com \textcolor{RoyalBlue}{$\langle e_l \rangle_{l \in L}$} }}
+    {{ com \textcolor{RoyalBlue}{$\langle e_l \rangle_{l \in L}$}, tuple }}
   | pr [ li ] ( e )                                        ::   :: projection
-    {{ com \textcolor{RoyalBlue}{$[[e]] \cdot l$} }}
+    {{ com \textcolor{RoyalBlue}{$[[e]] \cdot l$}, projection }}
   | in [ li ] { </ ti // , // i IN 1 .. n /> } ( e )       :: M :: injection
     {{ com \textcolor{RoyalBlue}{$l \cdot [[e]]$} }}
   % TODO: here xi's may need to bound in ei's
@@ -84,20 +86,21 @@ Exp, e {{ tex \textcolor{black}{e} }} :: '' ::=  {{ com Expressions }}
     {{ com parentheses }}
 
 Cmd, m {{ tex \textcolor{black}{m} }} :: '' ::= {{ com Commands }}
-  | ret ( e )                 ::   :: return                             {{ com \textcolor{RoyalBlue}{ret $[[e]]$} }}
-  | bnd ( e ; x . m )         ::   :: sequence       (+ bind x in m +)   {{ com \textcolor{RoyalBlue}{bnd $[[x]] \leftarrow [[e]] ; [[m]]$} }}
-  | newqref [ q ]             ::   :: newqref                            {{ com \textcolor{RoyalBlue}{new()} }}
-  | gateapr [ U ] ( e )       ::   :: gateAppRef                         {{ com \textcolor{RoyalBlue}{$[[U]]$$([[e]])$}, gate application }}
-  | diagapr [ U , V ] ( e1 ; e2 )   ::   :: diagAppRef
-    {{ com \textcolor{RoyalBlue}{D($[[U]],[[V]]$)}\textcolor{RoyalBlue}{(}$[[e1]]$\textcolor{RoyalBlue}{,} $[[e2]]$\textcolor{RoyalBlue}{)}, block diagonal }}
-  | measr ( e )               ::   :: measRef                            {{ com \textcolor{RoyalBlue}{meas$([[e]])$}, measure qbit }}
-  | dcl ( q . m )             :: M :: newQubit                           {{ com \textcolor{RoyalBlue}{dcl $[[q]]$ in $[[m]]$}, new (opaque) qubit }} % (+ bind q in m +)
-  | gateap [ U , q ]          :: M :: gateApp                            {{ com gate application (opaque) }}
-  | meas [ q ]                :: M :: meas                               {{ com measure qbit (opaque) }}
-  | [ e / x ] m               :: M :: substCmd                           {{ com substitution }}
+  | ret ( e )                       ::   :: return                             {{ com \textcolor{RoyalBlue}{ret $[[e]]$}, return }}
+  | bnd ( e ; x . m )               ::   :: sequence       (+ bind x in m +)   {{ com \textcolor{RoyalBlue}{bnd $[[x]] \leftarrow [[e]] ; [[m]]$}, sequencing }}
+  | newqref ( x . m )               ::   :: newqref        (+ bind x in m +)   {{ com \textcolor{RoyalBlue}{new $[[x]]$ in $[[m]]$}, new qubit reference }}
+  | gateap [ U ] ( e )              ::   :: gateAppRef                         {{ com \textcolor{RoyalBlue}{$[[U]]$$([[e]])$}, gate application }}
+  | diagap [ U , V ] ( e1 ; e2 )    ::   :: diagAppRef
+    {{ com \textcolor{RoyalBlue}{D(\igate{U},\igate{V})}\textcolor{RoyalBlue}{(}$[[e1]]$\textcolor{RoyalBlue}{,} $[[e2]]$\textcolor{RoyalBlue}{)}, block diagonal }}
+  | meas ( e )                      ::   :: measRef                            {{ com \textcolor{RoyalBlue}{meas$([[e]])$}, measure qbit }}
+  | dcl ( q . m )                   :: M :: newQubit                           {{ com \textcolor{RoyalBlue}{dcl $[[q]]$ in $[[m]]$}, new (opaque) qubit }} % (+ bind q in m +)
+  | gateapm [ U , q ]               :: M :: gateApp                            {{ com gate application (opaque) }}
+  | measm [ q ]                     :: M :: meas                               {{ com measure qbit (opaque) }}
+  | [ e / x ] m                     :: M :: substCmd                           {{ com substitution }}
 
 Sugar, s :: '' ::= {{ com Derived forms }}
   | { x <- m1 ; m2 }    :: :: SeqComp
+  | { m1 ; m2 }         :: :: SeqComp2
   | do e                :: :: Do
   | proc ( x : t ) m    :: :: Procedure
   | call e1 ( e2 )      :: :: Call
@@ -137,6 +140,9 @@ Jdefined :: '' ::=
 
     ---------------------------------:: SeqComp
     {x<-m1; m2} := bnd(cmd(m1); x.m2)
+
+    ------------------------------:: SeqCompU
+    {m1; m2} := bnd(cmd(m1); _.m2)
 
     ------------------------:: Do
     do e := bnd(e; x.ret(x))
@@ -214,32 +220,34 @@ Jstatics :: '' ::=
     ------------------------- :: Bnd
     G |- sig bnd(e;x.m) ~. t'
 
+    G, x:qref[q] |- sig,q~qbit m ~. t
+    --------------------------------- :: NewQRef
+    G |- sig newqref(x.m) ~. t
+
+    G |- sig e:prod ( </ li c-> qref [qi] // i IN 1 .. n /> )
+    --------------------------------------------------------- :: GateApRef
+    G |- sig gateap[U](e) ~. unit
+
+    G |- sig e1:qref[q]
+    G |- sig e2:prod ( </ li c-> qref [ri] // i IN 1 .. n /> )
+    ---------------------------------------------------------- :: DiagApRef
+    G |- sig diagap[U,V](e1;e2) ~. unit
+
+    G |- sig e:qref[q]
+    ------------------------ :: MeasRef
+    G |- sig meas(e) ~. bool
+
+    % Some final rules for qubit symbols (with resolved references) missing here
+
     G |- sig,q~qbit m ~. t
     ----------------------- :: Dcl
     G |- sig dcl(q.m) ~. t
 
-    G |- sig,q~qbit m ~. t
-    -------------------------------------- :: NewQRef
-    G |- sig bnd(cmd(newqref[q]);x.m) ~. t
+    ------------------------------------ :: GateAp
+    G |- sig,q~qbit gateapm[U,q] ~. unit
 
-    ----------------------------------- :: GateAp
-    G |- sig,q~qbit gateap[U,q] ~. unit
-
-    G |- sig e:qref[q]
-    ------------------------------ :: GateApRef
-    G |- sig gateapr[U](e) ~. unit
-
-    G |- sig e1:qref[q]
-    G |- sig e2:qref[r]
-    ------------------------------------ :: DiagApRef
-    G |- sig diagapr[U,V](e1;e2) ~. unit
-
-    ------------------------------- :: Meas
-    G |- sig,q~qbit meas[q] ~. bool
-
-    G |- sig e:qref[q]
-    ------------------------- :: MeasRef
-    G |- sig measr(e) ~. bool
+    -------------------------------- :: Meas
+    G |- sig,q~qbit measm[q] ~. bool
 
 defns
 Jdynamics :: '' ::=
@@ -268,10 +276,10 @@ Jdynamics :: '' ::=
     qloc[q] val sig,q~qbit
 
   defn
-  e |--> e' :: :: trans :: tr {{ com Transition }} by
+  e |--> e' :: :: trans :: tr_ {{ com Transition }} by
 
     e1 |--> e1'
-    --------------------------------- :: Let1
+    --------------------------------- :: Let
     let(e1; x.e2) |--> let(e1'; x.e2)
 
     e1 val
@@ -279,12 +287,12 @@ Jdynamics :: '' ::=
     let(e1; x.e2) |--> [e1/x]e2
 
     e1 |--> e1'
-    --------------------------- :: Ap1
+    --------------------------- :: ApL
     ap(e1; e2) |--> ap(e1'; e2)
 
     e1 val
     e2 |--> e2'
-    --------------------------- :: Ap2
+    --------------------------- :: ApR
     ap(e1; e2) |--> ap(e1; e2')
 
     e2 val
@@ -329,14 +337,14 @@ Jdynamics :: '' ::=
     ret(e) final sig
 
   defn
-  m |--> sig m' :: :: Stransmu :: st {{ com State transition }} {{ tex [[m]] \underset{[[sig]]}{\longmapsto} [[m']] }} by
+  m |--> sig m' :: :: Stransmu :: st_ {{ com State transition }} {{ tex [[m]] \underset{[[sig]]}{\longmapsto} [[m']] }} by
 
     e |--> sig e'
-    ----------------------- :: Ret1
+    ----------------------- :: Ret
     ret(e) |--> sig ret(e')
 
     e |--> sig e'
-    ------------------------------- :: Bnd1
+    ------------------------------- :: Bnd
     bnd(e;x.m) |--> sig bnd(e';x.m)
 
     e val sig
@@ -344,24 +352,43 @@ Jdynamics :: '' ::=
     bnd(cmd(ret(e));x.m) |--> sig [e/x]m
 
     m1 |--> sig m1'
-    --------------------------------------------- :: Bnd2
+    --------------------------------------------- :: BndCmd
     bnd(cmd(m1);x.m2) |--> sig bnd(cmd(m1');x.m2)
 
-    % TODO: consider newqref as sugar for dcl or provide an explicit rule
+    m |--> sig,q~qbit m'
+    ----------------------------------- :: NewQRef
+    newqref(x.m) |--> sig newqref(x.m')
+
+    e val sig
+    --------------------------------- :: NewQRefInstr
+    newqref(x.ret(e)) |--> sig ret(e)
+
+    e |--> sig e'
+    ----------------------------------------------- :: GateApRef
+    gateap[U](e) |--> sig gateap[U](e')
+
+    e1 |--> sig e1'
+    ----------------------------------------------- :: DiagApRefL
+    diagap[U,V](e1;e2) |--> sig diagap[U,V](e1';e2)
+
+    e1 val sig
+    e2 |--> sig e2'
+    ----------------------------------------------- :: DiagApRefR
+    diagap[U,V](e1;e2) |--> sig diagap[U,V](e1;e2')
+
+    e |--> sig e'
+    --------------------------------------- :: MeasRef
+    meas(e) |--> sig meas(e')
+
+    % Some final rules for qubit symbols (with resolved references) missing here
+
     e val sig,q~qbit
     ----------------------------- :: Dcl
     dcl(q.ret(e)) |--> sig ret(e)
 
-    e |--> sig e'
-    ------------------------------------- :: GateApRef1
-    gateapr[U](e) |--> sig gateapr[U](e')
-
     ----------------------------------------------- :: GateApRefInstr
-    gateapr[U](qloc[q]) |--> sig,q~qbit gateap[U,q]
+    gateap[U](qloc[q]) |--> sig,q~qbit gateapm[U,q]
 
-    e |--> sig e'
-    --------------------------- :: MeasRef1
-    measr(e) |--> sig measr(e')
 
     -------------------------------------- :: MeasInstr
-    measr(qloc[q]) |--> sig,q~qbit meas[q]
+    meas(qloc[q]) |--> sig,q~qbit measm[q]
