@@ -6,24 +6,32 @@ MUni. Uni ::= Ident; -- unitaries
 MKey. Key ::= Ident; -- qubit symbols/unique keys
 
 -- Types
--- TQbit. Typ ::= "qbit";                      -- opaque qubit type
 TQref. Typ ::= "qref" "[" Key "]";          -- qubit reference
-TParr. Typ ::= "parr" "(" Typ "->" Typ ")"; -- partial function
+TParr. Typ ::= Typ "->" Typ;  -- partial function
 TCmd.  Typ ::= "cmd" "(" Typ ")";           -- command
-TNat.  Typ ::= "nat";
+TProd. Typ ::= Typ "*" Typ;
+-- TSum.  Typ ::= "sum" "(" Typ "," Typ ")";
 TBool. Typ ::= "bool";
 TUnit. Typ ::= "unit";
+-- TQbit. Typ ::= "qbit";                      -- opaque qubit type
+-- TNat.  Typ ::= "nat";
 
 -- Expressions
 EVar.  Exp ::= Var;
-ENat.  Exp ::= Integer;
-EPlus. Exp ::= Exp "+" Exp;
-ETriv. Exp ::= "()";
-EQloc. Exp ::= "&" Key;                       -- qubit locations
 ELet.  Exp ::= "let" Var "be" Exp "in" Exp;   -- let expression
 ELam.  Exp ::= "\\" "(" Var ":" Typ ")" Exp;  -- lambda abstraction
 EAp.   Exp ::= Exp "(" Exp ")";               -- application
 ECmd.  Exp ::= "cmd" Cmd;                     -- encapsulation
+EQloc. Exp ::= "&" Key;                       -- qubit locations
+ETpl.  Exp ::= "(" Exp "," Exp ")";
+EProj. Exp ::= Exp "." Integer; -- currently just 1 or 2 as these are pairs
+ETrue. Exp ::= "true";
+EFls.  Exp ::= "false";
+EIte.  Exp ::= "if" Exp "then" Exp "else" Exp;
+ENot.  Exp ::= "not" Exp;
+ETriv. Exp ::= "()";
+-- ENat.  Exp ::= Integer;
+-- EPlus. Exp ::= Exp "+" Exp;
 
 -- Commands
 CRet.   Cmd ::= "ret" Exp;                                -- return
