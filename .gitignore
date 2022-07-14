@@ -62,3 +62,7 @@ src/elab/bnfc.mk
 TestLambdaQs
 *QSharp.ml*
 TestQSharp
+
+## whiley-boogie
+**/bin/
+*.class
