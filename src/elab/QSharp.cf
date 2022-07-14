@@ -1,4 +1,5 @@
 entrypoints Doc;
+comment "//";
 
 Prog. Doc ::= [Nmspace];
 
@@ -9,13 +10,26 @@ NDec . Nmspace ::= "namespace" QName "{" [NSElmnt] "}";
 terminator Nmspace "";
 terminator NSElmnt "";
 
+QUnqual. QName ::= Ident;
+QQual.   QName ::= QIdent;
+
+separator nonempty Ident ".";
+
 NSOp   . NSElmnt ::= "open" QName ";";
 NSOpAs . NSElmnt ::= "open" QName "as" QName ";";
-NSTy   . NSElmnt ::= "newtype" Ident "=" UType ";" ;
-NSCall . NSElmnt ::= CallDec;
+NSTy   . NSElmnt ::= DeclPrefix "newtype" Ident "=" UType ";" ;
+NSCall . NSElmnt ::= DeclPrefix CallDec;
+
+DPrefix. DeclPrefix ::= [Attr] Access;
+
+AAttr. Attr ::= "@" Exp;
+
+terminator Attr "";
+
+AEmpty    . Access ::= ;
+AInternal . Access ::= "internal";
 
 -- Type Declaration
--- - Skipping "declarationPrefix" here
 
 UTTpl  . UType ::= "(" [TyTplItem] ")";
 UTETyp . UType ::= Typ;
@@ -28,17 +42,14 @@ TTIUTyp. TyTplItem ::= UType;
 NItem . NamedItem ::= Ident ":" Typ;
 
 -- Callable Declaration
--- - Skipping "declarationPrefix" here as well
--- - Also skipping "characteristics"
 
-CDFun  . CallDec ::= "function"  Ident       ParamTpl ":" Typ Body;
-CDOp   . CallDec ::= "operation" Ident       ParamTpl ":" Typ Body;
-CDFunP . CallDec ::= "function"  Ident TyArg ParamTpl ":" Typ Body;
-CDOpP  . CallDec ::= "operation" Ident TyArg ParamTpl ":" Typ Body;
+CDFun . CallDec ::= "function"  Ident TyArg ParamTpl ":" Typ Body;
+CDOp  . CallDec ::= "operation" Ident TyArg ParamTpl ":" Typ Chars Body;
 
-TArg . TyArg ::= "<" [TIndent] ">";
+TAEmpty . TyArg ::= ;
+TAList  . TyArg ::= "<" [TIdent] ">";
 
-separator TIndent ",";
+separator TIdent ",";
 
 ParTpl . ParamTpl ::= "(" [Param] ")";
 
@@ -47,22 +58,55 @@ separator Param ",";
 ParNI  . Param ::= NamedItem;
 ParNIA . Param ::= ParamTpl ;
 
--- Skipping "specialization" for now
-Bod . Body ::= Scope;
--- BodSpec . Body ::= ;
+CEmpty. Chars ::= ;
+CIs.    Chars ::= "is" CharsExp;
+
+CEAdj.   CharsExp ::= "Adj";
+CECtl.   CharsExp ::= "Ctl";
+CEParen. CharsExp ::= "(" CharsExp ")";
+CETimes. CharsExp ::= CharsExp "*" CharsExp;
+CEPlus.  CharsExp ::= CharsExp "+" CharsExp;
+
+separator Spec "";
+
+BSpec.  Body ::= "{" [Spec] "}";
+BScope. Body ::= Scope;
+
+SSpec. Spec ::= SpecName SpecGen;
+
+SNBody.   SpecName ::= "body";
+SNAdj.    SpecName ::= "adjoint";
+SNCtl.    SpecName ::= "controlled";
+SNCtlAdj. SpecName ::= "controlled" "adjoint";
+
+SGScope.  SpecGen ::= Scope;
+SGImpl.   SpecGen ::= SpecParamTpl Scope;
+SGAuto.   SpecGen ::= "auto" ";";
+SGSelf.   SpecGen ::= "self" ";";
+SGInvert. SpecGen ::= "invert" ";";
+SGDist.   SpecGen ::= "distribute" ";";
+SGIntr.   SpecGen ::= "intrinsic" ";";
+
+SpecParTpl. SpecParamTpl ::= "(" [SpecParam] ")";
+
+separator SpecParam ",";
+
+SPVar.   SpecParam ::= Ident;
+SPSubst. SpecParam ::= "...";
+SPTpl.   SpecParam ::= SpecParamTpl;
 
 Scp . Scope ::= "{" [Stm] "}";
 
 separator Stm "";
 
 -- Types
--- - Skipping Array types for now
 TEmp  . Typ ::= "_";
-TPar  . Typ ::= TIndent;
+TPar  . Typ ::= TIdent;
 TQNm  . Typ ::= QName;
 TTpl  . Typ ::= "(" [Typ] ")";
 TFun  . Typ ::= Typ "->" Typ;
-TOp   . Typ ::= Typ "=>" Typ;
+TOp   . Typ ::= Typ "=>" Typ Chars;
+TArr  . Typ ::= Typ "[" "]";
 TBInt . Typ ::= "BigInt";
 TBool . Typ ::= "Bool"  ;
 TDbl  . Typ ::= "Double";
@@ -77,20 +121,40 @@ TUnit . Typ ::= "Unit"  ;
 separator Typ ",";
 
 -- Statement
--- - Skipping variations of "set", for, while, repeat, until, borrow, within
-SExp   . Stm ::= Exp ";";
-SRet   . Stm ::= "return" Exp";";
-SFail  . Stm ::= "fail"   Exp";";
-SLet   . Stm ::= "let"     Bnd "=" Exp ";";
-SMut   . Stm ::= "mutable" Bnd "=" Exp ";";
-SSet   . Stm ::= "set"     Bnd "=" Exp ";";
-SIf    . Stm ::= "if"   Exp Scope;
-SEIf   . Stm ::= "elif" Exp Scope;
-SElse  . Stm ::= "else"     Scope;
-SUse   . Stm ::= "use"     QbitBnd ";";
-SUseS  . Stm ::= "use"     QbitBnd Scope;
-SUseP  . Stm ::= "use" "(" QbitBnd ")" ";";
-SUsePS . Stm ::= "use" "(" QbitBnd ")" Scope;
+SExp.    Stm ::= Exp ";";
+SRet.    Stm ::= "return" Exp";";
+SFail.   Stm ::= "fail" Exp";";
+SLet.    Stm ::= "let" Bnd "=" Exp ";";
+SMut.    Stm ::= "mutable" Bnd "=" Exp ";";
+SSet.    Stm ::= "set" Bnd "=" Exp ";";
+SSetOp.  Stm ::= "set" Ident SetOp Exp ";";
+SSetW.   Stm ::= "set" Ident "w/=" Exp "<-" Exp ";";
+SIf.     Stm ::= "if" Exp Scope;
+SEIf.    Stm ::= "elif" Exp Scope;
+SElse.   Stm ::= "else" Scope;
+SFor.    Stm ::= "for" Bnd "in" Exp Scope;
+SWhile.  Stm ::= "while" Exp Scope;
+SRep.    Stm ::= "repeat" Scope;
+SUntil.  Stm ::= "until" Exp ";";
+SUntilF. Stm ::= "until" Exp "fixup" Scope;
+SWithin. Stm ::= "within" Scope;
+SApply.  Stm ::= "apply" Scope;
+SUse.    Stm ::= "use" QbitBnd ";";
+SUseS.   Stm ::= "use" QbitBnd Scope;
+
+SoPow.    SetOp ::= "^=";
+SoMul.    SetOp ::= "*=";
+SoDiv.    SetOp ::= "/=";
+SoMod.    SetOp ::= "%=";
+SoAdd.    SetOp ::= "+=";
+SoSub.    SetOp ::= "-=";
+SoShiftR. SetOp ::= ">>>=";
+SoShiftL. SetOp ::= "<<<=";
+SoBAnd.   SetOp ::= "&&&";
+SoBXor.   SetOp ::= "^^^=";
+SoBOr.    SetOp ::= "|||=";
+SoLAnd.   SetOp ::= "and=";
+SoLOr.    SetOp ::= "or=";
 
 BndWild . Bnd ::= "_";
 BndName . Bnd ::= Ident;
@@ -100,32 +164,81 @@ separator Bnd ",";
 
 QBnd. QbitBnd ::= Bnd "=" QbitInit;
 
--- Skipping array of qubits for now
 QInitS. QbitInit ::= "Qubit" "(" ")";
+QInitA. QbitInit ::= "Qubit" "[" Exp "]";
 QInitT. QbitInit ::= "(" [QbitInit] ")";
 
 separator QbitInit ",";
 
 -- Expressions
--- - Skipping many uninteresting ones
-EEmp  . Exp ::= "_"    ;
-EName . Exp ::= QName  ;
-EInt  . Exp ::= Integer;
-EDbl  . Exp ::= Double ;
-EStr  . Exp ::= String ;
-EBool . Exp ::= BoolL  ;
-ERes  . Exp ::= ResL   ;
-EPli  . Exp ::= PliL   ;
-ETp   . Exp ::= "(" [Exp] ")";
-ECtrl . Exp ::= "Controlled" Exp;
-EAdj  . Exp ::= "Adjoint" Exp;
-EPlus . Exp ::= Exp "+" Exp;
-ECall . Exp ::= Exp "(" [Exp] ")";
-ECond . Exp ::= Exp "?" Exp "|" Exp;
-EEll  . Exp ::= Exp ".." Exp;
-EElro . Exp ::= Exp "...";
-EEllo . Exp ::= "..." Exp;
-EElo  . Exp ::= "...";
+EEmp.     Exp21 ::= "_";
+EName.    Exp21 ::= QName;
+ENameT.   Exp21 ::= QName "<" [Typ] ">";
+EInt.     Exp21 ::= Integer;
+EDbl.     Exp21 ::= Double;
+EStr.     Exp21 ::= String;
+EStrI.    Exp21 ::= "$" String;
+EBool.    Exp21 ::= BoolL;
+ERes.     Exp21 ::= ResL;
+EPli.     Exp21 ::= PliL;
+ETp.      Exp21 ::= "(" [Exp] ")";
+EArr.     Exp21 ::= "[" [Exp] "]";
+EItem.    Exp20 ::= Exp "::" Ident;
+EIndex.   Exp20 ::= Exp "[" Exp "]";
+EUnwrap.  Exp19 ::= Exp "!";
+ECtrl.    Exp18 ::= "Controlled" Exp;
+EAdj.     Exp18 ::= "Adjoint" Exp;
+ECall.    Exp17 ::= Exp "(" [Exp] ")";
+ENeg.     Exp16 ::= "-" Exp;
+ELNot.    Exp16 ::= "not" Exp;
+EBNot.    Exp16 ::= "~~~" Exp;
+EPow.     Exp15 ::= Exp "^" Exp;
+EMul.     Exp14 ::= Exp "*" Exp;
+EDiv.     Exp14 ::= Exp "/" Exp;
+EMod.     Exp14 ::= Exp "%" Exp;
+EAdd.     Exp13 ::= Exp "+" Exp;
+ESub.     Exp13 ::= Exp "-" Exp;
+EShiftR.  Exp12 ::= Exp ">>>" Exp;
+EShiftL.  Exp12 ::= Exp "<<<" Exp;
+EGt.      Exp11 ::= Exp ">" Exp;
+EGte.     Exp11 ::= Exp ">=" Exp;
+ELt.      Exp11 ::= Exp "<" Exp;
+ELte.     Exp11 ::= Exp "<=" Exp;
+EEq.      Exp10 ::= Exp "==" Exp;
+ENeq.     Exp10 ::= Exp "!=" Exp;
+EBAnd.    Exp9  ::= Exp "&&&" Exp;
+EBXor.    Exp8  ::= Exp "^^^" Exp;
+EBOr.     Exp7  ::= Exp "|||" Exp;
+ELAnd.    Exp6  ::= Exp "and" Exp;
+ELOr.     Exp5  ::= Exp "or" Exp;
+ECond.    Exp4  ::= Exp "?" Exp "|" Exp;
+ERange.   Exp3  ::= Exp ".." Exp;
+ERangeR.  Exp2  ::= Exp "...";
+ERangeL.  Exp1  ::= "..." Exp;
+ERangeLR. Exp   ::= "...";
+EUpdate.  Exp   ::= Exp "w/" Exp "<-" Exp;
+
+_. Exp20 ::= Exp21;
+_. Exp19 ::= Exp20;
+_. Exp18 ::= Exp19;
+_. Exp17 ::= Exp18;
+_. Exp16 ::= Exp17;
+_. Exp15 ::= Exp16;
+_. Exp14 ::= Exp15;
+_. Exp13 ::= Exp14;
+_. Exp12 ::= Exp13;
+_. Exp11 ::= Exp12;
+_. Exp10 ::= Exp11;
+_. Exp9  ::= Exp10;
+_. Exp8  ::= Exp9;
+_. Exp7  ::= Exp8;
+_. Exp6  ::= Exp7;
+_. Exp5  ::= Exp6;
+_. Exp4  ::= Exp5;
+_. Exp3  ::= Exp4;
+_. Exp2  ::= Exp3;
+_. Exp1  ::= Exp2;
+_. Exp   ::= Exp1;
 
 separator Exp ",";
 
@@ -140,5 +253,5 @@ PliX  . PliL ::= "PauliX";
 PliY  . PliL ::= "PauliY";
 PliZ  . PliL ::= "PauliZ";
 
-token TIndent '\'' letter (letter | digit | '_' | '\'')*;
-token QName letter (letter | digit | '_' | '\'')* ('.' letter (letter | digit | '_' | '\'')*)*;
+token TIdent '\'' letter (letter | digit | '_' | '\'')*;
+token QIdent letter (letter | digit | '_')* ('.' letter (letter | digit | '_')*)+;

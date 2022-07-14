@@ -62,3 +62,10 @@ src/elab/bnfc.mk
 TestLambdaQs
 *QSharp.ml*
 TestQSharp
+
+*.hi
+*.hs
+*.x
+*.y
+*.txt
+*.info
