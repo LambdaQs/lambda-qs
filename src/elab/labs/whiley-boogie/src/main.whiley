@@ -15,7 +15,7 @@ function noClone(nat a, nat b) -> bool:
 
 
 //why wont this work???
-//type safePairr is (nat a, nat b)  
+//type safePairr is (nat a, nat b)
 
 type safePair is {nat p, nat q} where p != q
 
@@ -52,13 +52,13 @@ ensures all { j in 0..|rest| | rest[j] == l[j + 1] }:
 
 function make_qubit_list(nat start, nat length) -> (nat[] qs)
 ensures |qs| == length
-ensures all { i in 0..|qs| | qs[i] == start + i }:  
+ensures all { i in 0..|qs| | qs[i] == start + i }:
 
     qs = [0; length]
     nat i = 0
 
     int size = |qs|
-    while i < |qs| 
+    while i < |qs|
     where |qs| == size
     where all { k in 0..i | qs[k] == start + k }:
         qs[i] = start + i
@@ -78,23 +78,23 @@ ensures all { j in 0..length | lsp[j].q == s2 + j }:
 
     if length == 0:
         return([])
-    else: 
-        safePair[] ll = [{p: 0, q: 1}; length] 
+    else:
+        safePair[] ll = [{p: 0, q: 1}; length]
 
         //its probably better to not use these and to just fill lsp directly...
         nat[] qs1 = make_qubit_list(s1, length)
         nat[] qs2 = make_qubit_list(s2, length)
 
-        nat i = 0        
-        while i < length 
+        nat i = 0
+        while i < length
         where |ll| == length
         where all { k in 0..i | ll[k].p == s1 + k }
         where all { k in 0..i | ll[k].q == s2 + k }:
             ll[i] = {p: qs1[i], q:qs2[i]}
-            i = i + 1      
+            i = i + 1
 
         return ll
-         
+
 
 function safeQzip(nat[] l1, nat[] l2) -> (safePair[] lsp)
 requires |l1| == |l2|
@@ -129,7 +129,7 @@ function applyToEach(fun_qp fn, safePair[] qps) -> null:
     while i < |qps| where i >= 0:
         fn(qps[i])
         i = i + 1
-    
+
     return null
 
 
@@ -137,13 +137,13 @@ function applyToEach(fun_qp fn, safePair[] qps) -> null:
 function cnotchain(nat[] ql) -> null
     requires |ql| >= 2
     requires all { i in 0..|ql| | ql[i] == ql[0] + i }:
-             
+
 
         safePair[] spl = (safeQzip((qMost(ql)), (qRest(ql))))
 
 
-        //why do I need to define cnot here? Can I not use CNOT? 
-        fun_qp cnot = &(safePair spll -> null) 
+        //why do I need to define cnot here? Can I not use CNOT?
+        fun_qp cnot = &(safePair spll -> null)
 
         return (applyToEach(cnot, spl))
 
@@ -151,7 +151,7 @@ function cnotchain(nat[] ql) -> null
 
 
 function w19c2(Qrange queryRegister, Qrange periodAncillas) -> null
-requires (queryRegister[0] + |queryRegister| <= periodAncillas[0]) || 
+requires (queryRegister[0] + |queryRegister| <= periodAncillas[0]) ||
          (periodAncillas[0] + |periodAncillas| <= queryRegister[0]): //Note this new concept of disjoint ranges
 
     int N = |queryRegister|
@@ -200,9 +200,9 @@ function w19d4_solve(Qrange qs) -> null:
     where n == |qs|:
         CNOT( { p : qs[n-1], q : qs[i]} )
         i = i + 1
-    
+
     w19d4_dec(qs)
-    
+
     i = 0
     while i <= n - 2
     where n == |qs|:
@@ -229,7 +229,7 @@ function w19d4_solve(Qrange qs) -> null:
 //                 // Uncompute
 //                 for (i in N-period-1..-1..0) {
 //                     CNOT(queryRegister[i + period], queryRegister[i]);
-//                 } 
+//                 }
 //             }
 //         }
 
@@ -237,7 +237,7 @@ function w19d4_solve(Qrange qs) -> null:
 
 
 function test1(int a) -> null:
-    
+
     CNOT({p: 3, q: 4})
 
     Qrange ql1 = [1,2,3,4]
@@ -247,7 +247,7 @@ function test1(int a) -> null:
 
     assert (ql1 == ql3)
     assert (safeQzip(ql1, ql2) == [{p: 1, q: 2}, {p: 2, q: 3}, {p: 3, q: 4}, {p: 4, q: 5}])
-    
+
     w19d4_solve(ql3)
 
     return cnotchain(ql3)
@@ -278,8 +278,8 @@ function test1(int a) -> null:
 //     most = [0; |l| - 1]
 //     nat size = |most|
 //     nat i = 0
-//     while i < |most| 
-//     where |most| == size 
+//     while i < |most|
+//     where |most| == size
 //     where |l| == size + 1
 //     where all { k in 0..i | most[k] == l[k] }:
 //         most[i] = l[i]
