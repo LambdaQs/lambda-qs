@@ -37,7 +37,7 @@ requires |l| > 0
 ensures |most| == |l| - 1
 ensures all { j in 0..|most| | most[j] == l[j] }:
 
-    most = array::remove(l, |l| - 1)
+    most = array::slice(l, 0, |l| - 1)
     return most
 
 function qRest(nat[] l) -> (nat[] rest)
@@ -45,7 +45,7 @@ requires |l| > 0
 ensures |rest| == |l| - 1
 ensures all { j in 0..|rest| | rest[j] == l[j + 1] }:
 
-    rest = array::remove(l, 0)
+    rest = array::slice(l, 1, |l|)
     return rest
 
 
