@@ -1,14 +1,7 @@
-
-
-
-
-
 import std::array
 // import std::io
 
 type nat is (int n) where n >= 0
-
-
 
 function noClone(nat a, nat b) -> bool:
     return (a != b)
@@ -40,6 +33,7 @@ ensures all { j in 0..|most| | most[j] == l[j] }:
     most = array::slice(l, 0, |l| - 1)
     return most
 
+
 function qRest(nat[] l) -> (nat[] rest)
 requires |l| > 0
 ensures |rest| == |l| - 1
@@ -47,7 +41,6 @@ ensures all { j in 0..|rest| | rest[j] == l[j + 1] }:
 
     rest = array::slice(l, 1, |l|)
     return rest
-
 
 
 function make_qubit_list(nat start, nat length) -> (nat[] qs)
@@ -65,7 +58,6 @@ ensures all { i in 0..|qs| | qs[i] == start + i }:
         i = i + 1
 
     return qs
-
 
 
 //note the use of one length number here. Makes things a lot easier
@@ -113,16 +105,8 @@ ensures all { j in 0..|lsp| | lsp[j].q == l2[j]}:
 
 
 
-
-
-
-
-
-
-
 type fun_nat is function(nat)->nat
 type fun_qp is function(safePair)->null //how do I avoid defining these?
-
 
 function applyToEach(fun_qp fn, safePair[] qps) -> null:
     int i = 0
@@ -131,7 +115,6 @@ function applyToEach(fun_qp fn, safePair[] qps) -> null:
         i = i + 1
 
     return null
-
 
 
 function cnotchain(nat[] ql) -> null
@@ -149,7 +132,9 @@ function cnotchain(nat[] ql) -> null
 
 
 
-
+//
+// From https://github.com/LambdaQs/qsharp-samples/tree/main/Contests/winter19
+//
 function w19c2(Qrange queryRegister, Qrange periodAncillas) -> null
 requires (queryRegister[0] + |queryRegister| <= periodAncillas[0]) ||
          (periodAncillas[0] + |periodAncillas| <= queryRegister[0]): //Note this new concept of disjoint ranges
@@ -213,29 +198,6 @@ function w19d4_solve(Qrange qs) -> null:
 
 
 
-// operation EvaluatePeriodClauses (queryRegister : Qubit[], periodAncillas : Qubit[]) : Unit {
-//         body (...) {
-//             let N = Length(queryRegister);
-//             for (period in 1 .. Length(periodAncillas)) {
-//                 // Evaluate the possibility of the string having period K.
-//                 // For each pair of equal qubits, CNOT the last one into the first one.
-//                 for (i in 0..N-period-1) {
-//                     CNOT(queryRegister[i + period], queryRegister[i]);
-//                 }
-
-//                 // If all pairs are equal, the first N-K qubits should be all in state 0.
-//                 (ControlledOnInt(0, X))(queryRegister[0..N-period-1], periodAncillas[period-1]);
-
-//                 // Uncompute
-//                 for (i in N-period-1..-1..0) {
-//                     CNOT(queryRegister[i + period], queryRegister[i]);
-//                 }
-//             }
-//         }
-
-
-
-
 function test1(int a) -> null:
 
     CNOT({p: 3, q: 4})
@@ -251,57 +213,3 @@ function test1(int a) -> null:
     w19d4_solve(ql3)
 
     return cnotchain(ql3)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// function qMost(nat[] l) -> (nat[] most)
-// requires |l| > 0
-// ensures |most| == |l| - 1
-// ensures all { j in 0..|most| | most[j] == l[j] }:
-
-
-//     most = [0; |l| - 1]
-//     nat size = |most|
-//     nat i = 0
-//     while i < |most|
-//     where |most| == size
-//     where |l| == size + 1
-//     where all { k in 0..i | most[k] == l[k] }:
-//         most[i] = l[i]
-//         i = i + 1
-
-//     return most
-
-
-
-
-// function cnotchain(qList ql) -> null
-//     requires qLength(ql) >= 2:
-
-//         assert (qLength(qMost(ql)) == qLength(qRest(ql)))
-//         assert (qMost(ql).s == ql.s)
-//         assert (qRest(ql).s == ql.s + 1)
-
-//         safePair[] spl = (safeQzip((qMost(ql)), (qRest(ql))))
-
-//         //return CNOT({p:1,q:2})
-//         //return null
-
-//         fun_qp cnot = &(safePair spll -> null)
-
-//         return (applyToEach(cnot, spl))
