@@ -1,0 +1,99 @@
+import std::array
+
+type qbit is (int n) where n >= 0
+type safePair is {qbit p, qbit q} where p != q
+type twoElOp is method(safePair)->null
+
+method CNOT(safePair qp) -> null:
+    return null
+
+method ApplyToEach(twoElOp op, safePair[] reg) -> null:
+    int i = 0
+    while i < |reg| where i >= 0:
+        op(reg[i])
+        i = i + 1
+
+    return null
+
+
+function Most(qbit[] qs) -> (qbit[] out)
+requires |qs| > 0
+ensures  |out| == |qs| - 1
+ensures  all { i in 0..|out| | out[i] == qs[i] }:
+    out = array::slice(qs, 0, |qs| - 1)
+    return out
+
+
+function Rest(qbit[] qs) -> (qbit[] out)
+requires |qs| > 0
+ensures  |out| == |qs| - 1
+ensures  all { i in 0..|out| | out[i] == qs[i + 1] }:
+    out = array::slice(qs, 1, |qs|)
+    return out
+
+
+function make_qubit_list(qbit start, qbit length) -> (qbit[] qs)
+ensures |qs| == length
+ensures all { i in 0..|qs| | qs[i] == start + i }:
+    qs = [0; length]
+    qbit i = 0
+
+    int size = |qs|
+    while i < |qs|
+    where |qs| == size
+    where all { k in 0..i | qs[k] == start + k }:
+        qs[i] = start + i
+        i = i + 1
+
+    return qs
+
+//note the use of one length number here. Makes things a lot easier
+//trying to generalize this function will prove to be tricky
+function Zipped_easy(qbit length, qbit x0, qbit y0) -> (safePair[] out)
+requires x0 != y0
+ensures |out| == length
+ensures all { i in 0..length | out[i].p == x0 + i }
+ensures all { j in 0..length | out[j].q == y0 + j }:
+    if length == 0:
+        return([])
+    else:
+        safePair[] qout = [{p: 0, q: 1}; length]
+
+        //its probably better to not use these and to just fill `out` directly...
+        qbit[] qxs = make_qubit_list(x0, length)
+        qbit[] qys = make_qubit_list(y0, length)
+
+        qbit i = 0
+        while i < length
+        where |qout| == length
+        where all { k in 0..i | qout[k].p == x0 + k }
+        where all { k in 0..i | qout[k].q == y0 + k }:
+            qout[i] = {p: qxs[i], q:qys[i]}
+            i = i + 1
+
+        return qout
+
+function Zipped(qbit[] xs, qbit[] ys) -> (safePair[] xys)
+requires |xs| == |ys|
+requires xs[0] != ys[0]
+requires all { i in 0..|xs| | xs[i] == xs[0] + i }
+requires all { j in 0..|ys| | ys[j] == ys[0] + j }
+
+ensures |xys| == |xs|
+ensures all { i in 0..|xys| | xys[i].p == xs[i]}
+ensures all { j in 0..|xys| | xys[j].q == ys[j]}:
+
+    if |xs| == 0:
+        return([])
+    else:
+        return Zipped_easy(|xs|, xs[0], ys[0])
+
+
+method ApplyCNOTChain(qbit[] qs) -> null
+requires |qs| >= 2
+requires all { i in 0..|qs| | qs[i] == qs[0] + i }:
+        safePair[] spl = (Zipped((Most(qs)), (Rest(qs))))
+
+        twoElOp cnot = &(safePair spll -> null)
+
+        return (ApplyToEach(cnot, spl))
