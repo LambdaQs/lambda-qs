@@ -47,46 +47,25 @@ ensures all { i in 0..|qs| | qs[i] == start + i }:
 
     return qs
 
-//note the use of one length number here. Makes things a lot easier
-//trying to generalize this function will prove to be tricky
-function Zipped_easy(qbit length, qbit x0, qbit y0) -> (safePair[] out)
-requires x0 != y0
-ensures |out| == length
-ensures all { i in 0..length | out[i].p == x0 + i }
-ensures all { j in 0..length | out[j].q == y0 + j }:
-    if length == 0:
-        return([])
-    else:
-        safePair[] qout = [{p: 0, q: 1}; length]
-
-        //its probably better to not use these and to just fill `out` directly...
-        qbit[] qxs = make_qubit_list(x0, length)
-        qbit[] qys = make_qubit_list(y0, length)
-
-        qbit i = 0
-        while i < length
-        where |qout| == length
-        where all { k in 0..i | qout[k].p == x0 + k }
-        where all { k in 0..i | qout[k].q == y0 + k }:
-            qout[i] = {p: qxs[i], q:qys[i]}
-            i = i + 1
-
-        return qout
-
 function Zipped(qbit[] xs, qbit[] ys) -> (safePair[] xys)
 requires |xs| == |ys|
-requires xs[0] != ys[0]
-requires all { i in 0..|xs| | xs[i] == xs[0] + i }
-requires all { j in 0..|ys| | ys[j] == ys[0] + j }
-
+requires all { i in 0..|xs| | xs[i] != ys[i] }
 ensures |xys| == |xs|
 ensures all { i in 0..|xys| | xys[i].p == xs[i]}
 ensures all { j in 0..|xys| | xys[j].q == ys[j]}:
 
-    if |xs| == 0:
-        return([])
-    else:
-        return Zipped_easy(|xs|, xs[0], ys[0])
+    qbit length = |xs|
+    safePair[] out = [{p: 0, q: 1}; length]
+
+    qbit i = 0
+    while i < length
+    where |out| == length
+    where all { k in 0..i | out[k].p == xs[k] }
+    where all { k in 0..i | out[k].q == ys[k] }:
+        out[i] = {p: xs[i], q:ys[i]}
+        i = i + 1
+
+    return out
 
 
 method ApplyCNOTChain(qbit[] qs) -> null
