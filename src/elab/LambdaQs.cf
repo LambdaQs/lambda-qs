@@ -1,37 +1,49 @@
 entrypoints Exp;
 
 -- Metavariables
-MVar. Var ::= Ident;
-MUni. Uni ::= Ident;
-MQey. Qey ::= Ident;
+MVar. Var ::= Ident; -- variables
+MUni. Uni ::= Ident; -- unitaries
+MKey. Key ::= Ident; -- qubit symbols/unique keys
 
 -- Types
-TQbit. Typ ::= "qbit";
-TQref. Typ ::= "qref" "[" Qey "]";
-TParr. Typ ::= "parr" "(" Typ "->" Typ ")";
-TCmd.  Typ ::= "cmd" "(" Typ ")";
-TNat.  Typ ::= "nat";
+TQref. Typ ::= "qref" "[" Key "]";          -- qubit reference
+TParr. Typ ::= Typ "->" Typ;  -- partial function
+TCmd.  Typ ::= "cmd" "(" Typ ")";           -- command
+TProd. Typ ::= Typ "*" Typ;
+-- TSum.  Typ ::= "sum" "(" Typ "," Typ ")";
+TBool. Typ ::= "bool";
 TUnit. Typ ::= "unit";
+-- TQbit. Typ ::= "qbit";                      -- opaque qubit type
+-- TNat.  Typ ::= "nat";
 
 -- Expressions
 EVar.  Exp ::= Var;
-ENat.  Exp ::= Integer;
-EPlus. Exp ::= Exp "+" Exp;
+ELet.  Exp ::= "let" Var "be" Exp "in" Exp;   -- let expression
+ELam.  Exp ::= "\\" "(" Var ":" Typ ")" Exp;  -- lambda abstraction
+EAp.   Exp ::= Exp "(" Exp ")";               -- application
+ECmd.  Exp ::= "cmd" Cmd;                     -- encapsulation
+EQloc. Exp ::= "&" Key;                       -- qubit locations
+ETpl.  Exp ::= "(" Exp "," Exp ")";
+EProj. Exp ::= Exp "." Integer; -- currently just 1 or 2 as these are pairs
+ETrue. Exp ::= "true";
+EFls.  Exp ::= "false";
+EIte.  Exp ::= "if" Exp "then" Exp "else" Exp;
+ENot.  Exp ::= "not" Exp;
 ETriv. Exp ::= "()";
-EQloc. Exp ::= "&" Qey;
-ELet.  Exp ::= "let" Var "be" Exp "in" Exp;
-ELam.  Exp ::= "\\" "(" Var ":" Typ ")" Exp;
-EAp.   Exp ::= Exp "(" Exp ")";
-ECmd.  Exp ::= "cmd" Cmd;
+-- ENat.  Exp ::= Integer;
+-- EPlus. Exp ::= Exp "+" Exp;
 
 -- Commands
-CRet. Cmd ::= "ret" Exp;
-CBnd. Cmd ::= "bnd" Var "<-" Exp ";" Cmd;
-CDcl. Cmd ::= "dcl" Qey "in" Cmd;
-CGap. Cmd ::= Uni "(" Exp ")";
-CCap. Cmd ::= "Controlled" Uni "(" Exp "," Exp ")";
-CGet. Cmd ::= "get" "[" Qey "]";
-CSet. Cmd ::= "set" "[" Qey "]" "(" Exp ")";
+CRet.   Cmd ::= "ret" Exp;                                -- return
+CBnd.   Cmd ::= "bnd" Var "<-" Exp ";" Cmd;               -- sequence
+CNew.   Cmd ::= "new" Var "in" Cmd;                       -- new qubit reference
+CGap.   Cmd ::= Uni "(" Exp ")";                          -- unitary gate application
+CDiag.  Cmd ::= "D" "(" Uni "," Uni ";" Exp "," Exp ")";  -- diagonal gate application
+CMeas.  Cmd ::= "meas" "(" Exp ")";                       -- measurement
+-- CDcl.   Cmd ::= "dcl" Key "in" Cmd;                    -- qubit symbol creation
+-- CCap.   Cmd ::= "Controlled" Uni "(" Exp "," Exp ")";
+-- CGet.   Cmd ::= "get" "[" Key "]";
+-- CSet.   Cmd ::= "set" "[" Key "]" "(" Exp ")";
 
 -- Programming idioms
 
@@ -69,34 +81,4 @@ internal EVarT. Exp ::= "(" Var ":" Typ ")";
       bnfc -m --ocaml-menhir LambdaQs.cf  &&  make
       ./TestLambdaQs
       ```
-
-  # Examples:
-
-  ## Sugared Syntax
-
-  ## passes type check
-cmd dcl q1 in
-ret let q1 be &q1 in
-cmd dcl q2 in
-ret let q2 be &q2 in
-cmd Controlled X (q1, q2)
-
-  ## fails type check
-cmd dcl q in
-ret let q1 be &q in
-let q2 be q1 in
-cmd Controlled X (q1, q2)
-
-    ## Core Syntax (won't work with this version of grammar)
-
-let(q1;q2.cmd(ctrlapr(q1;q2;X)))
-
-let(qloc[q];q1.let(q1;q2.cmd(ctrlapr(q1;q2;X))))
-
-cmd(dcl(q.ret(let(qloc[q];q1.let(q1;q2.cmd(ctrlapr(q1;q2;X)))))))
-
-Output for last one:
-
-ECmd (CDcl (MQey (Ident "q"), CRet (ELet (MVar (Ident "q1"), EQloc (MQey (Ident "q")), ELet (MVar (Ident "q2"), EVar (MVar (Ident "q1")), ECmd (CCap (MUni (Ident "X"), EVar (MVar (Ident "q1")), EVar (MVar (Ident "q2")))))))))
-
 -}

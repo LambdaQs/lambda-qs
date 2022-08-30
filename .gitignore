@@ -63,9 +63,14 @@ TestLambdaQs
 *QSharp.ml*
 TestQSharp
 
+## haskell related
 *.hi
 *.hs
 *.x
 *.y
 *.txt
 *.info
+
+## whiley-boogie
+**/bin/
+*.class

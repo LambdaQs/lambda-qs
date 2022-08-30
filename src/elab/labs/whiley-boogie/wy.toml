@@ -1,0 +1,10 @@
+[package]
+name="main"
+authors=["Jake Zweifler"]
+version="0.1.0"
+
+[build]
+platforms=["whiley", "boogie"]
+
+[dependencies]
+std="0.3.2"

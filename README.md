@@ -3,7 +3,7 @@
 ## Requirements
 Working installation of Coq and Haskell.
 
-- We recommend installing a recent version of [Coq Platform](https://github.com/coq/platform) (last tested with `__coq-platform.2021.09.0~8.13`), then
+- We recommend installing a recent version of [Coq Platform](https://github.com/coq/platform) (last tested with `__coq-platform.2022.01.0~8.15.preview1`), then
   issue `opam install dune ott` to get `dune` and `ott` installed.
 
 We need a modified version of `lngen` in the `vendor` directory. Either clone this repo recursively:

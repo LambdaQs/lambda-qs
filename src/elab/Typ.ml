@@ -64,17 +64,17 @@ end
       (** [lookup ctx s] gets the binding of [s] in [sgn].
           Raises: [Failure unbound_sym_err] if [s] is
           not bound in [sgn]. *)
-      val lookupS : tS -> qey -> typ
+      val lookupS : tS -> key -> typ
 
       (** [extend sgn s ty] is [sgn] extended with a binding
           of [s] to [ty]. *)
-      val extendS : tS -> qey -> typ -> tS
+      val extendS : tS -> key -> typ -> tS
     end
 
 (** The [Signature] module implements the [Signature] signature
     with an association list. *)
     module Signature : Signature = struct
-      type tS = (qey * typ) list
+      type tS = (key * typ) list
 
       let emptyS = []
 
