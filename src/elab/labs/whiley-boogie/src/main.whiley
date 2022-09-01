@@ -1,8 +1,3 @@
-
-
-
-
-
 import std::array
 import std::math
 
