@@ -90,18 +90,25 @@ ensures all { j in 0..length | lsp[j].q == s2 + j }:
 
 function safeQzip(nat[] l1, nat[] l2) -> (safePair[] lsp)
 requires |l1| == |l2|
-requires |l1| == 0 || l1[0] != l2[0]
-requires all { i in 0..|l1| | l1[i] == l1[0] + i }
-requires all { j in 0..|l2| | l2[j] == l2[0] + j }
+requires all { i in 0..|l1| | l1[i] != l2[i] }
 
 ensures |lsp| == |l1|
+ensures |lsp| == |l2|
 ensures all { i in 0..|lsp| | lsp[i].p == l1[i]}
 ensures all { j in 0..|lsp| | lsp[j].q == l2[j]}:
 
-    if |l1| == 0:
-        return([])
-    else:
-        return safeQzip_easy(|l1|, l1[0], l2[0])
+    nat length = |l1|
+    safePair[] ll = [{p: 0, q: 1}; length] 
+
+    nat i = 0        
+    while i < length 
+    where |ll| == length
+    where all { k in 0..i | ll[k].p == l1[k] }
+    where all { k in 0..i | ll[k].q == l2[k] }:
+        ll[i] = {p: l1[i], q:l2[i]}
+        i = i + 1      
+
+    return ll
 
 
 
