@@ -13,6 +13,7 @@ terminator NSElmnt "";
 QUnqual. QName ::= Ident;
 QQual.   QName ::= QIdent;
 
+
 separator nonempty Ident ".";
 
 NSOp   . NSElmnt ::= "open" QName ";";
@@ -43,7 +44,7 @@ NItem . NamedItem ::= Ident ":" Typ;
 
 -- Callable Declaration
 
-CDFun . CallDec ::= "function"  Ident TyArg ParamTpl ":" Typ Body;
+CDFun . CallDec ::= "function" Ident TyArg ParamTpl ":" Typ Body;
 CDOp  . CallDec ::= "operation" Ident TyArg ParamTpl ":" Typ Chars Body;
 
 TAEmpty . TyArg ::= ;
@@ -183,6 +184,7 @@ ERes.     Exp21 ::= ResL;
 EPli.     Exp21 ::= PliL;
 ETp.      Exp21 ::= "(" [Exp] ")";
 EArr.     Exp21 ::= "[" [Exp] "]";
+ESArr.    Exp21 ::= "[" Exp "," "size" "=" Exp "]";
 -- ELamFn.   Exp21   ::= Bnd "->" Exp21; -- TODO function lambdas
 -- ELamOp.   Exp21   ::= Bnd "=>" Exp21; -- TODO operation lambdas
 -- see git:qsharp-compiler/src/QsCompiler/TextProcessor/QsKeywords.fs
@@ -240,3 +242,9 @@ PliZ  . PliL ::= "PauliZ";
 
 token TIdent '\'' letter (letter | digit | '_' | '\'')*;
 token QIdent letter (letter | digit | '_')* ('.' letter (letter | digit | '_')*)+;
+
+
+--For some reason, just having these lines here breaks things??? even if they are not called. Why does this happen? 
+token UndIdent ('_')? letter (letter | digit | '_' | '\'')*;
+-- this should be the same as Ident but its not??
+token TestIdent letter (letter | digit | '_' | '\'')*;  
