@@ -10,15 +10,15 @@ NDec . Nmspace ::= "namespace" QName "{" [NSElmnt] "}";
 terminator Nmspace "";
 terminator NSElmnt "";
 
-QUnqual. QName ::= Ident;
+QUnqual. QName ::= UndIdent;
 QQual.   QName ::= QIdent;
 
 
-separator nonempty Ident ".";
+separator nonempty UndIdent ".";
 
 NSOp   . NSElmnt ::= "open" QName ";";
 NSOpAs . NSElmnt ::= "open" QName "as" QName ";";
-NSTy   . NSElmnt ::= DeclPrefix "newtype" Ident "=" UType ";" ;
+NSTy   . NSElmnt ::= DeclPrefix "newtype" UndIdent "=" UType ";" ;
 NSCall . NSElmnt ::= DeclPrefix CallDec;
 
 DPrefix. DeclPrefix ::= [Attr] Access;
@@ -40,12 +40,12 @@ separator TyTplItem ",";
 TTIName. TyTplItem ::= NamedItem;
 TTIUTyp. TyTplItem ::= UType;
 
-NItem . NamedItem ::= Ident ":" Typ;
+NItem . NamedItem ::= UndIdent ":" Typ;
 
 -- Callable Declaration
 
-CDFun . CallDec ::= "function" Ident TyArg ParamTpl ":" Typ Body;
-CDOp  . CallDec ::= "operation" Ident TyArg ParamTpl ":" Typ Chars Body;
+CDFun . CallDec ::= "function" UndIdent TyArg ParamTpl ":" Typ Body;
+CDOp  . CallDec ::= "operation" UndIdent TyArg ParamTpl ":" Typ Chars Body;
 
 TAEmpty . TyArg ::= ;
 TAList  . TyArg ::= "<" [TIdent] ">";
@@ -92,7 +92,7 @@ SpecParTpl. SpecParamTpl ::= "(" [SpecParam] ")";
 
 separator SpecParam ",";
 
-SPVar.   SpecParam ::= Ident;
+SPVar.   SpecParam ::= UndIdent;
 SPSubst. SpecParam ::= "...";
 SPTpl.   SpecParam ::= SpecParamTpl;
 
@@ -128,8 +128,8 @@ SFail.   Stm ::= "fail" Exp";";
 SLet.    Stm ::= "let" Bnd "=" Exp ";";
 SMut.    Stm ::= "mutable" Bnd "=" Exp ";";
 SSet.    Stm ::= "set" Bnd "=" Exp ";";
-SSetOp.  Stm ::= "set" Ident SetOp Exp ";";
-SSetW.   Stm ::= "set" Ident "w/=" Exp "<-" Exp ";";
+SSetOp.  Stm ::= "set" UndIdent SetOp Exp ";";
+SSetW.   Stm ::= "set" UndIdent "w/=" Exp "<-" Exp ";";
 SIf.     Stm ::= "if" Exp Scope;
 SEIf.    Stm ::= "elif" Exp Scope;
 SElse.   Stm ::= "else" Scope;
@@ -158,7 +158,7 @@ SoLAnd.   SetOp ::= "and=";
 SoLOr.    SetOp ::= "or=";
 
 BndWild . Bnd ::= "_";
-BndName . Bnd ::= Ident;
+BndName . Bnd ::= UndIdent;
 BndTplA . Bnd ::= "(" [Bnd] ")";
 
 separator Bnd ",";
@@ -172,24 +172,25 @@ QInitT. QbitInit ::= "(" [QbitInit] ")";
 separator QbitInit ",";
 
 -- Expressions
-EEmp.     Exp21 ::= "_";
-EName.    Exp21 ::= QName;
-ENameT.   Exp21 ::= QName "<" [Typ] ">"; -- TODO conflicting with ELt in several tests
-EInt.     Exp21 ::= Integer;
-EDbl.     Exp21 ::= Double;
-EStr.     Exp21 ::= String;
-EStrI.    Exp21 ::= "$" String;
-EBool.    Exp21 ::= BoolL;
-ERes.     Exp21 ::= ResL;
-EPli.     Exp21 ::= PliL;
-ETp.      Exp21 ::= "(" [Exp] ")";
-EArr.     Exp21 ::= "[" [Exp] "]";
-ESArr.    Exp21 ::= "[" Exp "," "size" "=" Exp "]";
--- ELamFn.   Exp21   ::= Bnd "->" Exp21; -- TODO function lambdas
--- ELamOp.   Exp21   ::= Bnd "=>" Exp21; -- TODO operation lambdas
+--ELamFn.   Exp22 ::= "(" Bnd "->" Exp22 ")"; -- TODO function lambdas
+EEmp.     Exp22 ::= "_";
+EName.    Exp22 ::= QName;
+ENameT.   Exp22 ::= QName "<" [Typ] ">"; -- TODO conflicting with ELt in several tests
+EInt.     Exp22 ::= Integer;
+EDbl.     Exp22 ::= Double;
+EStr.     Exp22 ::= String;
+EStrI.    Exp22 ::= "$" String;
+EBool.    Exp22 ::= BoolL;
+ERes.     Exp22 ::= ResL;
+EPli.     Exp22 ::= PliL;
+ETp.      Exp22 ::= "(" [Exp] ")";
+EArr.     Exp22 ::= "[" [Exp] "]";
+ESArr.    Exp22 ::= "[" Exp "," "size" "=" Exp "]";
+ELamFn.   Exp21   ::= Bnd "->" Exp21 ; -- TODO function lambdas
+ELamOp.   Exp21   ::= Bnd "=>" Exp21 ; -- TODO operation lambdas
 -- see git:qsharp-compiler/src/QsCompiler/TextProcessor/QsKeywords.fs
 -- Combinators (calls and array items) & Modifiers (functors and unwrap)
-EItem.    Exp20 ::= Exp20 "::" Ident;     -- 1100
+EItem.    Exp20 ::= Exp20 "::" UndIdent;     -- 1100
 EIndex.   Exp20 ::= Exp20 "[" Exp "]";    -- 1100
 EUnwrap.  Exp19 ::= Exp19 "!";            -- 1000
 ECtrl.    Exp18 ::= "Controlled" Exp18;   -- 951
@@ -203,7 +204,7 @@ EPow.     Exp15 ::= Exp16 "^" Exp15;
 EMul.     Exp14 ::= Exp14 "*" Exp15;
 EDiv.     Exp14 ::= Exp14 "/" Exp15;
 EMod.     Exp14 ::= Exp14 "%" Exp15;
-EAdd.     Exp13 ::= Exp13 "+" Exp14;
+EAdd.     Exp13 ::= Exp13 "+" Exp14; --(assocs to left?)
 ESub.     Exp13 ::= Exp13 "-" Exp14;
 EShiftR.  Exp12 ::= Exp12 ">>>" Exp13;
 EShiftL.  Exp12 ::= Exp12 "<<<" Exp13;
@@ -245,6 +246,6 @@ token QIdent letter (letter | digit | '_')* ('.' letter (letter | digit | '_')*)
 
 
 --For some reason, just having these lines here breaks things??? even if they are not called. Why does this happen? 
-token UndIdent ('_')? letter (letter | digit | '_' | '\'')*;
--- this should be the same as Ident but its not??
-token TestIdent letter (letter | digit | '_' | '\'')*;  
+token UndIdent ('_' | letter) (letter | digit | '_' | '\'')*;
+-- this should be the same as UndIdent but its not??
+-- token TestIdent letter (letter | digit | '_' | '\'')*;  
