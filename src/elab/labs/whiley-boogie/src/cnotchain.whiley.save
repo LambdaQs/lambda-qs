@@ -32,21 +32,6 @@ ensures  all { i in 0..|out| | out[i] == qs[i + 1] }:
     return out
 
 
-function make_qubit_list(qbit start, qbit length) -> (qbit[] qs)
-ensures |qs| == length
-ensures all { i in 0..|qs| | qs[i] == start + i }:
-    qs = [0; length]
-    qbit i = 0
-
-    int size = |qs|
-    while i < |qs|
-    where |qs| == size
-    where all { k in 0..i | qs[k] == start + k }:
-        qs[i] = start + i
-        i = i + 1
-
-    return qs
-
 function Zipped(qbit[] xs, qbit[] ys) -> (safePair[] xys)
 requires |xs| == |ys|
 requires all { i in 0..|xs| | xs[i] != ys[i] }
